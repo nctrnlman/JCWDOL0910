@@ -1,16 +1,17 @@
-require("dotenv/config");
+require("dotenv").config({
+  path: ".env.local",
+});
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
+const { userController } = require("../routers");
+const { db, query } = require("../database");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
   cors({
-    origin: [
-      process.env.WHITELISTED_DOMAIN &&
-        process.env.WHITELISTED_DOMAIN.split(","),
-    ],
+    origin: process.env.WHITELISTED_DOMAIN,
   })
 );
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 // ===========================
 // NOTE : Add your routes here
+app.use("/users", userController);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
