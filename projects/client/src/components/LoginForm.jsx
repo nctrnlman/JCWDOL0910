@@ -51,6 +51,14 @@ const LoginForm = ({ isLoading, errors, touched }) => {
                 name="password"
                 style={{ color: "red", fontSize: "12px" }}
               />
+              <div className="mt-5 flex flex-row justify-end">
+                <a
+                  href="#"
+                  className="text-xs ml-2 text-accent-focus font-semibold hover:underline"
+                >
+                  Forget Password?
+                </a>
+              </div>
               <div className="form-control mt-6">
                 <button
                   className="btn btn-accent disabled:btn-disabled"
