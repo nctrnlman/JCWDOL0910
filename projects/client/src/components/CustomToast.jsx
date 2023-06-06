@@ -14,6 +14,9 @@ const CustomToast = ({ message, type }) => {
     case "info":
       alertClass = "alert-info";
       break;
+    case "warning":
+      alertClass = "alert-warning";
+      break;
     default:
       alertClass = "alert-error";
       break;

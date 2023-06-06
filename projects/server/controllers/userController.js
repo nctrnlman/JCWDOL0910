@@ -91,7 +91,9 @@ module.exports = {
         id: isEmailExist[0].id_user,
       };
       console.log(payload, "payload");
-      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
+      const expiresIn = 60 * 60; // Set the token expiration time{1hr}
+      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp{in second}
+      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
 
       return res.status(200).send({
         message: "Login Success",
@@ -101,6 +103,7 @@ module.exports = {
           email: isEmailExist[0].email,
           fullname: isEmailExist[0].fullname,
           image_path: isEmailExist[0].image_path,
+          expToken: expirationTimestamp,
         },
       });
     } catch (error) {

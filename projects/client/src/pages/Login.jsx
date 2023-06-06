@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import LoginForm from "../components/LoginForm";
 import { loginUser } from "../features/users/userSlice";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const LoginSchema = Yup.object().shape({
@@ -17,12 +18,13 @@ function Login() {
   });
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.users.isLoading);
+  const navigate = useNavigate();
 
   const handleLogin = async (values) => {
     const lastVisitedPage = sessionStorage.getItem("lastVisitedPage") || "/";
     await dispatch(
       loginUser(values, () => {
-        window.location.replace(lastVisitedPage); // Replace the current URL with the last visited URL
+        navigate(lastVisitedPage); // Replace the current URL with the last visited URL
       })
     );
   };
