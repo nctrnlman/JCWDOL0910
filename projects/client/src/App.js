@@ -9,6 +9,7 @@ function App() {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userToken = localStorage.getItem("user_token");
 
   useEffect(() => {
     if (location.pathname !== "/login" && location.pathname !== "/register") {
@@ -37,6 +38,15 @@ function App() {
       clearInterval(interval); // Clear the interval on component unmount
     };
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    if (
+      userToken &&
+      (location.pathname === "/login" || location.pathname === "/register")
+    ) {
+      navigate(sessionStorage.getItem("lastVisitedPage")); //if user tried to access login or register when they login,the user will navigate into last visited page
+    }
+  }, [userToken, location.pathname, navigate]);
 
   return (
     <div data-theme="winter">
