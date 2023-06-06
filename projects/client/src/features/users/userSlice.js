@@ -9,7 +9,6 @@ export const userSlice = createSlice({
   initialState: {
     user: null,
     isLoading: false,
-    lastVisitedPage: "/",
   },
   reducers: {
     setUser: (state, action) => {
@@ -19,13 +18,10 @@ export const userSlice = createSlice({
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
-    setLastVisitedPage: (state, action) => {
-      state.lastVisitedPage = action.payload;
-    },
   },
 });
 
-export const { setIsLoading, setUser, setLastVisitedPage } = userSlice.actions;
+export const { setIsLoading, setUser } = userSlice.actions;
 
 export default userSlice.reducer;
 
@@ -40,11 +36,6 @@ export function registerUser(data, callback) {
 
       dispatch(setUser(response.data.data));
       console.log(response);
-      // Set the last visited page in the Redux store
-      const storedLastVisitedPage = localStorage.getItem("lastVisitedPage");
-      const lastVisitedPage = storedLastVisitedPage || "/";
-      dispatch(setLastVisitedPage(lastVisitedPage));
-
       // Call the callback function to navigate to /verification
       if (typeof callback === "function") {
         callback();
