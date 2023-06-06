@@ -53,7 +53,7 @@ const LoginForm = ({ isLoading, errors, touched }) => {
               />
               <div className="mt-5 flex flex-row justify-end">
                 <a
-                  href="#"
+                  href="/forget-password"
                   className="text-xs ml-2 text-accent-focus font-semibold hover:underline"
                 >
                   Forget Password?

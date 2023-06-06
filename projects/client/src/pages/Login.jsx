@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import LoginForm from "../components/LoginForm";
-import { useNavigate } from "react-router-dom";
 import { loginUser } from "../features/users/userSlice";
 
 function Login() {
@@ -17,13 +16,13 @@ function Login() {
       .min(6, "at least 6 characters"),
   });
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const isLoading = useSelector((state) => state.users.isLoading);
 
   const handleLogin = async (values) => {
+    const lastVisitedPage = sessionStorage.getItem("lastVisitedPage") || "/";
     await dispatch(
       loginUser(values, () => {
-        navigate("/");
+        window.location.replace(lastVisitedPage); // Replace the current URL with the last visited URL
       })
     );
   };
