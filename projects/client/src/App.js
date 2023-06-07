@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "./features/users/userSlice";
+import Verification from "./pages/Verification";
 
 function App() {
   const location = useLocation();
@@ -53,6 +54,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/verification/" element={<Verification />} />
       </Routes>
     </div>
   );

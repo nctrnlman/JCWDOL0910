@@ -28,7 +28,7 @@ function Register() {
   const handleRegistration = async (values) => {
     await dispatch(
       registerUser(values, () => {
-        navigate("/verification");
+        navigate("/login");
       })
     );
   };
