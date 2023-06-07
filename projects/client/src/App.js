@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import CustomToast from "./components/CustomToast";
 import CustomToastOptions from "./components/CustomToastOptions";
 import Home from "./pages/Home";
+import Verification from "./pages/Verification";
 
 function App() {
   const location = useLocation();
@@ -89,6 +90,7 @@ function App() {
           </>
         )}
         <Route path="/" element={<Home />} />
+        <Route path="/verification/" element={<Verification />} />
       </Routes>
     </div>
   );
