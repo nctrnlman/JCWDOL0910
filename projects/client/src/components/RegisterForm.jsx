@@ -4,7 +4,7 @@ import TabsLoginRegister from "./TabsLoginRegister";
 
 const RegisterForm = ({ isLoading, errors, touched }) => {
   return (
-    <div className="hero min-h-screen bg-secondary-content">
+    <div className="hero min-h-screen bg-base-100">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="text-4xl font-bold">Welcome!</h1>
@@ -99,7 +99,7 @@ const RegisterForm = ({ isLoading, errors, touched }) => {
               />
               <div className="form-control mt-6">
                 <button
-                  className="btn btn-accent disabled:btn-disabled"
+                  className="btn btn-primary disabled:btn-disabled"
                   type="submit"
                   disabled={isLoading}
                 >
@@ -127,7 +127,7 @@ const RegisterForm = ({ isLoading, errors, touched }) => {
                 Already have an account?
                 <a
                   href="/login"
-                  className="text-xs ml-2 text-accent-focus font-semibold hover:underline"
+                  className="text-xs ml-2 text-primary-focus font-semibold hover:underline"
                 >
                   Sign In
                 </a>

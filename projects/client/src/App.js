@@ -49,7 +49,7 @@ function App() {
   }, [userToken, location.pathname, navigate]);
 
   return (
-    <div data-theme="winter">
+    <div>
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
