@@ -77,26 +77,16 @@ module.exports = {
           .send({ message: "Please verified your account" });
       }
 
-      //for hashed password (need to wait verification logic)
-      // const isValid = await bcrypt.compare(password, isEmailExist[0].password);
-      // if (!isValid) {
-      //   return res
-      //     .status(200)
-      //     .send({ message: "Email or Password is incorrect" });
-      // }
-
-      //non hashed password for testing using postman
-      const storedPassword = isEmailExist[0].password;
-      if (password !== storedPassword) {
+      const isValid = await bcrypt.compare(password, isEmailExist[0].password);
+      if (!isValid) {
         return res
-          .status(400)
+          .status(200)
           .send({ message: "Email or Password is incorrect" });
       }
 
       let payload = {
         id: isEmailExist[0].id_user,
       };
-      console.log(payload, "payload");
       const expiresIn = 60 * 60; // Set the token expiration time{1hr}
       const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp{in second}
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
