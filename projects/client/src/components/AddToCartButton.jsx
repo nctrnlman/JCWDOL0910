@@ -11,7 +11,7 @@ function AddToCartButton() {
     <button
       onClick={handleButtonClick}
       disabled={!isUserLoggedIn}
-      className="btn"
+      className="btn btn-secondary"
     >
       Add To Cart
     </button>
