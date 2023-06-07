@@ -1,15 +1,22 @@
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "./features/users/userSlice";
+import Profiling from "./pages/Profiling";
+import Cart from "./pages/Cart";
+import { toast } from "react-toastify";
+import CustomToast from "./components/CustomToast";
+import CustomToastOptions from "./components/CustomToastOptions";
+import Home from "./pages/Home";
 
 function App() {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userToken = localStorage.getItem("user_token");
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     if (location.pathname !== "/login" && location.pathname !== "/register") {
@@ -31,7 +38,6 @@ function App() {
       }
     };
     checkTokenExpiration(); // Check token expiration on component mount
-
     // Check token expiration every second
     const interval = setInterval(checkTokenExpiration, 1000);
     return () => {
@@ -48,11 +54,41 @@ function App() {
     }
   }, [userToken, location.pathname, navigate]);
 
+  useEffect(() => {
+    if (
+      !userToken &&
+      (location.pathname === "/cart" || location.pathname === "/profiling")
+    ) {
+      navigate("/"); // Redirect to "/" if user without token tries to access "/cart" or "/profiling"
+      setShowToast(true);
+    }
+  }, [userToken, location.pathname, navigate]);
+
+  useEffect(() => {
+    if (showToast) {
+      toast(
+        <CustomToast type="error" message={"Access denied"} />,
+        CustomToastOptions
+      );
+      setShowToast(false);
+    }
+  }, [showToast]);
+
   return (
     <div data-theme="winter">
       <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        {userToken === null ? (
+          <>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+          </>
+        ) : (
+          <>
+            <Route path="/profiling" element={<Profiling />} />
+            <Route path="/cart" element={<Cart />} />
+          </>
+        )}
+        <Route path="/" element={<Home />} />
       </Routes>
     </div>
   );
