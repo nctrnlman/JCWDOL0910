@@ -77,19 +77,10 @@ module.exports = {
           .send({ message: "Please verified your account" });
       }
 
-      //for hashed password (need to wait verification logic)
-      // const isValid = await bcrypt.compare(password, isEmailExist[0].password);
-      // if (!isValid) {
-      //   return res
-      //     .status(200)
-      //     .send({ message: "Email or Password is incorrect" });
-      // }
-
-      //non hashed password for testing using postman
-      const storedPassword = isEmailExist[0].password;
-      if (password !== storedPassword) {
+      const isValid = await bcrypt.compare(password, isEmailExist[0].password);
+      if (!isValid) {
         return res
-          .status(400)
+          .status(200)
           .send({ message: "Email or Password is incorrect" });
       }
 
