@@ -68,7 +68,10 @@ function App() {
   useEffect(() => {
     if (showToast) {
       toast(
-        <CustomToast type="error" message={"Access denied"} />,
+        <CustomToast
+          type="error"
+          message={"You must be logged in to access this page."}
+        />,
         CustomToastOptions
       );
       setShowToast(false);
