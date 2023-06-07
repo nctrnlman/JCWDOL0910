@@ -32,8 +32,12 @@ module.exports = {
       email
     )}, ${db.escape(first_name)}, ${db.escape(last_name)}, ${db.escape(
       gender
-    )}, null,null,false, ${otp}, null)`;
+    )}, null,null,false, ${otp})`;
     let addUserResult = await query(addUserQuery);
+
+    const id_user = addUserResult.insertId; // Retrieve the newly generated id_user from the insert operation
+
+    const token = jwt.sign({ id_user }, env.JWT_SECRET, { expiresIn: "1m" });
 
     let mail = {
       from: `Admin <baskararw10@gmail.com>`,
@@ -41,15 +45,17 @@ module.exports = {
       subject: `Verify your account`,
       html: `
       <div>
-        <p>Thanks for registering, ${fullName}! Please verify your account by entering the OTP below:</p>
-        <h2>${otp}</h2>
+        <p>Thanks for registering, ${fullName}! Please verify your account by entering the OTP below or by clicking on the following link:</p>
+        <p>OTP: <strong>${otp}</strong></p>
+        <p>Verification Link: <a href="http://localhost:3000/verification/?email=${email}&token=${token}">Click here to verify</a></p>
+        <p>Please note that you need to enter the provided OTP in the verification link.</p>
       </div>
       `,
     };
 
     let response = await nodemailer.sendMail(mail);
     console.log(response);
-
+    console.log(token);
     return res
       .status(200)
       .send({ data: addUserResult, message: "Register success" });
