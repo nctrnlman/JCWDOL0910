@@ -1,5 +1,8 @@
 import Axios from "axios";
 import React, { useState } from "react";
+import CustomToast from "../components/CustomToast";
+import { toast } from "react-toastify";
+import CustomToastOptions from "../components/CustomToastOptions";
 
 function ForgetPassword() {
   const [email, setEmail] = useState("");
@@ -11,9 +14,15 @@ function ForgetPassword() {
         "http://localhost:8000/users/forget-password",
         { email }
       );
-      console.log(response.data);
+      toast(
+        <CustomToast type="success" message={response.data.message} />,
+        CustomToastOptions
+      );
     } catch (error) {
-      console.error(error);
+      toast(
+        <CustomToast type="success" message="Email is not exist" />,
+        CustomToastOptions
+      );
     }
   };
   return (
@@ -30,7 +39,7 @@ function ForgetPassword() {
               </label>
               <input
                 type="email"
-                placeholder="Input your Email"
+                placeholder=""
                 value={email}
                 className="input input-bordered"
                 onChange={(e) => setEmail(e.target.value)}

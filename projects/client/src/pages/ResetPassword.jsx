@@ -14,28 +14,39 @@ function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await Axios.post(
-        "http://localhost:8000/users/reset-password",
-        { newPassword, confirmPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response.data.message);
+      if (newPassword.length && confirmPassword.length < 6) {
+        toast(
+          <CustomToast
+            type="success"
+            message="Minimum password is 6 characters"
+          />,
+          CustomToastOptions
+        );
+      } else {
+        let response = await Axios.post(
+          "http://localhost:8000/users/reset-password",
+          { newPassword, confirmPassword },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        toast(
+          <CustomToast type="success" message={response.data.message} />,
+          CustomToastOptions
+        );
+        navigate("/");
+      }
+    } catch (error) {
       toast(
-        <CustomToast type="success" message={response.data.message} />,
+        <CustomToast type="success" message="Failed to reset password" />,
         CustomToastOptions
       );
       navigate("/");
-    } catch (error) {
-      alert("gagal");
-      console.error(error);
     }
   };
-
-  console.log({ token });
 
   return (
     <div className="hero min-h-screen bg-slate-100">
@@ -51,8 +62,9 @@ function ResetPassword() {
               </label>
               <input
                 type="password"
-                placeholder="Input your new password"
+                placeholder=""
                 className="input input-bordered"
+                value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
             </div>
@@ -62,8 +74,9 @@ function ResetPassword() {
               </label>
               <input
                 type="password"
-                placeholder="Input your confirm password"
+                placeholder=""
                 className="input input-bordered"
+                value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>

@@ -34,21 +34,24 @@ module.exports = {
       gender
     )}, null,null,false, ${otp}, null)`;
     let addUserResult = await query(addUserQuery);
+    let payload = { id: addUserResult.insertId };
+
+    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
 
     let mail = {
-      from: `Admin <baskararw10@gmail.com>`,
+      from: `Admin <rhazesnote@gmail.com>`,
       to: `${email}`,
       subject: `Verify your account`,
       html: `
       <div>
         <p>Thanks for registering, ${fullName}! Please verify your account by entering the OTP below:</p>
         <h2>${otp}</h2>
+        <h2><a href="http://localhost:3000/verification/${token}">Click Here</a></h2>
       </div>
       `,
     };
 
     let response = await nodemailer.sendMail(mail);
-    console.log(response);
 
     return res
       .status(200)
@@ -56,7 +59,47 @@ module.exports = {
   },
   verify: async (req, res) => {
     try {
-    } catch (e) {}
+      const { otp, password, confirmPassword } = req.body;
+      const token = req.headers.authorization.split(" ")[1];
+
+      const decodedToken = jwt.verify(token, env.JWT_SECRET);
+      const userId = decodedToken.id;
+
+      if (password !== confirmPassword) {
+        return res.status(400).send({ message: "Password not same" });
+      }
+
+      let checkEmail = await query(
+        `SELECT * FROM users WHERE id_user =${db.escape(userId)}`
+      );
+
+      if (otp != checkEmail[0].otp) {
+        return res.status(400).send({ message: "otp not same" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(password, salt);
+
+      const passwordQuery = await query(
+        `UPDATE users SET password = ${db.escape(
+          hashPassword
+        )} WHERE id_user = ${db.escape(userId)}`
+      );
+
+      const updateVerified = await query(
+        `UPDATE users SET is_verified = true where id_user = ${db.escape(
+          userId
+        )}`
+      );
+
+      const updateOtp = await query(
+        `UPDATE users SET otp = null where id_user = ${db.escape(userId)}`
+      );
+
+      return res.status(200).send({ message: "Verification successfully." });
+    } catch (e) {
+      res.status(e.status || 500).send(e);
+    }
   },
   forgetPassword: async (req, res) => {
     try {
@@ -77,8 +120,6 @@ module.exports = {
       let payload = { id: checkEmail[0].id_user };
 
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "10m" });
-
-      console.log(payload);
 
       //add token to database
       const addtoken = await query(
@@ -101,7 +142,6 @@ module.exports = {
       };
 
       let response = await nodemailer.sendMail(mail);
-      console.log(response);
 
       return res
         .status(200)

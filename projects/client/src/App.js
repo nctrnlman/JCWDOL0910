@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Verification from "./pages/Verification";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/verification/:token" element={<Verification />} />
       </Routes>
     </div>
   );
