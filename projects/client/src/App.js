@@ -75,7 +75,7 @@ function App() {
   }, [showToast]);
 
   return (
-    <div data-theme="winter">
+    <div>
       <Routes>
         {userToken === null ? (
           <>
