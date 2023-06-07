@@ -3,7 +3,7 @@ import Register from "./pages/Register";
 
 function App() {
   return (
-    <div data-theme="winter">
+    <div>
       <Routes>
         <Route path="/register" element={<Register />} />
       </Routes>
