@@ -2,13 +2,12 @@ require("dotenv").config({
   path: ".env.local",
 });
 const express = require("express");
-const { db } = require("./database");
 const cors = require("cors");
 const { join } = require("path");
 const { userController } = require("../routers");
 const { db, query } = require("../database");
-const { categoryRoutes } = require("./routes");
-const { productRoutes } = require("./routes");
+const { categoryRoutes } = require("../routers");
+const { productRoutes } = require("../routers");
 
 const PORT = process.env.PORT || 8000;
 const app = express();

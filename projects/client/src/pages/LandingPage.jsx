@@ -7,15 +7,14 @@ import CarouselLatestProducts from "../components/CarouselLatestProducts";
 import CarouselCard from "../components/CarouselCard";
 
 function Home() {
-    return (
-        <>
-            <Navbar />
-            <Header />
-            <LatestProducts />
-            <Footer />
-
-        </>
-    );
+  return (
+    <div className="bg-base-100">
+      <Navbar />
+      <Header />
+      <LatestProducts />
+      <Footer />
+    </div>
+  );
 }
 
 export default Home;
