@@ -7,7 +7,7 @@ export const LatestProductSLice = createSlice({
     },
     reducers: {
         setLatestProducts: (state, action) => {
-            state.contents = action.payload;
+            state.latest_products = action.payload;
         },
     },
 });

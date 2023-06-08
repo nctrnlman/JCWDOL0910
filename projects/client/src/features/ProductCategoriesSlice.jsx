@@ -8,7 +8,7 @@ export const productCatSLice = createSlice({
     },
     reducers: {
         setProductCategories: (state, action) => {
-            state.contents = action.payload;
+            state.productCategories = action.payload;
         },
     },
 });
