@@ -1,18 +1,25 @@
 require("dotenv/config");
 const express = require("express");
+const { db } = require('./database')
 const cors = require("cors");
 const { join } = require("path");
+const { categoryRoutes } = require('./routes')
+const { productRoutes } = require('./routes')
+
 
 const PORT = process.env.PORT || 8000;
 const app = express();
-app.use(
-  cors({
-    origin: [
-      process.env.WHITELISTED_DOMAIN &&
-        process.env.WHITELISTED_DOMAIN.split(","),
-    ],
-  })
-);
+app.use(cors());
+// cors di bawah ini bikin gabisa getdata -- GET http://localhost:8000/product_categories/ net::ERR_FAILED 200 (OK)
+// akhirnya ganti pake : app.use(cors());
+// app.use(
+//   cors({
+//     origin: [
+//       process.env.WHITELISTED_DOMAIN &&
+//       process.env.WHITELISTED_DOMAIN.split(","),
+//     ],
+//   })
+// );
 
 app.use(express.json());
 
@@ -21,6 +28,9 @@ app.use(express.json());
 // ===========================
 // NOTE : Add your routes here
 
+
+app.use('/product_categories', categoryRoutes)
+app.use('/products', productRoutes)
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
 });
