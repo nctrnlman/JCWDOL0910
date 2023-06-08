@@ -3,7 +3,7 @@ const { db, query } = require('../database')
 module.exports = {
     getAllProductCategories: async (req, res) => {
         try {
-            const product_categories = await query(`SELECT * FROM product_categories`)
+            const product_categories = await query(`SELECT * FROM categories`)
             console.log(product_categories)
             return res.status(200).send(product_categories)
         } catch (error) {

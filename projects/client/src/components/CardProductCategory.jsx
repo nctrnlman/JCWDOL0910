@@ -12,9 +12,9 @@ function ProductCategories() {
         return product_categories.map((product_category) => {
             return (
                 <Link
-                    to={`/products/${product_category.product_category_name}`}
+                    to={`/products/${product_category.name}`}
                 >
-                    {product_category.product_category_name}
+                    {product_category.name}
                 </Link>
             );
         }

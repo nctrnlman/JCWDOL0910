@@ -5,7 +5,7 @@ const db = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "root",
-    database: "db_multi_warehouse",
+    database: "multiwarehouse_baru",
     port: 3306
 })
 
