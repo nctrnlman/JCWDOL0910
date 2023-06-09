@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Axios from "axios";
 import CustomToast from "../components/CustomToast";
 import { toast } from "react-toastify";
@@ -9,13 +9,14 @@ function Verification() {
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  let { token } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(password, confirmPassword);
       if (password.length && confirmPassword.length < 6) {
         toast(
           <CustomToast
@@ -49,7 +50,7 @@ function Verification() {
     }
   };
 
-   return (
+  return (
     <div className="hero min-h-screen bg-slate-100">
       <div className="hero-content flex-col ">
         <div className="text-center lg:text-center">
