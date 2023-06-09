@@ -9,6 +9,8 @@ import Cart from "./pages/Cart";
 import { toast } from "react-toastify";
 import CustomToast from "./components/CustomToast";
 import CustomToastOptions from "./components/CustomToastOptions";
+import ForgetPassword from "./pages/ForgetPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
@@ -95,6 +97,8 @@ function App() {
         )}
         <Route path="/" element={<LandingPage />} />
         <Route path="/verification/" element={<Verification />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/reset-password/" element={<ResetPassword />} />
         <Route path="/home" element={<Home />} />
       </Routes>
     </div>

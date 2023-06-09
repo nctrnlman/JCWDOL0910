@@ -1,22 +1,22 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Axios from "axios";
 import CustomToast from "../components/CustomToast";
 import { toast } from "react-toastify";
 import CustomToastOptions from "../components/CustomToastOptions";
 
-function Verification() {
-  const [otp, setOtp] = useState("");
-  const [password, setPassword] = useState("");
+function ResetPassword() {
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  let { token } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(password, confirmPassword);
-      if (password.length && confirmPassword.length < 6) {
+      if (newPassword.length && confirmPassword.length < 6) {
         toast(
           <CustomToast
             type="success"
@@ -26,8 +26,8 @@ function Verification() {
         );
       } else {
         let response = await Axios.post(
-          "http://localhost:8000/users/verification",
-          { otp, password, confirmPassword },
+          "http://localhost:8000/users/reset-password",
+          { newPassword, confirmPassword },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -39,46 +39,37 @@ function Verification() {
           <CustomToast type="success" message={response.data.message} />,
           CustomToastOptions
         );
+
+        if (response.data.success == true) {
+          navigate("/");
+        }
       }
-      navigate("/login");
     } catch (error) {
       toast(
-        <CustomToast type="success" message="Failed to Verified" />,
+        <CustomToast type="success" message="Failed to reset password" />,
         CustomToastOptions
       );
     }
   };
 
-   return (
+  return (
     <div className="hero min-h-screen bg-slate-100">
       <div className="hero-content flex-col ">
         <div className="text-center lg:text-center">
-          <h1 className="text-6xl p-6 font-bold ">Verified Your Account</h1>
+          <h1 className="text-6xl p-6 font-bold ">Reset Password</h1>
         </div>
         <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
           <div className="card-body">
             <div className="form-control">
               <label className="label">
-                <span className="label-text">OTP Code</span>
-              </label>
-              <input
-                type="text"
-                placeholder=""
-                className="input input-bordered"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Password</span>
+                <span className="label-text">New Password</span>
               </label>
               <input
                 type="password"
                 placeholder=""
                 className="input input-bordered"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
               />
             </div>
             <div className="form-control">
@@ -108,4 +99,4 @@ function Verification() {
   );
 }
 
-export default Verification;
+export default ResetPassword;
