@@ -34,9 +34,6 @@ module.exports = {
       gender
     )}, null,null,false, ${otp})`;
     let addUserResult = await query(addUserQuery);
-    let payload = { id: addUserResult.insertId };
-
-    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
 
     const id_user = addUserResult.insertId; // Retrieve the newly generated id_user from the insert operation
 
@@ -63,7 +60,8 @@ module.exports = {
     return res
       .status(200)
       .send({ data: addUserResult, message: "Register success" });
-  }, login: async (req, res) => {
+  },
+  login: async (req, res) => {
     try {
       const { email, password } = req.body;
       const isEmailExist = await query(
@@ -225,4 +223,5 @@ module.exports = {
     } catch (e) {
       res.status(e.status || 500).send(e);
     }
+  },
 };
