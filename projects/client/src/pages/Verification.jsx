@@ -49,7 +49,7 @@ function Verification() {
     }
   };
 
-  return (
+   return (
     <div className="hero min-h-screen bg-slate-100">
       <div className="hero-content flex-col ">
         <div className="text-center lg:text-center">

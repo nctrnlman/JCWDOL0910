@@ -6,6 +6,8 @@ const cors = require("cors");
 const { join } = require("path");
 const { userController } = require("../routers");
 const { db, query } = require("../database");
+const { categoryRoutes } = require("../routers");
+const { productRoutes } = require("../routers");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -23,6 +25,8 @@ app.use(express.json());
 // ===========================
 // NOTE : Add your routes here
 app.use("/users", userController);
+app.use("/product_categories", categoryRoutes);
+app.use("/products", productRoutes);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
