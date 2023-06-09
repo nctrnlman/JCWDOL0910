@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Axios from "axios";
 import CustomToast from "../components/CustomToast";
 import { toast } from "react-toastify";
@@ -8,8 +8,10 @@ import CustomToastOptions from "../components/CustomToastOptions";
 function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  let { token } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,14 +39,16 @@ function ResetPassword() {
           <CustomToast type="success" message={response.data.message} />,
           CustomToastOptions
         );
-        navigate("/");
+
+        if (response.data.success == true) {
+          navigate("/");
+        }
       }
     } catch (error) {
       toast(
         <CustomToast type="success" message="Failed to reset password" />,
         CustomToastOptions
       );
-      navigate("/");
     }
   };
 

@@ -46,7 +46,7 @@ module.exports = {
       <div>
         <p>Thanks for registering, ${fullName}! Please verify your account by entering the OTP below:</p>
         <h2>${otp}</h2>
-        <h2><a href="http://localhost:3000/verification/${token}">Click Here</a></h2>
+        <h2><a href="http://localhost:3000/verification/?email=">Click Here</a></h2>
       </div>
       `,
     };
@@ -63,7 +63,7 @@ module.exports = {
       const token = req.headers.authorization.split(" ")[1];
 
       const decodedToken = jwt.verify(token, env.JWT_SECRET);
-      const userId = decodedToken.id;
+      const userId = decodedToken.id_user;
 
       if (password !== confirmPassword) {
         return res.status(400).send({ message: "Password not same" });
@@ -109,24 +109,14 @@ module.exports = {
         `SELECT * FROM users WHERE email = ${db.escape(email)}`
       );
 
-      //check email
       if (checkEmail.length == 0) {
         return res
           .status(200)
           .send({ message: "Email is not exist", success: false });
       }
+      let payload = { id_user: checkEmail[0].id_user };
 
-      //generate token
-      let payload = { id: checkEmail[0].id_user };
-
-      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "10m" });
-
-      //add token to database
-      const addtoken = await query(
-        `UPDATE users SET reset_password_token = ${db.escape(
-          token
-        )} WHERE email = ${db.escape(email)}`
-      );
+      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
 
       let mail = {
         from: `Admin <rhazesnote@gmail.com>`,
@@ -136,7 +126,7 @@ module.exports = {
         <div>
           <p>You have requested to reset your password. Don't send it to anyone</p>
           <p>please click the link below to reset your password</p>
-          <h2><a href="http://localhost:3000/reset-password/${token}">Click Here</a></h2>
+          <h2><a href="http://localhost:3000/reset-password/?email=${email}&token=${token}">Click Here</a></h2>
         </div>
         `,
       };
@@ -155,14 +145,12 @@ module.exports = {
       const { newPassword, confirmPassword } = req.body;
       const token = req.headers.authorization.split(" ")[1];
 
-      console.log(token);
       if (!token) {
         return res.status(401).json({ message: "Token not found" });
       }
 
       const decodedToken = jwt.verify(token, env.JWT_SECRET);
-      const userId = decodedToken.id;
-      console.log(userId, "reset pw");
+      const userId = decodedToken.id_user;
 
       if (newPassword !== confirmPassword) {
         return res
@@ -173,20 +161,15 @@ module.exports = {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(newPassword, salt);
 
-      const tes = `UPDATE users SET password = ${db.escape(
-        hashPassword
-      )} WHERE id_user = ${db.escape(userId)}`;
-
-      const resetPassword = await query(tes);
-      console.log(resetPassword);
-
-      const resetToken = await query(
-        `UPDATE users SET reset_password_token = NULL WHERE id_user = ${db.escape(
-          userId
-        )}`
+      const resetPassword = await query(
+        `UPDATE users SET password = ${db.escape(
+          hashPassword
+        )} WHERE id_user = ${db.escape(userId)}`
       );
 
-      return res.status(200).send({ message: "Reset password successfully." });
+      return res
+        .status(200)
+        .send({ message: "Reset password successfully.", success: true });
     } catch (e) {
       res.status(e.status || 500).send(e);
     }
