@@ -11,7 +11,7 @@ function Home() {
     <div className="bg-base-100">
       <Navbar />
       <Header />
-      <LatestProducts />
+      {/* <LatestProducts /> */}
       <Footer />
     </div>
   );
