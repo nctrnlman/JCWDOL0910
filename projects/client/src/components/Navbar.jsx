@@ -8,11 +8,20 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const userToken = localStorage.getItem("user_token");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleLogout = async () => {
     console.log("Logged out");
     dispatch(logoutUser());
     navigate("/login");
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -25,7 +34,7 @@ const Navbar = () => {
           Shopify
         </a>
       </div>
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-row gap-2">
         {userToken ? (
           <>
             <div className="dropdown dropdown-end">
@@ -95,26 +104,26 @@ const Navbar = () => {
             </div>
           </>
         ) : (
-          <>
-            <Link
+          <div>
+            <button
               to="/login"
-              className="btn btn-ghost sm:mr-4"
+              className="btn btn-ghost text-sm"
               onClick={() => {
                 navigate("/login");
               }}
             >
               Login
-            </Link>
-            <Link
+            </button>
+            <button
               to="/register"
-              className="btn btn-ghost"
+              className="btn btn-ghost text-sm"
               onClick={() => {
                 navigate("/register");
               }}
             >
               Register
-            </Link>
-          </>
+            </button>
+          </div>
         )}
       </div>
     </div>
