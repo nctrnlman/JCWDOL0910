@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Axios from "axios";
 import CustomToast from "../components/CustomToast";
 import { toast } from "react-toastify";
@@ -40,7 +40,7 @@ function ResetPassword() {
           CustomToastOptions
         );
 
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           navigate("/");
         }
       }

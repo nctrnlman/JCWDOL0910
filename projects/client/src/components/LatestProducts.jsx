@@ -11,7 +11,7 @@ function LatestProducts() {
 
   useEffect(() => {
     dispatch(getLatestProducts());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>

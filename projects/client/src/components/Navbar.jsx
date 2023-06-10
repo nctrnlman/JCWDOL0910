@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../features/users/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -8,20 +8,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState();
   const userToken = localStorage.getItem("user_token");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleLogout = async () => {
     console.log("Logged out");
     dispatch(logoutUser());
     navigate("/login");
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
   };
 
   return (
@@ -89,16 +80,18 @@ const Navbar = () => {
                 className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <a className="justify-between">Profile</a>
+                  <a href="/profile" className="justify-between">
+                    Profile
+                  </a>
                 </li>
                 <li>
-                  <a
+                  <button
                     onClick={() => {
                       handleLogout();
                     }}
                   >
                     Logout
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
