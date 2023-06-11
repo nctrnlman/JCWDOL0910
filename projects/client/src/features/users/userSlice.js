@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
-import CustomToast from "../../components/CustomToast";
-import CustomToastOptions from "../../components/CustomToastOptions";
+import CustomToast from "../../components/CustomToast/CustomToast";
+import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 
 export const userSlice = createSlice({
   name: "users",

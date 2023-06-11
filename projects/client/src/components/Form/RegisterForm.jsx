@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Field, ErrorMessage } from "formik";
-import TabsLoginRegister from "./TabsLoginRegister";
+import TabsLoginRegister from "../TabsLoginRegister";
 
 const RegisterForm = ({ isLoading, errors, touched }) => {
   return (

@@ -1,8 +1,8 @@
 import Axios from "axios";
 import React, { useState } from "react";
-import CustomToast from "../components/CustomToast";
+import CustomToast from "../components/CustomToast/CustomToast";
 import { toast } from "react-toastify";
-import CustomToastOptions from "../components/CustomToastOptions";
+import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
 
 function ForgetPassword() {
   const [email, setEmail] = useState("");
