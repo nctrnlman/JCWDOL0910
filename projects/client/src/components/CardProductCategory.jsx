@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllProductCategories } from "../features/ProductCategoriesSlice";
+import { getAllProductCategories } from "../features/categories/ProductCategoriesSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 function ProductCategories() {

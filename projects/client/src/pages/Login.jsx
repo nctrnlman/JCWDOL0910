@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/Form/LoginForm";
 import { loginUser } from "../features/users/userSlice";
 import { useNavigate } from "react-router-dom";
 

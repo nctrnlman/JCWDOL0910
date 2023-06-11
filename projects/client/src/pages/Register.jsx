@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { registerUser } from "../features/users/userSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import RegisterForm from "../components/RegisterForm";
+import RegisterForm from "../components/Form/RegisterForm";
 import { useNavigate } from "react-router-dom";
 
 function Register() {

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Axios from "axios";
-import CustomToast from "../components/CustomToast";
+import CustomToast from "../components/CustomToast/CustomToast";
 import { toast } from "react-toastify";
-import CustomToastOptions from "../components/CustomToastOptions";
+import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
 
 function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getLatestProducts } from "../features/LatestProductsSlice";
+import { getLatestProducts } from "../features/products/LatestProductsSlice";
 import NewProduct from "./NewProducts";
 
 function LatestProducts() {
