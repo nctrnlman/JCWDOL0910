@@ -1,45 +1,49 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllProductCategories } from "../features/categories/ProductCategoriesSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ProductCategories() {
-  //   const navigate = useNavigate();
   const product_categories = useSelector(
     (state) => state.productCategories.productCategories
   );
   const dispatch = useDispatch();
-  const renderLatestProduct = () => {
-    return product_categories.map((product_category) => {
-      return (
-        <Link to={`/products/${product_category.name}`}>
-          {product_category.name}
-        </Link>
-      );
-    });
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getAllProductCategories());
   }, []);
 
   return (
-    <aside className="hidden xl:flex m-auto py-16 px-4 relative group">
-      <div className="bg-slate-100 flex flex-col w-[200px] h-[300px] rounded-[8px] overflow-hidden">
-        <div className=" bg-gray-900 text-slate-200 py-4 uppercase font-semibold justify-center items-center flex">
+    <div className="flex justify-center px-5 mx-5 relative group">
+      <div className="bg-slate-100 flex flex-col w-full h-auto rounded-[8px] mx-5 border-t-4 border-gray-900">
+        <div className="bg-gray-900 text-slate-200 py-4 uppercase font-semibold justify-center items-center flex shadow-sm">
           Browse Category
         </div>
-        <div className="flex flex-col gap-y-6 p-4">
-          {product_categories?.map((product_category) => {
-            return (
-              <Link to={`/products/${product_category.name}`}>
-                {product_category.name}
-              </Link>
-            );
-          })}
+        <div className="overflow-x-auto">
+          <div className="grid grid-flow-col gap-6 p-4">
+            {product_categories?.map((product_category) => {
+              return (
+                <div
+                  key={product_category.id}
+                  className="flex flex-col items-center w-[250px] gap-3"
+                  onClick={() => navigate(`/products/${product_category.name}`)}
+                >
+                  <img
+                    src={require("../assets/Logo.png")}
+                    alt={product_category.name}
+                    className="w-32 h-12"
+                  />
+                  <div className="w-full text-center">
+                    {product_category.name}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </aside>
+    </div>
   );
 }
 

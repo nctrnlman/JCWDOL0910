@@ -17,9 +17,16 @@ function LatestProducts() {
     <div>
       <div className="text-center py-4 text-2xl font-bold">New Arrival</div>
       <div className="bg-slate-200 flex flex-wrap justify-center items-center m-10 rounded">
-        {latest_products?.map((product) => (
-          <NewProduct key={product.id} product={product} />
-        ))}
+        <div className="overflow-x-auto flex flex-row py-5">
+          {latest_products?.map((product) => (
+            <div
+              key={product.id}
+              className="w-full sm:w-[200px] m-2 flex justify-center"
+            >
+              <NewProduct product={product} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
