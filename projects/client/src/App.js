@@ -14,6 +14,8 @@ import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
+import ProductCard from "./components/ProductCard";
+import ProductCategory from "./pages/ProductCategory";
 
 function App() {
   const location = useLocation();
@@ -96,6 +98,7 @@ function App() {
           </>
         )}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/products/:name" element={<ProductCategory />} />
         <Route path="/verification/" element={<Verification />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/" element={<ResetPassword />} />

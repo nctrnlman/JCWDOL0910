@@ -5,6 +5,7 @@ import LatestProducts from "../components/LatestProducts";
 import Navbar from "../components/Navbar";
 import CarouselLatestProducts from "../components/CarouselLatestProducts";
 import CarouselCard from "../components/CarouselCard";
+import ProductCard from "../components/ProductCard";
 
 function Home() {
   return (
@@ -12,6 +13,7 @@ function Home() {
       <Navbar />
       <Header />
       <LatestProducts />
+      <ProductCard />
       <Footer />
     </div>
   );
