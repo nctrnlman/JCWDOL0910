@@ -4,7 +4,7 @@ require("dotenv").config({
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
-const { userController, transactionRoutes } = require("../routers");
+const { userController, transactionRoutes, cartRoutes } = require("../routers");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
 const { productRoutes } = require("../routers");
@@ -28,6 +28,7 @@ app.use("/users", userController);
 app.use("/product_categories", categoryRoutes);
 app.use("/products", productRoutes);
 // app.use("/transactions", transactionRoutes);
+app.use("/carts", cartRoutes);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

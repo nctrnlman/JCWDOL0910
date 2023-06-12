@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
-
+require("dotenv").config({
+  path: ".env.local",
+});
 module.exports = {
   // getUserIdFromToken is a helper function to get user id from token and if token is not valid, it will return 401 status code
   getUserIdFromToken: (req, resp) => {

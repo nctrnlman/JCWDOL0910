@@ -14,6 +14,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
+import { fetchItemsCart } from "./features/carts/cartSlice";
 
 function App() {
   const location = useLocation();
@@ -80,6 +81,13 @@ function App() {
       setShowToast(false);
     }
   }, [showToast]);
+
+  useEffect(() => {
+    // Fetch the cart items when the user logs in
+    if (userToken) {
+      dispatch(fetchItemsCart());
+    }
+  }, [userToken, dispatch]);
 
   return (
     <div>
