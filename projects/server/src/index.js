@@ -27,7 +27,7 @@ app.use(express.json());
 app.use("/users", userController);
 app.use("/product_categories", categoryRoutes);
 app.use("/products", productRoutes);
-app.use("/transactions", transactionRoutes);
+// app.use("/transactions", transactionRoutes);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getLatestProducts } from "../features/products/LatestProductsSlice";
+import { getLatestProducts } from "../features/products/productSlice";
 import NewProduct from "./NewProducts";
 
 function LatestProducts() {
   const latest_products = useSelector(
-    (state) => state.latestProducts.latest_products
+    (state) => state.products.latest_products
   );
   const dispatch = useDispatch();
 
