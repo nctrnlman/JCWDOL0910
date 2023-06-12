@@ -1,4 +1,7 @@
 import React from "react";
+import AddToCartButton from "./AddToCartButton";
+import BuyNowButton from "./BuyNowButton";
+import { useNavigate } from "react-router-dom";
 
 const NewProduct = ({ product }) => {
   return (
@@ -18,13 +21,13 @@ const NewProduct = ({ product }) => {
         <div className="pricing flex items-center">
           <div className="price">{product.price}</div>
         </div>
-        <div className="flex items-center my-2">
-          <button className="border px-3 py-1 text-xs rounded-lg mr-1">
-            Buy Now
-          </button>
-          <button className="border px-3 py-1 text-xs rounded-lg">
-            Add to Cart
-          </button>
+        <div className="flex items-center my-2 gap-3">
+          <div>
+            <BuyNowButton />
+          </div>
+          <div>
+            <AddToCartButton />
+          </div>
         </div>
       </div>
     </div>

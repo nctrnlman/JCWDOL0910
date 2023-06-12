@@ -26,7 +26,7 @@ function ProductCategories() {
               return (
                 <div
                   key={product_category.id}
-                  className="flex flex-col items-center w-[250px] gap-3"
+                  className="flex flex-col items-center w-[250px] gap-3 hover:cursor-pointer"
                   onClick={() => navigate(`/products/${product_category.name}`)}
                 >
                   <img
