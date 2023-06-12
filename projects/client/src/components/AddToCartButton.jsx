@@ -1,25 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addCartItem } from "../features/products/productSlice";
 
-const AddToCartButton = ({ id_product, name, price }) => {
+const AddToCartButton = ({ product, quantity }) => {
   const dispatch = useDispatch();
+
   const handleButtonClick = () => {
-    dispatch(
-      addCartItem({
-        id_product: id_product,
-        name: name,
-        price: price,
-        quantity: 1,
-      })
-    );
+    dispatch(addCartItem(product, quantity));
   };
 
   const isUserLoggedIn = !!localStorage.getItem("user_token"); // Check if user_token exists in localStorage
 
   return (
     <button
-      onClick={handleButtonClick}
+      onClick={() => handleButtonClick(product)}
       disabled={!isUserLoggedIn}
       className="btn btn-secondary text-xs"
     >

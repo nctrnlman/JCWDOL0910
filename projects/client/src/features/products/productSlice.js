@@ -6,7 +6,7 @@ export const productSlice = createSlice({
   initialState: {
     products: [],
     latest_products: [],
-    cart: [],
+    cartItems: [],
     totalPrice: 0,
   },
   reducers: {
@@ -16,20 +16,30 @@ export const productSlice = createSlice({
     setLatestProducts: (state, action) => {
       state.latest_products = action.payload;
     },
-    addToCart: (state, action) => {
+    setCartItems: (state, action) => {
       const newItem = action.payload;
-      const existingItem = state.cart.find(
+      const existingItemIndex = state.cartItems.findIndex(
         (item) => item.id_product === newItem.id_product
       );
 
-      if (existingItem) {
-        existingItem.quantity += newItem.quantity;
+      if (existingItemIndex !== -1) {
+        if (
+          newItem.quantity < 0 &&
+          state.cartItems[existingItemIndex].quantity === 1
+        ) {
+          // Remove item from cart
+          state.cartItems.splice(existingItemIndex, 1);
+        } else {
+          // Update quantity if item exists in cart
+          state.cartItems[existingItemIndex].quantity += newItem.quantity;
+        }
       } else {
-        state.cart.push(newItem);
+        // Add new item to cart
+        state.cartItems.push(newItem);
       }
 
       // Update total price
-      state.totalPrice = state.cart.reduce((total, item) => {
+      state.totalPrice = state.cartItems.reduce((total, item) => {
         return total + item.price * item.quantity;
       }, 0);
     },
@@ -62,7 +72,7 @@ export const productSlice = createSlice({
 export const {
   setProducts,
   setLatestProducts,
-  addToCart,
+  setCartItems,
   removeFromCart,
   clearCart,
 } = productSlice.actions;
@@ -100,12 +110,15 @@ export function getLatestProducts() {
 export function addCartItem(product, quantity) {
   return async (dispatch) => {
     try {
+      const { id_product, name, price, id_category, image_url } = product;
       dispatch(
-        addToCart({
-          id_product: product.id_product,
-          name: product.name,
-          quantity: product.quantity,
-          price: product.price,
+        setCartItems({
+          id_product,
+          name,
+          price,
+          id_category,
+          image_url,
+          quantity,
         })
       );
     } catch (error) {
