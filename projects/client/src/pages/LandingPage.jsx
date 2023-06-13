@@ -3,11 +3,10 @@ import Header from "../components/Header";
 import Footer from "../components/Footer/Footer";
 import LatestProducts from "../components/LatestProducts";
 import Navbar from "../components/Navbar/Navbar";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchProducts } from "../features/products/productSlice";
 
 function LandingPage() {
-  // const products = useSelector((state) => state.product.products);
   const dispatch = useDispatch();
 
   useEffect(() => {

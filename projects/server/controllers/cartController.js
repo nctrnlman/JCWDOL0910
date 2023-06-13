@@ -5,7 +5,6 @@ module.exports = {
   addProductToCart: async (req, res) => {
     const { id_product, quantity } = req.body;
     const id_user = getUserIdFromToken(req, res);
-
     try {
       // Check if the product already exists in the cart_items table
       const checkProductQuery = `SELECT * FROM cart_items WHERE id_user = ${db.escape(
@@ -70,11 +69,10 @@ module.exports = {
       });
     }
   },
+
   fetchCartItems: async (req, res) => {
     const id_user = getUserIdFromToken(req, res);
-
     try {
-      // Fetch the cart items for the user
       const fetchCartItemsQuery = `
         SELECT ci.quantity, p.* 
         FROM cart_items ci
@@ -82,7 +80,6 @@ module.exports = {
         WHERE ci.id_user = ${db.escape(id_user)}
       `;
       const cartItems = await query(fetchCartItemsQuery);
-
       res.status(200).send({
         message: "Cart items fetched successfully",
         cartItems,

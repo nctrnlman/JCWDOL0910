@@ -8,16 +8,22 @@ const calculateTotalPrice = (cartItems) => {
     0
   );
 };
+// Helper function to calculate the total quantity
+const calculateTotalQuantity = (cartItems) => {
+  return cartItems.reduce((total, item) => total + item.quantity, 0);
+};
 
 export const productSlice = createSlice({
   name: "cart",
   initialState: {
     cartItems: [],
+    totalQuantity: 0,
     totalPrice: 0,
   },
   reducers: {
     setCartItems: (state, action) => {
       state.cartItems = action.payload;
+      state.totalQuantity = calculateTotalQuantity(action.payload);
       state.totalPrice = calculateTotalPrice(action.payload);
     },
   },
@@ -43,7 +49,6 @@ export function addToCart(id_product, quantity, cartItems) {
           },
         }
       );
-      console.log(response, "add to cart details");
       const { message, product, quantity: updatedQuantity } = response.data;
 
       // Check if the product already exists in the cart
@@ -84,13 +89,8 @@ export function fetchItemsCart() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log(response, "fetch cart details");
       const { message, cartItems } = response.data;
-
       dispatch(setCartItems(cartItems));
-
-      console.log(message);
     } catch (error) {
       console.error("Error fetching cart items: ", error);
     }

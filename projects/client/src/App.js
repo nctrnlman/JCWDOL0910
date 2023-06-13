@@ -8,7 +8,7 @@ import Profiling from "./pages/Profiling";
 import Cart from "./pages/Cart";
 import { toast } from "react-toastify";
 import CustomToast from "./components/CustomToast/CustomToast";
-import CustomToastOptions from "./components/CustomToast/CustomToast";
+import CustomToastOptions from "./components/CustomToast/CustomToastOptions";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
