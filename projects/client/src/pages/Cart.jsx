@@ -8,6 +8,7 @@ import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { updateCartItemQuantity } from "../features/carts/helpers/cartHelpers";
 import CartItems from "../components/Cart/CartItems";
 import CartDrawer from "../components/Cart/CartDrawer";
+import CheckoutButton from "../components/Cart/CheckOutButton";
 
 function Cart() {
   const navigate = useNavigate();
@@ -89,9 +90,7 @@ function Cart() {
       </div>
       <div className="bg-base-100 shadow-md p-4 flex justify-between items-center border border-solid border-base-300">
         <p className="text-lg font-semibold">Total Price: {totalPrice}</p>
-        <button className="px-4 py-2 bg-primary text-white rounded-md">
-          Checkout
-        </button>
+        <CheckoutButton />
       </div>
       {isDrawerOpen && <CartDrawer handleDrawerToggle={handleDrawerToggle} />}
     </div>
