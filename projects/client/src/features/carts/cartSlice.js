@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+import CustomToast from "../../components/CustomToast/CustomToast";
+import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 
 // Helper function to calculate the total price
 const calculateTotalPrice = (cartItems) => {
@@ -55,37 +58,35 @@ export function addToCart(id_product, quantity, cartItems) {
       const existingProductIndex = cartItems.findIndex(
         (item) => item.id_product === product.id_product
       );
-
       if (existingProductIndex !== -1) {
         // Get the existing cart item
         const existingCartItem = cartItems[existingProductIndex];
-
         if (existingCartItem.quantity === updatedQuantity) {
           // Quantity is already up-to-date, no need to update Redux
           console.log("Quantity is already up-to-date");
           return;
         }
-
         // Create a new object with updated quantity
         const updatedCartItem = {
           ...existingCartItem,
           quantity: updatedQuantity,
         };
-
         // Create a new array with the updated cart item
         const updatedCartItems = [...cartItems];
         updatedCartItems[existingProductIndex] = updatedCartItem;
-
         dispatch(setCartItems(updatedCartItems));
       } else {
         // Add the product to the cart
         const newCartItem = { ...product, quantity: updatedQuantity };
         dispatch(setCartItems([...cartItems, newCartItem]));
       }
-
       console.log(message);
     } catch (error) {
       console.error("Error adding product to cart: ", error);
+      toast(
+        <CustomToast type="error" message={error.response.data.message} />,
+        CustomToastOptions
+      );
     }
   };
 }
