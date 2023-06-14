@@ -122,4 +122,69 @@ module.exports = {
       });
     }
   },
+  increaseQuantity: async (req, res) => {
+    const { id_product } = req.query;
+    try {
+      const increaseQuantityQuery = `
+        UPDATE cart_items
+        SET quantity = quantity + 1
+        WHERE id_product = ${db.escape(id_product)}
+      `;
+
+      await query(increaseQuantityQuery);
+
+      res.status(200).send({
+        message: "Quantity increased successfully",
+      });
+    } catch (error) {
+      console.error("Error increasing quantity: ", error);
+      res.status(500).send({
+        error: "An error occurred while increasing the quantity",
+      });
+    }
+  },
+
+  decreaseQuantity: async (req, res) => {
+    const { id_product } = req.query;
+    try {
+      const decreaseQuantityQuery = `
+        UPDATE cart_items
+        SET quantity = quantity - 1
+        WHERE id_product = ${db.escape(id_product)}
+      `;
+
+      await query(decreaseQuantityQuery);
+
+      res.status(200).send({
+        message: "Quantity decreased successfully",
+      });
+    } catch (error) {
+      console.error("Error decreasing quantity: ", error);
+      res.status(500).send({
+        error: "An error occurred while decreasing the quantity",
+      });
+    }
+  },
+  deleteProductFromCart: async (req, res) => {
+    const { id_product } = req.query;
+    const id_user = getUserIdFromToken(req, res);
+    try {
+      const deleteProductQuery = `
+        DELETE FROM cart_items
+        WHERE id_user = ${db.escape(id_user)}
+        AND id_product = ${db.escape(id_product)}
+      `;
+
+      await query(deleteProductQuery);
+
+      res.status(200).send({
+        message: "Product deleted from the cart",
+      });
+    } catch (error) {
+      console.error("Error deleting product: ", error);
+      res.status(500).send({
+        error: "An error occurred while deleting the product",
+      });
+    }
+  },
 };

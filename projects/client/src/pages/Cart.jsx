@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import CartNavbar from "../components/Navbar/CartNavbar";
@@ -13,7 +13,8 @@ function Cart() {
   const isLargeScreen = window.innerWidth >= 1024;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const cartItems = useSelector((state) => state.carts.cartItems);
-  const totalPrice = useSelector((state) => state.carts.totalPrice);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const cartContainerRef = useRef(null);
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -23,8 +24,20 @@ function Cart() {
     navigate("/");
   };
 
+  const handleQuantityChange = (priceDifference) => {
+    setTotalPrice((prevTotalPrice) => prevTotalPrice + priceDifference);
+  };
+
+  useEffect(() => {
+    const totalPrice = cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    setTotalPrice(totalPrice);
+  }, [cartItems]);
+
   return (
-    <div className="h-screen flex flex-col bg-base-100 lg:py-16">
+    <div className="h-screen flex flex-col bg-base-100 lg:pt-16">
       {!isLargeScreen ? (
         <CartNavbar />
       ) : (
@@ -32,7 +45,10 @@ function Cart() {
           <Navbar />
         </>
       )}
-      <div className="flex flex-col flex-1 overflow-y-auto">
+      <div
+        className="flex flex-col flex-1 overflow-y-auto"
+        ref={cartContainerRef}
+      >
         {cartItems.length === 0 ? (
           <div className="bg-white p-4 shadow-md mb-2 h-screen">
             <p className="text-lg font-semibold">Your cart is empty</p>
@@ -65,12 +81,16 @@ function Cart() {
               </div>
             </div>
             {cartItems.map((item) => (
-              <CartItems key={item.id} item={item} />
+              <CartItems
+                key={item.id_product}
+                item={item}
+                onQuantityChange={handleQuantityChange}
+              />
             ))}
           </>
         )}
       </div>
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-md p-4 flex justify-between items-center border border-solid border-base-300">
+      <div className="bg-base-100 shadow-md p-4 flex justify-between items-center border border-solid border-base-300">
         <p className="text-lg font-semibold">Total Price: {totalPrice}</p>
         <button className="px-4 py-2 bg-primary text-white rounded-md">
           Checkout
