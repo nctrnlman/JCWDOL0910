@@ -40,4 +40,18 @@ module.exports = {
       return res.status(error.statusCode || 500).send(error);
     }
   },
+  getProductById: async (req, res) => {
+    try {
+      const idProduct = req.params.id;
+
+      const productById =
+        await query(`SELECT p.id_product,p.id_category,c.name as category,p.name as product_name,p.price,p.description,p.stock,p.image_url FROM products p
+      JOIN categories c on p.id_category = c.id_category
+      WHERE p.id_product = ${db.escape(idProduct)};`);
+
+      return res.status(200).send(productById[0]);
+    } catch (error) {
+      return res.status(error.statusCode || 500).send(error);
+    }
+  },
 };

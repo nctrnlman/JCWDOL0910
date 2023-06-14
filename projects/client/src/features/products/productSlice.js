@@ -2,13 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const productSlice = createSlice({
-  name: "product",
+  name: "products",
   initialState: {
-    products: [],
+    product: [],
     latest_products: [],
   },
   reducers: {
-    setProducts: (state, action) => {
+    setProduct: (state, action) => {
       state.products = action.payload;
     },
     setLatestProducts: (state, action) => {
@@ -17,7 +17,7 @@ export const productSlice = createSlice({
   },
 });
 
-export const { setProducts, setLatestProducts } = productSlice.actions;
+export const { setProduct, setLatestProducts } = productSlice.actions;
 
 export default productSlice.reducer;
 
@@ -25,7 +25,7 @@ export function fetchProducts() {
   return async (dispatch) => {
     try {
       const response = await axios.get("http://localhost:8000/products/");
-      dispatch(setProducts(response.data));
+      dispatch(setProduct(response.data));
       console.log(response, "productSlice");
     } catch (error) {
       console.error(error);
@@ -46,5 +46,14 @@ export function getLatestProducts() {
     } catch (error) {
       console.log(error);
     }
+  };
+}
+export function getProductById(id) {
+  return async (dispatch) => {
+    let response = await axios.get(
+      `http://localhost:8000/products/product-detail/${id}`
+    );
+    console.log(response.data);
+    dispatch(setProduct(response.data));
   };
 }
