@@ -21,11 +21,11 @@ function CartDrawer({ handleDrawerToggle }) {
 
   return (
     <div
-      className="cart-drawer bg-white w-full max-w-lg flex flex-col absolute bottom-0"
+      className="cart-drawer bg-white w-full flex flex-col absolute bottom-0"
       ref={drawerRef}
     >
       {/* Drawer content goes here */}
-      <div className="p-4 flex flex-col gap-2">
+      <div className="p-4 flex flex-col gap-2 bg-base-100 border border-solid border-base-300 rounded-md lg:w-screen">
         <h3 className="font-bold text-lg">
           Where would you like to send your purchase?
         </h3>
