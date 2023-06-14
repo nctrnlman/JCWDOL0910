@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchProducts } from "../features/products/productSlice";
 
 function ProductCard() {
@@ -10,6 +10,8 @@ function ProductCard() {
   const [offset, setOffset] = useState(0);
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
+  const [sort, setSort] = useState("");
+  const [filter, setFilter] = useState("");
   const productList = useSelector((state) => state.products.productList);
 
   const handleSeemore = () => {
@@ -27,6 +29,10 @@ function ProductCard() {
       setPage(page - 1);
       setOffset(offset - 10);
     }
+  };
+
+  const handleButton = () => {
+    dispatch(fetchProducts(offset, limit, sort, filter));
   };
 
   const renderProductList = () => {
@@ -72,13 +78,34 @@ function ProductCard() {
   };
 
   useEffect(() => {
-    dispatch(fetchProducts(offset, limit));
+    dispatch(fetchProducts(offset, limit, sort, filter));
   }, [limit, offset]);
 
   return (
     <div>
       <div className="text-center p-4 text-2xl font-bold">Our Product</div>
       <div className=" bg-slate-200 flex flex-col items-center justify-center m-10 p-4 rounded gap-2">
+        <div className="flex w-[450px] justify-between gap-2 ">
+          <input
+            type="text"
+            placeholder="Product Name..."
+            className="input input-bordered w-full max-w-xs"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          />
+          <select
+            className="select select-bordered w-[150px] max-w-xs"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+          >
+            <option value="">No Sort</option>
+            <option value="desc">Highest price</option>
+            <option value="asc">Lowest price</option>
+          </select>
+          <button className="btn btn-outline" onClick={handleButton}>
+            Search
+          </button>
+        </div>
         <div className="flex flex-wrap  justify-center ">
           {renderProductList()}
         </div>

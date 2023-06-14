@@ -5,14 +5,7 @@ export const productSlice = createSlice({
   name: "products",
   initialState: {
     productList: [],
-    product: {
-      id: 0,
-      productName: "",
-      price: 0,
-      productImage: "",
-      description: "",
-      category: "",
-    },
+    product: [],
   },
   reducers: {
     setProductList: (state, action) => {
@@ -27,7 +20,7 @@ export const { setProductList, setProduct } = productSlice.actions;
 
 export default productSlice.reducer;
 
-export function fetchProducts(offset, limit) {
+export function fetchProducts(offset, limit, sort, filter) {
   return async (dispatch) => {
     let response = await Axios.get(
       "http://localhost:8000/products/all-product",
@@ -35,10 +28,21 @@ export function fetchProducts(offset, limit) {
         params: {
           offset: offset,
           limit: limit,
+          sort: sort,
+          filter: filter,
         },
       }
     );
-    console.log(response.data);
     dispatch(setProductList(response.data));
+  };
+}
+
+export function getProductById(id) {
+  return async (dispatch) => {
+    let response = await Axios.get(
+      `http://localhost:8000/products/product-detail/${id}`
+    );
+    console.log(response.data);
+    dispatch(setProduct(response.data));
   };
 }

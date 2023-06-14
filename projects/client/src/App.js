@@ -16,6 +16,7 @@ import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
 import ProductCard from "./components/ProductCard";
 import ProductCategory from "./pages/ProductCategory";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   const location = useLocation();
@@ -99,6 +100,7 @@ function App() {
         )}
         <Route path="/" element={<LandingPage />} />
         <Route path="/products/:name" element={<ProductCategory />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/verification/" element={<Verification />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/" element={<ResetPassword />} />
