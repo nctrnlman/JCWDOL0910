@@ -1,11 +1,13 @@
 import React from "react";
+import AddToCartButton from "./Cart/AddToCartButton";
+import BuyNowButton from "./Cart/BuyNowButton";
 
 const NewProduct = ({ product }) => {
   return (
-    <div className="card bg-white w-[200px] h-auto m-2 rounded-lg shadow-lg">
+    <div className="card bg-white w-[200px] lg:w-[220px] h-auto m-2 rounded-lg shadow-lg">
       <div className="top">
         <img
-          className="w-[200px] h-[200px] object-cover p-2"
+          className="w-[300px] h-[200px] object-cover p-2"
           src={product.image_url}
           alt="img"
         />
@@ -18,13 +20,13 @@ const NewProduct = ({ product }) => {
         <div className="pricing flex items-center">
           <div className="price">{product.price}</div>
         </div>
-        <div className="flex items-center my-2">
-          <button className="border px-3 py-1 text-xs rounded-lg mr-1">
-            Buy Now
-          </button>
-          <button className="border px-3 py-1 text-xs rounded-lg">
-            Add to Cart
-          </button>
+        <div className="flex items-center my-2 gap-3">
+          <div>
+            <BuyNowButton />
+          </div>
+          <div>
+            <AddToCartButton product={product} quantity={1} />
+          </div>
         </div>
       </div>
     </div>

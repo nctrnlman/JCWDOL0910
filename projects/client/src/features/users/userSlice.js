@@ -4,15 +4,16 @@ import { toast } from "react-toastify";
 import CustomToast from "../../components/CustomToast/CustomToast";
 import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 
+const storedUserDetails = localStorage.getItem("user_details");
 export const userSlice = createSlice({
   name: "users",
   initialState: {
-    user: null,
+    user: storedUserDetails ? JSON.parse(storedUserDetails) : null,
     isLoading: false,
   },
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload.user;
+      state.user = action.payload.data;
       state.message = action.payload.message;
     },
     setIsLoading: (state, action) => {
@@ -70,6 +71,8 @@ export function loginUser(data, callback) {
       dispatch(setUser(response.data));
       localStorage.setItem("user_token", response.data.token);
       localStorage.setItem("exp_token", response.data.data.expToken);
+      localStorage.setItem("user_details", JSON.stringify(response.data.data)); // Save user details in local storage
+      console.log(response, "login");
       if (typeof callback === "function") {
         callback();
       }
@@ -95,6 +98,8 @@ export function logoutUser() {
       dispatch(resetuser());
       localStorage.removeItem("user_token");
       localStorage.removeItem("exp_token");
+      localStorage.removeItem("user_details");
+      localStorage.removeItem("cartCheckboxState");
       toast(
         <CustomToast type="warning" message="Logged out successfully" />,
         CustomToastOptions

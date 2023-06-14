@@ -8,12 +8,12 @@ import Profiling from "./pages/Profiling";
 import Cart from "./pages/Cart";
 import { toast } from "react-toastify";
 import CustomToast from "./components/CustomToast/CustomToast";
-import CustomToastOptions from "./components/CustomToast/CustomToast";
+import CustomToastOptions from "./components/CustomToast/CustomToastOptions";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
 import LandingPage from "./pages/LandingPage";
-import Home from "./pages/Home";
+import { fetchItemsCart } from "./features/carts/cartSlice";
 
 function App() {
   const location = useLocation();
@@ -81,6 +81,13 @@ function App() {
     }
   }, [showToast]);
 
+  useEffect(() => {
+    // Fetch the cart items when the user logs in
+    if (userToken) {
+      dispatch(fetchItemsCart());
+    }
+  }, [userToken, dispatch]);
+
   return (
     <div>
       <Routes>
@@ -99,7 +106,6 @@ function App() {
         <Route path="/verification/" element={<Verification />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/" element={<ResetPassword />} />
-        <Route path="/home" element={<Home />} />
       </Routes>
     </div>
   );

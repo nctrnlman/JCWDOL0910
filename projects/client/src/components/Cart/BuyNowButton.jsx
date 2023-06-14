@@ -1,6 +1,6 @@
 import React from "react";
 
-function AddToCartButton() {
+function BuyNowButton() {
   const handleButtonClick = () => {
     // Handle button click event
   };
@@ -11,11 +11,11 @@ function AddToCartButton() {
     <button
       onClick={handleButtonClick}
       disabled={!isUserLoggedIn}
-      className="btn btn-secondary"
+      className="btn btn-secondary text-xs"
     >
-      Add To Cart
+      Buy Now
     </button>
   );
 }
 
-export default AddToCartButton;
+export default BuyNowButton;

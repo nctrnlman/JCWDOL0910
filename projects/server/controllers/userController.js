@@ -98,7 +98,8 @@ module.exports = {
         data: {
           id: isEmailExist[0].id_user,
           email: isEmailExist[0].email,
-          fullname: isEmailExist[0].fullname,
+          first_name: isEmailExist[0].first_name,
+          last_name: isEmailExist[0].last_name,
           image_path: isEmailExist[0].image_path,
           expToken: expirationTimestamp,
         },

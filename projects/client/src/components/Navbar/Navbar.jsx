@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { useSelector } from "react-redux";
 import SearchInput from "./SearchInput";
 import UserDropdown from "./UserDropDown";
 import AuthButtons from "./AuthButtons";
 
 const Navbar = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [user, setUser] = useState();
   const userToken = localStorage.getItem("user_token");
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const user = useSelector((state) => state.users.user);
 
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
@@ -32,10 +29,13 @@ const Navbar = () => {
         {userToken ? (
           <UserDropdown user={user} />
         ) : (
-          <AuthButtons
-            isMenuOpen={isMenuOpen}
-            handleMenuToggle={handleMenuToggle}
-          />
+          <div className="text-slate-100">
+            <AuthButtons
+              isMenuOpen={isMenuOpen}
+              handleMenuToggle={handleMenuToggle}
+              showButtons={true}
+            />
+          </div>
         )}
       </div>
     </div>
