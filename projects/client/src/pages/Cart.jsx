@@ -43,13 +43,12 @@ function Cart() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-base-100 lg:py-24">
+    <div className="h-screen flex flex-col bg-base-100 lg:py-16">
       {!isLargeScreen ? (
         <CartNavbar />
       ) : (
         <>
           <Navbar />
-          {/* <CartNavbar /> */}
         </>
       )}
       <div className="flex flex-col flex-1 overflow-y-auto">
