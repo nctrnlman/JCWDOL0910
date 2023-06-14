@@ -122,49 +122,47 @@ module.exports = {
       });
     }
   },
-  increaseQuantity: async (req, res) => {
-    const { id_product } = req.query;
-    try {
-      const increaseQuantityQuery = `
-        UPDATE cart_items
-        SET quantity = quantity + 1
-        WHERE id_product = ${db.escape(id_product)}
-      `;
 
-      await query(increaseQuantityQuery);
+  updateQuantity: async (req, res) => {
+    const { id_product, action } = req.query;
+    const id_user = getUserIdFromToken(req, res);
+    try {
+      let updateQuantityQuery;
+
+      if (action === "increase") {
+        updateQuantityQuery = `
+          UPDATE cart_items
+          SET quantity = quantity + 1
+          WHERE id_user = ${db.escape(id_user)}
+          AND id_product = ${db.escape(id_product)}
+        `;
+      } else if (action === "decrease") {
+        updateQuantityQuery = `
+          UPDATE cart_items
+          SET quantity = quantity - 1
+          WHERE id_user = ${db.escape(id_user)}
+          AND id_product = ${db.escape(id_product)}
+        `;
+      } else {
+        res.status(400).send({
+          error: "Invalid action",
+        });
+        return;
+      }
+
+      await query(updateQuantityQuery);
 
       res.status(200).send({
-        message: "Quantity increased successfully",
+        message: "Quantity updated successfully",
       });
     } catch (error) {
-      console.error("Error increasing quantity: ", error);
+      console.error("Error updating quantity: ", error);
       res.status(500).send({
-        error: "An error occurred while increasing the quantity",
+        error: "An error occurred while updating the quantity",
       });
     }
   },
 
-  decreaseQuantity: async (req, res) => {
-    const { id_product } = req.query;
-    try {
-      const decreaseQuantityQuery = `
-        UPDATE cart_items
-        SET quantity = quantity - 1
-        WHERE id_product = ${db.escape(id_product)}
-      `;
-
-      await query(decreaseQuantityQuery);
-
-      res.status(200).send({
-        message: "Quantity decreased successfully",
-      });
-    } catch (error) {
-      console.error("Error decreasing quantity: ", error);
-      res.status(500).send({
-        error: "An error occurred while decreasing the quantity",
-      });
-    }
-  },
   deleteProductFromCart: async (req, res) => {
     const { id_product } = req.query;
     const id_user = getUserIdFromToken(req, res);

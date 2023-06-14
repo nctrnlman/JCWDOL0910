@@ -1,15 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/Navbar/Navbar";
 import CartNavbar from "../components/Navbar/CartNavbar";
 import { SlLocationPin } from "react-icons/sl";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { updateCartItemQuantity } from "../features/carts/helpers/cartHelpers";
 import CartItems from "../components/Cart/CartItems";
 import CartDrawer from "../components/Cart/CartDrawer";
 
 function Cart() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isLargeScreen = window.innerWidth >= 1024;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const cartItems = useSelector((state) => state.carts.cartItems);
@@ -24,7 +26,8 @@ function Cart() {
     navigate("/");
   };
 
-  const handleQuantityChange = (priceDifference) => {
+  const handleQuantityChange = (productId, newQuantity, priceDifference) => {
+    dispatch(updateCartItemQuantity({ id: productId, quantity: newQuantity }));
     setTotalPrice((prevTotalPrice) => prevTotalPrice + priceDifference);
   };
 
@@ -38,13 +41,7 @@ function Cart() {
 
   return (
     <div className="h-screen flex flex-col bg-base-100 lg:pt-16">
-      {!isLargeScreen ? (
-        <CartNavbar />
-      ) : (
-        <>
-          <Navbar />
-        </>
-      )}
+      {!isLargeScreen ? <CartNavbar /> : <Navbar />}
       <div
         className="flex flex-col flex-1 overflow-y-auto"
         ref={cartContainerRef}
