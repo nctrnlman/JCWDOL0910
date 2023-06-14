@@ -2,32 +2,25 @@ import React, { useEffect, useState } from "react";
 import { BsArrowLeft } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
-import AuthButtons from "./AuthButtons";
+import { logoutUser } from "../../features/users/userSlice";
+import { useDispatch } from "react-redux";
 
 function CartNavbar() {
-  const [isChecked, setIsChecked] = useState(true);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isMenuOpen, setMenuOpen] = useState(false);
 
-  const handleMenuToggle = () => {
-    setMenuOpen(!isMenuOpen);
+  const handleLogout = async () => {
+    console.log("Logged out");
+    dispatch(logoutUser());
+    navigate("/login");
   };
-  useEffect(() => {
-    const storedState = localStorage.getItem("cartCheckboxState");
-    setIsChecked(storedState === "true");
-  }, []);
 
-  const handleCheckboxChange = () => {
-    const newState = !isChecked;
-    setIsChecked(newState);
-    localStorage.setItem("cartCheckboxState", newState);
-  };
   const handleClickArrow = () => {
     navigate("/");
   };
 
   return (
-    <div className="py-2 lg:py-24 flex flex-col shadow-md bg-base-100  w-screen h-24 ">
+    <div className="py-2 lg:py-20 flex flex-col bg-base-100  w-screen h-16 shadow-md">
       <div className="flex flex-row justify-between items-center">
         <button className="px-3 flex justify-center items-center text-2xl">
           <BsArrowLeft
@@ -40,25 +33,24 @@ function CartNavbar() {
           Cart
         </div>
         <div className="text-2xl">
-          <AuthButtons
-            isMenuOpen={isMenuOpen}
-            handleMenuToggle={handleMenuToggle}
-            showButtons={false} // Set to true if you want to display the buttons
-            className="right-0"
-          />
-        </div>
-      </div>
-      <div className="px-3 flex gap-4">
-        <div className="form-control cursor-pointer">
-          <input
-            type="checkbox"
-            checked={isChecked}
-            onChange={handleCheckboxChange}
-            className="checkbox checkbox-primary"
-          />
-        </div>
-        <div className="text-gray-500 text-sm">
-          <label>Select All Products</label>
+          <div className="dropdown dropdown-end">
+            <label tabIndex={0} className="btn btn-ghost m-1">
+              <GiHamburgerMenu />
+            </label>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-1 p-2  bg-base-100 rounded-box w-52 border border-solid shadow-md"
+            >
+              <li>
+                <a href="/profile" className="justify-between">
+                  Profile
+                </a>
+              </li>
+              <li>
+                <button onClick={handleLogout}>Logout</button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

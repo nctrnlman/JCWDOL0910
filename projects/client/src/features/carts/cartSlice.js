@@ -57,10 +57,19 @@ export function addToCart(id_product, quantity, cartItems) {
       );
 
       if (existingProductIndex !== -1) {
+        // Get the existing cart item
+        const existingCartItem = cartItems[existingProductIndex];
+
+        if (existingCartItem.quantity === updatedQuantity) {
+          // Quantity is already up-to-date, no need to update Redux
+          console.log("Quantity is already up-to-date");
+          return;
+        }
+
         // Create a new object with updated quantity
         const updatedCartItem = {
-          ...cartItems[existingProductIndex],
-          quantity: cartItems[existingProductIndex].quantity + updatedQuantity,
+          ...existingCartItem,
+          quantity: updatedQuantity,
         };
 
         // Create a new array with the updated cart item
@@ -80,6 +89,7 @@ export function addToCart(id_product, quantity, cartItems) {
     }
   };
 }
+
 export function fetchItemsCart() {
   return async (dispatch) => {
     try {
