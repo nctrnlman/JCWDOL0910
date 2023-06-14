@@ -13,7 +13,6 @@ import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
 import LandingPage from "./pages/LandingPage";
-import Home from "./pages/Home";
 import { fetchItemsCart } from "./features/carts/cartSlice";
 
 function App() {
@@ -107,7 +106,6 @@ function App() {
         <Route path="/verification/" element={<Verification />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/" element={<ResetPassword />} />
-        <Route path="/home" element={<Home />} />
       </Routes>
     </div>
   );

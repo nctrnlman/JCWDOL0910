@@ -1,6 +1,6 @@
 import React from "react";
-import AddToCartButton from "./AddToCartButton";
-import BuyNowButton from "./BuyNowButton";
+import AddToCartButton from "./Cart/AddToCartButton";
+import BuyNowButton from "./Cart/BuyNowButton";
 
 const NewProduct = ({ product }) => {
   return (
