@@ -12,5 +12,6 @@ router.post("/upload", verifyToken, uploadz.single("file"), userProfileControlle
 router.post("/add-address", verifyToken, userProfileController.addAddress);
 router.post("/edit-address/:id", verifyToken, userProfileController.editAddress);
 router.delete("/delete-address/:id", verifyToken, userProfileController.deleteAddress);
+router.get("/get-address", verifyToken, userProfileController.getUserAddress);
 
 module.exports = router;

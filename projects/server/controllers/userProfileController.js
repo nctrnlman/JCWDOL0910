@@ -12,7 +12,7 @@ module.exports = {
       const getUserProfile = await query(
         `SELECT * FROM users WHERE id_user = ${db.escape(idUser)}`
       );
-      console.log(getUserProfile);
+      // console.log(getUserProfile);
       return res.status(200).send(getUserProfile);
     } catch (error) {
       return res.status(error.status || 500).send(error);
@@ -125,7 +125,21 @@ module.exports = {
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
-  }
+  },
+
+  getUserAddress: async (req, res) => {
+    // console.log(req)
+    try {
+      const idUser = req.user.id;
+      const getUserAddresses = await query(
+        `SELECT * FROM addresses WHERE id_user = ${db.escape(idUser)}`
+      );
+      // console.log(getUserProfile);
+      return res.status(200).send(getUserAddresses);
+    } catch (error) {
+      return res.status(error.status || 500).send(error);
+    }
+  },
 
 
 }
