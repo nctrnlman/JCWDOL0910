@@ -8,6 +8,7 @@ const { userController } = require("../routers");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
 const { productRoutes } = require("../routers");
+const { userProfileRoutes } = require("../routers");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -25,6 +26,7 @@ app.use(express.json());
 // ===========================
 // NOTE : Add your routes here
 app.use("/users", userController);
+app.use("/user_profile", userProfileRoutes);
 app.use("/product_categories", categoryRoutes);
 app.use("/products", productRoutes);
 
