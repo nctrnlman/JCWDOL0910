@@ -34,10 +34,10 @@ module.exports = {
 
       productsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
 
+      console.log(productsQuery, "ini product");
       const products = await query(productsQuery);
       const totalItems = await query(countProduct);
 
-      console.log(productsQuery, "ini product");
       return res.status(200).send({
         data: products,
         totalPages: Math.ceil(totalItems[0].total / limit),
@@ -50,16 +50,38 @@ module.exports = {
 
   getProductByCategory: async (req, res) => {
     try {
-      const categoryProduct = req.params.category;
-      const { offset, limit, sort, filter } = req.query;
+      const { offset, limit, sort, filter, category } = req.query;
 
-      const ProductByCategory =
-        await query(`SELECT p.id_product,p.id_category,c.name as category,p.name as product_name,p.price,p.description,p.stock,p.image_url FROM products p
+      let countProduct = `SELECT COUNT(*) as total FROM products p
       JOIN categories c on p.id_category = c.id_category
-      WHERE c.name = "${db.escape(categoryProduct)}"
-      LIMIT ${limit} OFFSET ${offset};`);
+      WHERE c.name = "${category}"`;
 
-      return res.status(200).send(ProductByCategory);
+      // console.log(countProduct);
+
+      let productsQuery = `SELECT p.id_product,p.id_category,c.name as category,p.name as name,p.price,p.description,p.stock,p.image_url FROM products p
+      JOIN categories c on p.id_category = c.id_category
+      WHERE c.name = "${category}"`;
+      // console.log(productsQuery);
+
+      if (filter) {
+        productsQuery += ` AND p.name LIKE '%${filter}%'`;
+        countProduct += ` AND p.name LIKE '%${filter}%'`;
+      }
+
+      if (sort === "asc") {
+        productsQuery += ` ORDER BY p.price ASC`;
+      } else if (sort === "desc") {
+        productsQuery += ` ORDER BY p.price DESC`;
+      }
+      // console.log(countProduct, "ini category");
+      productsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
+      const products = await query(productsQuery);
+      const totalItems = await query(countProduct);
+
+      return res.status(200).send({
+        data: products,
+        totalPages: Math.ceil(totalItems[0].total / limit),
+      });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }

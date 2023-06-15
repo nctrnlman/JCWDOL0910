@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getProductByCategory } from "../features/products/productSlice";
+import { useNavigate } from "react-router-dom";
+import { fetchProducts } from "../features/products/productSlice";
 import CardProduct from "../components/ProductCard";
 
-function ProductCategory() {
-  const { category } = useParams();
+function Products() {
   const dispatch = useDispatch();
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
@@ -13,11 +12,13 @@ function ProductCategory() {
   const [open, setOpen] = useState(false);
   const [sort, setSort] = useState("");
   const [filter, setFilter] = useState("");
-  const productCategory = useSelector(
-    (state) => state.products.productCategory
-  );
+  const productList = useSelector((state) => state.products.productList);
 
-  console.log(category);
+  const handleSeemore = () => {
+    setOpen(!open);
+    setLimit(limit + 5);
+    console.log(limit);
+  };
 
   const handleNext = () => {
     setPage(page + 1);
@@ -31,24 +32,24 @@ function ProductCategory() {
   };
 
   const handleButton = () => {
-    dispatch(getProductByCategory(category, offset, limit, sort, filter));
+    dispatch(fetchProducts(offset, limit, sort, filter));
   };
 
   const renderProductList = () => {
-    const thisProduct = productCategory.data;
+    const thisProduct = productList.data;
     return thisProduct?.map((product) => {
       return <CardProduct product={product} />;
     });
   };
 
   useEffect(() => {
-    dispatch(getProductByCategory(category, offset, limit, sort, filter));
-  }, [limit, offset, category]);
+    dispatch(fetchProducts(offset, limit, sort, filter));
+  }, [limit, offset]);
 
   return (
     <div>
-      <div className="text-center p-4 text-2xl font-bold uppercase">
-        Category : {category}
+      <div className="text-center p-4 text-3xl lg:text-4xl font-bold">
+        Our Product
       </div>
       <div className=" bg-slate-200 flex flex-col items-center justify-center m-10 p-4 rounded gap-2">
         <div className="flex w-[350px] lg:w-[450px] justify-between gap-2  text-xs lg:text-base ">
@@ -78,10 +79,10 @@ function ProductCategory() {
         <div className="flex flex-wrap  justify-center ">
           {renderProductList()}
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 ">
           <button
-            className={`btn btn-outline ${
-              page <= productCategory.totalPages ? "" : "hidden"
+            className={`btn text-[10px] lg:text-xs btn-outline ${
+              page <= productList.totalPages ? "" : "hidden"
             }`}
             onClick={handlePrevious}
           >
@@ -89,8 +90,8 @@ function ProductCategory() {
           </button>
 
           <button
-            className={`btn btn-outline ${
-              page === productCategory.totalPages ? "hidden" : ""
+            className={`btn text-[10px] lg:text-xs btn-outline ${
+              page === productList.totalPages ? "hidden" : ""
             }`}
             onClick={handleNext}
           >
@@ -102,4 +103,4 @@ function ProductCategory() {
   );
 }
 
-export default ProductCategory;
+export default Products;

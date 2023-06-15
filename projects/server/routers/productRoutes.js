@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get("/latest_products", productController.getLatestProducts);
 router.get("/all-product", productController.getAllProducts);
-router.get("/products/:category", productController.getProductByCategory);
+router.get("/category", productController.getProductByCategory);
 
 module.exports = router;

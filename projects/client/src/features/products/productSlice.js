@@ -6,6 +6,7 @@ export const productSlice = createSlice({
   initialState: {
     productList: [],
     product: [],
+    productCategory: [],
   },
   reducers: {
     setProductList: (state, action) => {
@@ -14,9 +15,13 @@ export const productSlice = createSlice({
     setProduct: (state, action) => {
       state.product = action.payload;
     },
+    setProductCategory: (state, action) => {
+      state.productCategory = action.payload;
+    },
   },
 });
-export const { setProductList, setProduct } = productSlice.actions;
+export const { setProductList, setProduct, setProductCategory } =
+  productSlice.actions;
 
 export default productSlice.reducer;
 
@@ -44,5 +49,21 @@ export function getProductById(id) {
     );
     console.log(response.data);
     dispatch(setProduct(response.data));
+  };
+}
+
+export function getProductByCategory(category, offset, limit, sort, filter) {
+  return async (dispatch) => {
+    let response = await Axios.get(`http://localhost:8000/products/category`, {
+      params: {
+        offset: offset,
+        limit: limit,
+        sort: sort,
+        filter: filter,
+        category: category,
+      },
+    });
+    console.log(response.data);
+    dispatch(setProductCategory(response.data));
   };
 }
