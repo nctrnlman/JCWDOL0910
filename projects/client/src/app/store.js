@@ -3,6 +3,8 @@ import userSlice from "../features/users/userSlice";
 import ProductCatReducer from "../features/categories/ProductCategoriesSlice";
 import productSlice from "../features/products/productSlice";
 import cartSlice from "../features/carts/cartSlice";
+import ProfileReducer from "../features/ProfileSlice";
+import AddressesReducer from "../features/UserAddress";
 
 export default configureStore({
   reducer: {
@@ -10,5 +12,7 @@ export default configureStore({
     productCategories: ProductCatReducer,
     products: productSlice,
     carts: cartSlice,
+    profile: ProfileReducer,
+    addresses: AddressesReducer,
   },
 });
