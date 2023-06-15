@@ -13,7 +13,7 @@ import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
 import LandingPage from "./pages/LandingPage";
-import { fetchItemsCart } from "./features/carts/cartSlice";
+import { fetchItemsCart } from "./features/carts/cartActions";
 
 function App() {
   const location = useLocation();

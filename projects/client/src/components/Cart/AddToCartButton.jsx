@@ -1,24 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../features/carts/cartSlice";
+import { addToCart } from "../../features/carts/cartActions";
 
 const AddToCartButton = ({ product, quantity }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.carts.cartItems);
+  const [isStockAvailable, setIsStockAvailable] = useState(true);
+
+  useEffect(() => {
+    setIsStockAvailable(product.total_stock > 0);
+  }, [product.total_stock]);
 
   const handleButtonClick = () => {
     dispatch(addToCart(product.id_product, quantity, cartItems));
   };
 
-  const isUserLoggedIn = !!localStorage.getItem("user_token"); // Check if user_token exists in localStorage
+  const isUserLoggedIn = !!localStorage.getItem("user_token");
 
   return (
     <button
       onClick={handleButtonClick}
-      disabled={!isUserLoggedIn}
+      disabled={!isUserLoggedIn || !isStockAvailable}
       className="btn btn-secondary text-xs"
     >
-      Add To Cart
+      {isStockAvailable ? "Add To Cart" : "Out of Stock"}
     </button>
   );
 };

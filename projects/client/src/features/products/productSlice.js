@@ -29,7 +29,6 @@ export function fetchProducts() {
       console.log(response, "productSlice");
     } catch (error) {
       console.error(error);
-      alert("An error occurred. Please try again later.");
     }
   };
 }

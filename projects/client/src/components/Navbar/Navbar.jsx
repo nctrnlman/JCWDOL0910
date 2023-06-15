@@ -27,7 +27,7 @@ const Navbar = () => {
       <SearchInput />
       <div className="flex flex-row gap-2">
         {userToken ? (
-          <UserDropdown user={user} />
+          <UserDropdown key={user.id_user} user={user} />
         ) : (
           <div className="text-slate-100">
             <AuthButtons

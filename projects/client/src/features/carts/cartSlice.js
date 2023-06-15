@@ -1,20 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { toast } from "react-toastify";
-import CustomToast from "../../components/CustomToast/CustomToast";
-import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
-
-// Helper function to calculate the total price
-const calculateTotalPrice = (cartItems) => {
-  return cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-};
-// Helper function to calculate the total quantity
-const calculateTotalQuantity = (cartItems) => {
-  return cartItems.reduce((total, item) => total + item.quantity, 0);
-};
+import {
+  calculateTotalPrice,
+  calculateTotalQuantity,
+} from "./helpers/cartHelpers";
 
 export const productSlice = createSlice({
   name: "cart",
@@ -29,81 +17,43 @@ export const productSlice = createSlice({
       state.totalQuantity = calculateTotalQuantity(action.payload);
       state.totalPrice = calculateTotalPrice(action.payload);
     },
+    increaseQuantity: (state, action) => {
+      const id_product = action.payload;
+      const itemIndex = state.cartItems.findIndex(
+        (item) => item.id_product === id_product
+      );
+      if (itemIndex !== -1) {
+        state.cartItems[itemIndex].quantity += 1;
+        state.totalQuantity = calculateTotalQuantity(state.cartItems);
+        state.totalPrice = calculateTotalPrice(state.cartItems);
+      }
+    },
+    decreaseQuantity: (state, action) => {
+      const id_product = action.payload;
+      const itemIndex = state.cartItems.findIndex(
+        (item) => item.id_product === id_product
+      );
+      if (itemIndex !== -1 && state.cartItems[itemIndex].quantity > 1) {
+        state.cartItems[itemIndex].quantity -= 1;
+        state.totalQuantity = calculateTotalQuantity(state.cartItems);
+        state.totalPrice = calculateTotalPrice(state.cartItems);
+      }
+    },
+    updateCartItemQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const item = state.cartItems.find((item) => item.id_product === id);
+      if (item) {
+        item.quantity = quantity;
+      }
+    },
   },
 });
 
-export const { setCartItems } = productSlice.actions;
+export const {
+  setCartItems,
+  increaseQuantity,
+  decreaseQuantity,
+  updateCartItemQuantity,
+} = productSlice.actions;
 
 export default productSlice.reducer;
-
-export function addToCart(id_product, quantity, cartItems) {
-  return async (dispatch) => {
-    try {
-      const token = localStorage.getItem("user_token");
-      const response = await axios.post(
-        "http://localhost:8000/carts",
-        {
-          id_product,
-          quantity,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { message, product, quantity: updatedQuantity } = response.data;
-
-      // Check if the product already exists in the cart
-      const existingProductIndex = cartItems.findIndex(
-        (item) => item.id_product === product.id_product
-      );
-      if (existingProductIndex !== -1) {
-        // Get the existing cart item
-        const existingCartItem = cartItems[existingProductIndex];
-        if (existingCartItem.quantity === updatedQuantity) {
-          // Quantity is already up-to-date, no need to update Redux
-          console.log("Quantity is already up-to-date");
-          return;
-        }
-        // Create a new object with updated quantity
-        const updatedCartItem = {
-          ...existingCartItem,
-          quantity: updatedQuantity,
-        };
-        // Create a new array with the updated cart item
-        const updatedCartItems = [...cartItems];
-        updatedCartItems[existingProductIndex] = updatedCartItem;
-        dispatch(setCartItems(updatedCartItems));
-      } else {
-        // Add the product to the cart
-        const newCartItem = { ...product, quantity: updatedQuantity };
-        dispatch(setCartItems([...cartItems, newCartItem]));
-      }
-      console.log(message);
-    } catch (error) {
-      console.error("Error adding product to cart: ", error);
-      toast(
-        <CustomToast type="error" message={error.response.data.message} />,
-        CustomToastOptions
-      );
-    }
-  };
-}
-
-export function fetchItemsCart() {
-  return async (dispatch) => {
-    try {
-      const token = localStorage.getItem("user_token");
-      const response = await axios.get("http://localhost:8000/carts/cart", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const { message, cartItems } = response.data;
-      dispatch(setCartItems(cartItems));
-    } catch (error) {
-      console.error("Error fetching cart items: ", error);
-    }
-  };
-}
