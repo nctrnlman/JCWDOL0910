@@ -37,7 +37,7 @@ module.exports = {
 
     const id_user = addUserResult.insertId; // Retrieve the newly generated id_user from the insert operation
 
-    const token = jwt.sign({ id_user }, env.JWT_SECRET, { expiresIn: "1m" });
+    const token = jwt.sign({ id_user }, env.JWT_SECRET, { expiresIn: "1h" });
 
     let mail = {
       from: `Admin <rhazesnote@gmail.com>`,
