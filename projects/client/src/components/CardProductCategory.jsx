@@ -25,7 +25,7 @@ function ProductCategories() {
             {product_categories?.map((product_category) => {
               return (
                 <div
-                  key={product_category.id}
+                  key={product_category.id_category}
                   className="flex flex-col items-center w-[250px] gap-3 hover:cursor-pointer"
                   onClick={() => navigate(`/products/${product_category.name}`)}
                 >

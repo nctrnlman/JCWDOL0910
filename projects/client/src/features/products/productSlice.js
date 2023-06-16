@@ -28,29 +28,31 @@ export default productSlice.reducer;
 
 export function fetchProducts(offset, limit, sort, filter) {
   return async (dispatch) => {
-    let response = await axios.get(
-      "http://localhost:8000/products/all-product",
-      {
-        params: {
-          offset: offset,
-          limit: limit,
-          sort: sort,
-          filter: filter,
-        },
-      }
-    );
-    dispatch(setProducts(response.data));
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/products/all-product",
+        {
+          params: {
+            offset: offset || 0,
+            limit: limit || 10,
+            sort: sort,
+            filter: filter,
+          },
+        }
+      );
+      dispatch(setProducts(response.data));
+    } catch (error) {
+      console.log(error);
+    }
   };
 }
 
 export function getLatestProducts() {
   return async (dispatch) => {
     try {
-      let response = await axios.get(
+      const response = await axios.get(
         "http://localhost:8000/products/latest_products"
       );
-      console.log("latest_products");
-      console.log(response.data, "latest products");
       dispatch(setLatestProducts(response.data));
     } catch (error) {
       console.log(error);
@@ -60,26 +62,35 @@ export function getLatestProducts() {
 
 export function getProductById(id) {
   return async (dispatch) => {
-    let response = await axios.get(
-      `http://localhost:8000/products/product-detail/${id}`
-    );
-    console.log(response.data);
-    dispatch(setProducts(response.data));
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/products/product-detail/${id}`
+      );
+      dispatch(setProducts(response.data));
+    } catch (error) {
+      console.log(error);
+    }
   };
 }
 
 export function getProductByCategory(category, offset, limit, sort, filter) {
   return async (dispatch) => {
-    let response = await axios.get(`http://localhost:8000/products/category`, {
-      params: {
-        offset: offset,
-        limit: limit,
-        sort: sort,
-        filter: filter,
-        category: category,
-      },
-    });
-    console.log(response.data);
-    dispatch(setProductCategory(response.data));
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/products/category`,
+        {
+          params: {
+            offset: offset || 0,
+            limit: limit || 10,
+            sort: sort,
+            filter: filter,
+            category: category,
+          },
+        }
+      );
+      dispatch(setProductCategory(response.data));
+    } catch (error) {
+      console.log(error);
+    }
   };
 }

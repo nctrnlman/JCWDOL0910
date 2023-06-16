@@ -21,7 +21,7 @@ function DisplayProduct() {
   const renderProductList = () => {
     const thisProduct = productList.data;
     return thisProduct?.map((product) => {
-      return <ProductCard product={product} />;
+      return <ProductCard key={product.id_product} product={product} />;
     });
   };
 

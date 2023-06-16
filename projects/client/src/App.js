@@ -98,6 +98,8 @@ function App() {
           <>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password/" element={<ResetPassword />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
           </>
         ) : (
           <>
@@ -110,8 +112,6 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/verification/" element={<Verification />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/forget-password" element={<ForgetPassword />} />
-        <Route path="/reset-password/" element={<ResetPassword />} />
         <Route path="/products" element={<Products />} />
       </Routes>
     </div>

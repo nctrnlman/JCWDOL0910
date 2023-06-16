@@ -90,7 +90,7 @@ const UserDropdown = ({ user }) => {
         )}
       </div>
       {/* profile dropdown */}
-      <button className="dropdown dropdown-bottom dropdown-end dropdown-hover flex">
+      <div className="dropdown dropdown-bottom dropdown-end dropdown-hover flex">
         <label tabIndex={0} className="btn btn-ghost btn-circle avatar ml-1.5">
           <div className="w-10 rounded-full">
             <img
@@ -123,7 +123,7 @@ const UserDropdown = ({ user }) => {
         >
           {user.first_name}
         </div>
-      </button>
+      </div>
     </div>
   );
 };

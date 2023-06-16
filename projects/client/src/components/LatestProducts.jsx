@@ -19,7 +19,10 @@ function LatestProducts() {
       <div className="bg-slate-200 flex flex-wrap justify-center items-center m-10 rounded">
         <div className="overflow-x-auto flex flex-row py-5">
           {latest_products?.map((product) => (
-            <div key={product.id} className="w-full m-2 flex justify-center">
+            <div
+              key={product.id_product}
+              className="w-full m-2 flex justify-center"
+            >
               <NewProduct product={product} />
             </div>
           ))}
