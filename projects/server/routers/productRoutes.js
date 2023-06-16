@@ -6,5 +6,7 @@ const router = express.Router();
 
 router.get("/latest_products", productController.getLatestProducts);
 router.get("/", productController.fetchProducts);
+router.get("/all-product", productController.getAllProducts);
+router.get("/category", productController.getProductByCategory);
 
 module.exports = router;
