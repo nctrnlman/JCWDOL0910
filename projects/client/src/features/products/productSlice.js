@@ -6,6 +6,7 @@ export const productSlice = createSlice({
   initialState: {
     products: [],
     latest_products: [],
+    productCategory: [],
   },
   reducers: {
     setProducts: (state, action) => {
@@ -14,22 +15,31 @@ export const productSlice = createSlice({
     setLatestProducts: (state, action) => {
       state.latest_products = action.payload;
     },
+    setProductCategory: (state, action) => {
+      state.productCategory = action.payload;
+    },
   },
 });
 
-export const { setProducts, setLatestProducts } = productSlice.actions;
+export const { setProducts, setLatestProducts, setProductCategory } =
+  productSlice.actions;
 
 export default productSlice.reducer;
 
-export function fetchProducts() {
+export function fetchProducts(offset, limit, sort, filter) {
   return async (dispatch) => {
-    try {
-      const response = await axios.get("http://localhost:8000/products/");
-      dispatch(setProducts(response.data));
-      console.log(response, "productSlice");
-    } catch (error) {
-      console.error(error);
-    }
+    let response = await axios.get(
+      "http://localhost:8000/products/all-product",
+      {
+        params: {
+          offset: offset,
+          limit: limit,
+          sort: sort,
+          filter: filter,
+        },
+      }
+    );
+    dispatch(setProducts(response.data));
   };
 }
 
@@ -45,5 +55,31 @@ export function getLatestProducts() {
     } catch (error) {
       console.log(error);
     }
+  };
+}
+
+export function getProductById(id) {
+  return async (dispatch) => {
+    let response = await axios.get(
+      `http://localhost:8000/products/product-detail/${id}`
+    );
+    console.log(response.data);
+    dispatch(setProducts(response.data));
+  };
+}
+
+export function getProductByCategory(category, offset, limit, sort, filter) {
+  return async (dispatch) => {
+    let response = await axios.get(`http://localhost:8000/products/category`, {
+      params: {
+        offset: offset,
+        limit: limit,
+        sort: sort,
+        filter: filter,
+        category: category,
+      },
+    });
+    console.log(response.data);
+    dispatch(setProductCategory(response.data));
   };
 }
