@@ -78,17 +78,14 @@ module.exports = {
     try {
       const { offset, limit, sort, filter, category } = req.query;
 
-      let countProduct = `SELECT COUNT(*) as total FROM products p
-      JOIN categories c on p.id_category = c.id_category
-      WHERE c.name = "${category}"`;
+      let countProduct = `SELECT COUNT(DISTINCT p.id_product) as total FROM products p
+    JOIN categories c on p.id_category = c.id_category
+    WHERE c.name = "${category}"`;
 
-      // console.log(countProduct);
-
-      let productsQuery = `SELECT p.id_product,p.id_category,c.name as category,p.name as name,p.price,p.description,s.total_stock,p.image_url FROM products p
-      JOIN categories c on p.id_category = c.id_category
-      JOIN stocks s on p.id_product = s.id_product
-      WHERE c.name = "${category}"`;
-      // console.log(productsQuery);
+      let productsQuery = `SELECT p.id_product, p.id_category, c.name as category, p.name as name, p.price, p.description, SUM(s.total_stock) as total_stock, p.image_url FROM products p
+    JOIN categories c on p.id_category = c.id_category
+    JOIN stocks s on p.id_product = s.id_product
+    WHERE c.name = "${category}"`;
 
       if (filter) {
         productsQuery += ` AND p.name LIKE '%${filter}%'`;
@@ -96,12 +93,15 @@ module.exports = {
       }
 
       if (sort === "asc") {
-        productsQuery += ` ORDER BY p.price ASC`;
+        productsQuery += ` GROUP BY p.id_product, p.id_category, c.name, p.name, p.price, p.description, p.image_url ORDER BY p.price ASC`;
       } else if (sort === "desc") {
-        productsQuery += ` ORDER BY p.price DESC`;
+        productsQuery += ` GROUP BY p.id_product, p.id_category, c.name, p.name, p.price, p.description, p.image_url ORDER BY p.price DESC`;
+      } else {
+        productsQuery += ` GROUP BY p.id_product, p.id_category, c.name, p.name, p.price, p.description, p.image_url`;
       }
-      // console.log(countProduct, "ini category");
+
       productsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
+
       const products = await query(productsQuery);
       const totalItems = await query(countProduct);
 

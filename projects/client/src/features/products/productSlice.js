@@ -4,7 +4,6 @@ import axios from "axios";
 export const productSlice = createSlice({
   name: "product",
   initialState: {
-    // productList: [],
     products: [],
     latest_products: [],
     productCategory: [],
@@ -12,9 +11,6 @@ export const productSlice = createSlice({
   reducers: {
     setProducts: (state, action) => {
       state.products = action.payload;
-    },
-    setProductList: (state, action) => {
-      state.productList = action.payload;
     },
     setLatestProducts: (state, action) => {
       state.latest_products = action.payload;
@@ -25,26 +21,10 @@ export const productSlice = createSlice({
   },
 });
 
-export const {
-  setProducts,
-  setLatestProducts,
-  setProductCategory,
-  setProductList,
-} = productSlice.actions;
+export const { setProducts, setLatestProducts, setProductCategory } =
+  productSlice.actions;
 
 export default productSlice.reducer;
-
-// export function fetchProducts() {
-//   return async (dispatch) => {
-//     try {
-//       const response = await axios.get("http://localhost:8000/products/");
-//       dispatch(setProducts(response.data));
-//       console.log(response, "productSlice");
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-// }
 
 export function fetchProducts(offset, limit, sort, filter) {
   return async (dispatch) => {
