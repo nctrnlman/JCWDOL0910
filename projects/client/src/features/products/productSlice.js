@@ -4,12 +4,12 @@ import axios from "axios";
 export const productSlice = createSlice({
   name: "products",
   initialState: {
-    product: [],
+    products: [],
     latest_products: [],
     productCategory: [],
   },
   reducers: {
-    setProduct: (state, action) => {
+    setProducts: (state, action) => {
       state.products = action.payload;
     },
     setLatestProducts: (state, action) => {
