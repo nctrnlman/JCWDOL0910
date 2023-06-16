@@ -2,14 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const productSlice = createSlice({
-  name: "product",
+  name: "products",
   initialState: {
-    products: [],
+    product: [],
     latest_products: [],
     productCategory: [],
   },
   reducers: {
-    setProducts: (state, action) => {
+    setProduct: (state, action) => {
       state.products = action.payload;
     },
     setLatestProducts: (state, action) => {

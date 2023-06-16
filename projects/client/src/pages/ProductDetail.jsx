@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductById } from "../features/products/productSlice";
+import { useParams } from "react-router-dom";
 import { BiCart } from "react-icons/bi";
-
+import { getProductById } from "../features/products/productSlice";
 function ProductDetail() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector((state) => state.products.products);
-  console.log({ id });
 
   useEffect(() => {
     dispatch(getProductById(id));
@@ -35,7 +33,7 @@ function ProductDetail() {
           <p className="whitespace-pre-wrap text-sm italic py-2 lg:text-base">
             {product?.description}
           </p>
-          <p className="text-gray-500 mt-2 ">Stock : {product?.stock}</p>
+          <p className="text-gray-500 mt-2 ">Stock : {product?.total_stock}</p>
           <button className="btn btn-neutral w-20 mt-4 lg:w-26 ">
             <BiCart className="w-6 h-6 lg:w-8 lg:h-8" />
           </button>
