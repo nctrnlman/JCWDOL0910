@@ -44,10 +44,13 @@ module.exports = {
     try {
       const idProduct = req.params.id;
 
-      const productById =
-        await query(`SELECT p.id_product,p.id_category,c.name as category,p.name as product_name,p.price,p.description,p.stock,p.image_url FROM products p
-      JOIN categories c on p.id_category = c.id_category
-      WHERE p.id_product = ${db.escape(idProduct)};`);
+      const productQuery = `SELECT p.id_product, p.id_category, c.name as category, p.name as product_name, p.price, p.description, SUM(s.total_stock) as total_stock, p.image_url 
+                          FROM products p
+                          JOIN categories c ON p.id_category = c.id_category
+                          JOIN stocks s ON p.id_product = s.id_product
+                          WHERE p.id_product = ${db.escape(idProduct)};`;
+
+      const productById = await query(productQuery);
 
       return res.status(200).send(productById[0]);
     } catch (error) {
