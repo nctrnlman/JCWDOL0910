@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { BiCart } from "react-icons/bi";
 import { getProductById } from "../features/products/productSlice";
+import AddToCartButton from "../components/Product/AddToCartButton";
 function ProductDetail() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -13,11 +14,11 @@ function ProductDetail() {
   }, []);
 
   return (
-    <div className="hero min-h-screen bg-base-200 overflow-auto">
-      <div className="hero-content flex flex-col lg:flex-row items-center lg:gap-6 lg:items-start">
+    <div className="hero min-h-screen bg-base-200 overflow-auto pt-16 lg:pt-20">
+      <div className="hero-content flex flex-col lg:flex-row items-center lg:gap-6 lg:items-start lg:h-full">
         <img
           src={product?.image_url}
-          className="max-w-[340px] lg:max-w-md rounded-lg shadow-2xl mb-4 lg:mb-0"
+          className="max-w-[340px] w-3/4 lg:max-w-md rounded-lg shadow-2xl mb-4 lg:mb-0 h-3/4"
           alt="Product Image"
         />
         <div className="flex flex-col max-w-md lg:max-w-[500px]  ">
@@ -34,9 +35,7 @@ function ProductDetail() {
             {product?.description}
           </p>
           <p className="text-gray-500 mt-2 ">Stock : {product?.total_stock}</p>
-          <button className="btn btn-neutral w-20 mt-4 lg:w-26 ">
-            <BiCart className="w-6 h-6 lg:w-8 lg:h-8" />
-          </button>
+          <AddToCartButton product={product} quantity={1} />
         </div>
       </div>
     </div>

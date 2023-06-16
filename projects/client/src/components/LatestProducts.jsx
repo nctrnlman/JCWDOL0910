@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getLatestProducts } from "../features/products/productSlice";
-import NewProduct from "./NewProducts";
+import ProductCard from "./Product/ProductCard";
 
 function LatestProducts() {
   const latest_products = useSelector(
@@ -23,7 +23,7 @@ function LatestProducts() {
               key={product.id_product}
               className="w-full m-2 flex justify-center"
             >
-              <NewProduct product={product} />
+              <ProductCard product={product} />
             </div>
           ))}
         </div>

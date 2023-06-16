@@ -1,8 +1,9 @@
 import React from "react";
-import AddToCartButton from "./Product/AddToCartButton";
-import BuyNowButton from "./Cart/BuyNowButton";
+import SeeDetailButton from "./SeeDetailButton";
+import AddToCartButton from "./AddToCartButton";
+function ProductCard(props) {
+  const { product } = props;
 
-const NewProduct = ({ product }) => {
   return (
     <div className="card bg-white w-[200px] lg:w-[220px] h-auto m-2 rounded-lg shadow-lg">
       <div className="top">
@@ -22,7 +23,7 @@ const NewProduct = ({ product }) => {
         </div>
         <div className="flex items-center my-2 gap-3">
           <div>
-            <BuyNowButton />
+            <SeeDetailButton productId={product.id_product} />
           </div>
           <div>
             <AddToCartButton product={product} quantity={1} />
@@ -31,6 +32,6 @@ const NewProduct = ({ product }) => {
       </div>
     </div>
   );
-};
+}
 
-export default NewProduct;
+export default ProductCard;

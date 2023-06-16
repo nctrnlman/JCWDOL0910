@@ -2,7 +2,7 @@ import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "./features/users/userSlice";
 import Profiling from "./pages/Profiling";
 import Cart from "./pages/Cart";
@@ -17,6 +17,7 @@ import { fetchItemsCart } from "./features/carts/cartActions";
 import ProductCategory from "./pages/ProductCategory";
 import ProductDetail from "./pages/ProductDetail";
 import Products from "./pages/Products";
+import Navbar from "./components/Navbar/Navbar";
 
 function App() {
   const location = useLocation();
@@ -93,6 +94,7 @@ function App() {
 
   return (
     <div>
+      <Navbar />
       <Routes>
         {userToken === null ? (
           <>
