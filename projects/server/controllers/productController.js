@@ -84,8 +84,9 @@ module.exports = {
 
       // console.log(countProduct);
 
-      let productsQuery = `SELECT p.id_product,p.id_category,c.name as category,p.name as name,p.price,p.description,p.stock,p.image_url FROM products p
+      let productsQuery = `SELECT p.id_product,p.id_category,c.name as category,p.name as name,p.price,p.description,s.total_stock,p.image_url FROM products p
       JOIN categories c on p.id_category = c.id_category
+      JOIN stocks s on p.id_product = s.id_product
       WHERE c.name = "${category}"`;
       // console.log(productsQuery);
 

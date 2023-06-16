@@ -7,7 +7,7 @@ import { BiCart } from "react-icons/bi";
 function ProductDetail() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const product = useSelector((state) => state.products.product);
+  const product = useSelector((state) => state.products.products);
   console.log({ id });
 
   useEffect(() => {

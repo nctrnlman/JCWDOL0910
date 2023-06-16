@@ -12,7 +12,7 @@ function Products() {
   const [open, setOpen] = useState(false);
   const [sort, setSort] = useState("");
   const [filter, setFilter] = useState("");
-  const productList = useSelector((state) => state.products.productList);
+  const productList = useSelector((state) => state.products.products);
 
   const handleSeemore = () => {
     setOpen(!open);

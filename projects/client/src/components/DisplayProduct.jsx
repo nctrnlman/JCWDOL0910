@@ -11,7 +11,7 @@ function DisplayProduct() {
   const [filter, setFilter] = useState("");
   const [offset, setOffset] = useState(0);
   const [page, setPage] = useState(1);
-  const productList = useSelector((state) => state.products.productList);
+  const productList = useSelector((state) => state.products.products);
 
   const handleSeemore = () => {
     setOpen(!open);
