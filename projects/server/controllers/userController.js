@@ -5,7 +5,7 @@ const { db, query } = require("../database");
 const nodemailer = require("../middleware/nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { getUserIdFromToken } = require("../helper/jwt-payload");
+const { getIdFromToken } = require("../helper/jwt-payload");
 const { generateOTP } = require("../helper/authHelper");
 const {
   sendVerificationEmail,
@@ -104,7 +104,7 @@ module.exports = {
   verify: async (req, res) => {
     try {
       const { otp, password, confirmPassword } = req.body;
-      const userId = getUserIdFromToken(req, res);
+      const userId = getIdFromToken(req, res);
 
       if (password !== confirmPassword) {
         return res.status(400).send({ message: "Password not same" });
@@ -165,7 +165,7 @@ module.exports = {
     try {
       const { newPassword, confirmPassword } = req.body;
 
-      const userId = getUserIdFromToken(req, res);
+      const userId = getIdFromToken(req, res);
 
       if (newPassword !== confirmPassword) {
         return res

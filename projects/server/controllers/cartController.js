@@ -1,10 +1,10 @@
 const { db, query } = require("../database");
-const { getUserIdFromToken } = require("../helper/jwt-payload");
+const { getIdFromToken } = require("../helper/jwt-payload");
 
 module.exports = {
   addProductToCart: async (req, res) => {
     const { id_product, quantity } = req.body;
-    const id_user = getUserIdFromToken(req, res);
+    const id_user = getIdFromToken(req, res);
     try {
       // Check if the product exists and has sufficient stock
       const checkStockQuery = `
@@ -104,7 +104,7 @@ module.exports = {
     }
   },
   fetchCartItems: async (req, res) => {
-    const id_user = getUserIdFromToken(req, res);
+    const id_user = getIdFromToken(req, res);
     try {
       const fetchCartItemsQuery = `
       SELECT oi.quantity, p.* 
@@ -128,7 +128,7 @@ module.exports = {
 
   updateQuantity: async (req, res) => {
     const { id_product, action } = req.query;
-    const id_user = getUserIdFromToken(req, res);
+    const id_user = getIdFromToken(req, res);
     try {
       let updateQuantityQuery;
 
@@ -170,7 +170,7 @@ module.exports = {
 
   deleteProductFromCart: async (req, res) => {
     const { id_product } = req.query;
-    const id_user = getUserIdFromToken(req, res);
+    const id_user = getIdFromToken(req, res);
     try {
       const deleteProductQuery = `
       DELETE FROM order_items

@@ -1,12 +1,16 @@
-const userController = require("./userRouter");
+const userRoutes = require("./userRouter");
 const categoryRoutes = require("./categoryRoutes");
 const productRoutes = require("./productRoutes");
 const cartRoutes = require("./cartRoutes");
 const userProfileRoutes = require("./userProfileRoutes");
+const adminRoutes = require("./adminRoutes");
+const warehouseRoutes = require("./warehouseRoutes");
 module.exports = {
-  userController,
+  userRoutes,
   categoryRoutes,
   productRoutes,
   cartRoutes,
   userProfileRoutes,
+  adminRoutes,
+  warehouseRoutes,
 };
