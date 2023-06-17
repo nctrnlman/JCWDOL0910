@@ -23,22 +23,24 @@ module.exports = {
         return;
       }
 
-      // Check if the product already exists in the cart_items table
+      // Check if the product already exists in the order_items table for the user
       const checkProductQuery = `
       SELECT * 
-      FROM cart_items 
+      FROM order_items 
       WHERE id_user = ${db.escape(id_user)} 
       AND id_product = ${db.escape(id_product)}
+      AND id_order IS NULL
     `;
       const existingProduct = await query(checkProductQuery);
 
       if (existingProduct.length > 0) {
-        // Update the quantity of the existing product
+        // Update the quantity of the existing product for the specific user
         const updateQuantityQuery = `
-        UPDATE cart_items 
+        UPDATE order_items 
         SET quantity = quantity + ${db.escape(quantity)} 
         WHERE id_user = ${db.escape(id_user)} 
         AND id_product = ${db.escape(id_product)}
+        AND id_order IS NULL
       `;
         await query(updateQuantityQuery);
 
@@ -52,12 +54,13 @@ module.exports = {
       `;
         const product = await query(getProductQuery);
 
-        // Get the updated quantity from cart_items
+        // Get the updated quantity from order_items
         const getQuantityQuery = `
         SELECT quantity 
-        FROM cart_items 
+        FROM order_items 
         WHERE id_user = ${db.escape(id_user)} 
         AND id_product = ${db.escape(id_product)}
+        AND id_order IS NULL
       `;
         const updatedQuantity = await query(getQuantityQuery);
         const quantityInCart = updatedQuantity[0].quantity;
@@ -65,15 +68,15 @@ module.exports = {
         res.status(200).send({
           message: "Product quantity updated in the cart",
           quantity: quantityInCart,
-          product: product[0], // Assuming the query returns a single product
+          product: product[0],
         });
       } else {
-        // Insert the product as a new item in the cart_items table
+        // Insert the product as a new item in the order_items table for the specific user
         const addProductToCartQuery = `
-        INSERT INTO cart_items (id_user, id_product, quantity, created_at) 
+        INSERT INTO order_items (id_user, id_product, quantity) 
         VALUES (${db.escape(id_user)}, ${db.escape(id_product)}, ${db.escape(
           quantity
-        )}, NOW())
+        )})
       `;
         await query(addProductToCartQuery);
 
@@ -90,7 +93,7 @@ module.exports = {
         res.status(200).send({
           message: "Product added to the cart",
           quantity: quantity,
-          product: product[0], // Assuming the query returns a single product
+          product: product[0],
         });
       }
     } catch (error) {
@@ -100,16 +103,16 @@ module.exports = {
       });
     }
   },
-
   fetchCartItems: async (req, res) => {
     const id_user = getUserIdFromToken(req, res);
     try {
       const fetchCartItemsQuery = `
-        SELECT ci.quantity, p.* 
-        FROM cart_items ci
-        INNER JOIN products p ON ci.id_product = p.id_product
-        WHERE ci.id_user = ${db.escape(id_user)}
-      `;
+      SELECT oi.quantity, p.* 
+      FROM order_items oi
+      INNER JOIN products p ON oi.id_product = p.id_product
+      WHERE oi.id_user = ${db.escape(id_user)}
+      AND oi.id_order IS NULL
+    `;
       const cartItems = await query(fetchCartItemsQuery);
       res.status(200).send({
         message: "Cart items fetched successfully",
@@ -131,18 +134,20 @@ module.exports = {
 
       if (action === "increase") {
         updateQuantityQuery = `
-          UPDATE cart_items
-          SET quantity = quantity + 1
-          WHERE id_user = ${db.escape(id_user)}
-          AND id_product = ${db.escape(id_product)}
-        `;
+        UPDATE order_items
+        SET quantity = quantity + 1
+        WHERE id_user = ${db.escape(id_user)}
+        AND id_product = ${db.escape(id_product)}
+        AND id_order IS NULL
+      `;
       } else if (action === "decrease") {
         updateQuantityQuery = `
-          UPDATE cart_items
-          SET quantity = quantity - 1
-          WHERE id_user = ${db.escape(id_user)}
-          AND id_product = ${db.escape(id_product)}
-        `;
+        UPDATE order_items
+        SET quantity = quantity - 1
+        WHERE id_user = ${db.escape(id_user)}
+        AND id_product = ${db.escape(id_product)}
+        AND id_order IS NULL
+      `;
       } else {
         res.status(400).send({
           error: "Invalid action",
@@ -168,10 +173,11 @@ module.exports = {
     const id_user = getUserIdFromToken(req, res);
     try {
       const deleteProductQuery = `
-        DELETE FROM cart_items
-        WHERE id_user = ${db.escape(id_user)}
-        AND id_product = ${db.escape(id_product)}
-      `;
+      DELETE FROM order_items
+      WHERE id_user = ${db.escape(id_user)}
+      AND id_product = ${db.escape(id_product)}
+      AND id_order IS NULL
+    `;
 
       await query(deleteProductQuery);
 

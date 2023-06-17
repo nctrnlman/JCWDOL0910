@@ -3,6 +3,12 @@ import SeeDetailButton from "./SeeDetailButton";
 import AddToCartButton from "./AddToCartButton";
 function ProductCard(props) {
   const { product } = props;
+  const formattedPrice = product.price.toLocaleString("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
 
   return (
     <div className="card bg-white w-[200px] lg:w-[220px] h-auto m-2 rounded-lg shadow-lg">
@@ -19,7 +25,7 @@ function ProductCard(props) {
           {product.description}
         </div>
         <div className="pricing flex items-center">
-          <div className="price">{product.price}</div>
+          <div className="price">{formattedPrice}</div>
         </div>
         <div className="flex items-center my-2 gap-3">
           <div>
