@@ -11,6 +11,9 @@ function Profiling() {
         <div className="col-start-2 col-span-4">
           <FormProfile />
         </div>
+        <div className="col-start-2 col-span-4">
+          <AddressCard />
+        </div>
         {/* <AddressCard /> */}
       </div>
 
