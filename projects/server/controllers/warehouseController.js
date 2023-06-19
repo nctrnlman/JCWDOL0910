@@ -1,14 +1,17 @@
 const { db, query } = require("../database");
-const { getCoordinates } = require("../helper/coordinatesHelper");
+const {
+  getCoordinates,
+  checkProvinceAndCity,
+} = require("../helper/setAddressHelper");
 require("dotenv").config({
   path: ".env.local",
 });
-const env = process.env;
 
 module.exports = {
   createWarehouse: async (req, res) => {
     const { name, address, district, city, province, postal_code } = req.body;
     try {
+      await checkProvinceAndCity(province, city);
       const checkCityQuery = `
       SELECT * FROM warehouses WHERE city = ${db.escape(city)}
     `;
