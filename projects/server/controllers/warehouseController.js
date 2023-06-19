@@ -150,4 +150,19 @@ module.exports = {
       });
     }
   },
+  fetchWarehouseList: async (req, res) => {
+    try {
+      const fetchWarehouseListQuery = `
+        SELECT * FROM warehouses
+      `;
+      const warehouseList = await query(fetchWarehouseListQuery);
+
+      res.status(200).send(warehouseList);
+    } catch (error) {
+      console.error("Error fetching warehouse list: ", error);
+      res.status(500).send({
+        error: "An error occurred while fetching the warehouse list",
+      });
+    }
+  },
 };
