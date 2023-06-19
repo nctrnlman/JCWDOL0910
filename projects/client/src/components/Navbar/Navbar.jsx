@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import SearchInput from "./SearchInput";
 import UserDropdown from "./UserDropDown";
 import AuthButtons from "./AuthButtons";
-
+import { BiHomeAlt2 } from "react-icons/bi";
 const Navbar = () => {
   const userToken = localStorage.getItem("user_token");
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -16,6 +16,12 @@ const Navbar = () => {
 
   return (
     <div className="navbar bg-gray-900 shadow-md fixed top-0 z-50 w-screen lg:w-full justify-between">
+      <div className="flex">
+        <a className="text-white text-3xl md:hidden" href="/">
+          <BiHomeAlt2 />
+        </a>
+      </div>
+
       <div className="hidden md:flex">
         <a
           href="/"
