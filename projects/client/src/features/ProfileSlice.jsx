@@ -40,25 +40,3 @@ export function getProfile() {
     }
 }
 
-export function getAddress() {
-    return async (dispatch) => {
-        // console.log(localStorage.user_token)
-        try {
-            const token = localStorage.user_token;
-            if (token) {
-                console.log('hm')
-                let response = await Axios.get(
-                    `http://localhost:8000/user_profile/get-address`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                console.log(response)
-                dispatch(setProfile(response.data[0]));
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-}
