@@ -4,7 +4,7 @@ import {
   calculateTotalQuantity,
 } from "./helpers/cartHelpers";
 
-export const productSlice = createSlice({
+export const cartSlice = createSlice({
   name: "cart",
   initialState: {
     cartItems: [],
@@ -54,6 +54,6 @@ export const {
   increaseQuantity,
   decreaseQuantity,
   updateCartItemQuantity,
-} = productSlice.actions;
+} = cartSlice.actions;
 
-export default productSlice.reducer;
+export default cartSlice.reducer;

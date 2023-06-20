@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getLatestProducts } from "../features/products/productSlice";
-import NewProduct from "./NewProducts";
+import ProductCard from "./Product/ProductCard";
 
 function LatestProducts() {
   const latest_products = useSelector(
@@ -19,8 +19,11 @@ function LatestProducts() {
       <div className="bg-slate-200 flex flex-wrap justify-center items-center m-10 rounded">
         <div className="overflow-x-auto flex flex-row py-5">
           {latest_products?.map((product) => (
-            <div key={product.id} className="w-full m-2 flex justify-center">
-              <NewProduct product={product} />
+            <div
+              key={product.id_product}
+              className="w-full m-2 flex justify-center"
+            >
+              <ProductCard product={product} />
             </div>
           ))}
         </div>

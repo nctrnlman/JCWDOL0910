@@ -5,6 +5,7 @@ import productSlice from "../features/products/productSlice";
 import cartSlice from "../features/carts/cartSlice";
 import ProfileReducer from "../features/ProfileSlice";
 import AddressesReducer from "../features/UserAddress";
+import warehouseSlice from "../features/warehouses/warehouseSlice";
 
 export default configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export default configureStore({
     carts: cartSlice,
     profile: ProfileReducer,
     addresses: AddressesReducer,
+    warehouses: warehouseSlice,
   },
 });

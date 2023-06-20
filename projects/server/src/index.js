@@ -4,7 +4,13 @@ require("dotenv").config({
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
-const { userController, transactionRoutes, cartRoutes } = require("../routers");
+const {
+  userRoutes,
+  cartRoutes,
+  adminRoutes,
+  warehouseRoutes,
+  rajaOngkirRoutes,
+} = require("../routers/");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
 const { productRoutes } = require("../routers");
@@ -25,12 +31,14 @@ app.use(express.json());
 
 // ===========================
 // NOTE : Add your routes here
-app.use("/users", userController);
+app.use("/users", userRoutes);
 app.use("/user_profile", userProfileRoutes);
 app.use("/product_categories", categoryRoutes);
 app.use("/products", productRoutes);
-// app.use("/transactions", transactionRoutes);
 app.use("/carts", cartRoutes);
+app.use("/admins", adminRoutes);
+app.use("/warehouses", warehouseRoutes);
+app.use("/rajaongkir", rajaOngkirRoutes); // Add the rajaOngkirRoutes here
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

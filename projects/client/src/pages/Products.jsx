@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchProducts } from "../features/products/productSlice";
-import CardProduct from "../components/ProductCard";
+import ProductCard from "../components/Product/ProductCard";
 
 function Products() {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ function Products() {
   const renderProductList = () => {
     const thisProduct = productList.data;
     return thisProduct?.map((product) => {
-      return <CardProduct product={product} />;
+      return <ProductCard product={product} />;
     });
   };
 

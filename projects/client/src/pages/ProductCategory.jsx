@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProductByCategory } from "../features/products/productSlice";
-import CardProduct from "../components/ProductCard";
+import ProductCard from "../components/Product/ProductCard";
 
 function ProductCategory() {
   const { category } = useParams();
@@ -37,7 +37,7 @@ function ProductCategory() {
   const renderProductList = () => {
     const thisProduct = productCategory.data;
     return thisProduct?.map((product) => {
-      return <CardProduct product={product} />;
+      return <ProductCard product={product} />;
     });
   };
 

@@ -6,7 +6,7 @@ const SearchInput = () => {
       <input
         type="text"
         placeholder="Search"
-        className="input input-bordered w-52 sm:w-96 lg:w-[600px] xl:w-[800px]"
+        className="input input-bordered w-40 sm:w-96 lg:w-[600px] xl:w-[800px]"
       />
     </div>
   );
