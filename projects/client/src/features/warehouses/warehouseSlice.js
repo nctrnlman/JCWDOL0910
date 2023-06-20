@@ -85,3 +85,27 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
     }
   };
 }
+
+// Create warehouse action
+export function createWarehouse(warehouseData) {
+  return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/warehouses",
+        warehouseData,
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
+      );
+      console.log(response.data.message);
+      dispatch(fetchWarehouses());
+      toast(
+        <CustomToast type="success" message={response.data.message} />,
+        CustomToastOptions
+      );
+    } catch (error) {
+      console.error("Error creating warehouse:", error);
+    }
+  };
+}
