@@ -97,19 +97,6 @@ const CreateModalWarehouse = ({
           </div>
           <div className="form-control">
             <label className="label">
-              <span className="label-text">District:</span>
-            </label>
-            <input
-              type="text"
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-              className="input input-bordered"
-              placeholder="Enter warehouse district"
-              required
-            />
-          </div>
-          <div className="form-control">
-            <label className="label">
               <span className="label-text">Province:</span>
             </label>
             <select
@@ -147,6 +134,19 @@ const CreateModalWarehouse = ({
                 </option>
               ))}
             </select>
+          </div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">District:</span>
+            </label>
+            <input
+              type="text"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+              className="input input-bordered"
+              placeholder="Enter warehouse district"
+              required
+            />
           </div>
           <div className="form-control">
             <label className="label">
