@@ -6,6 +6,7 @@ const userProfileRoutes = require("./userProfileRoutes");
 const adminRoutes = require("./adminRoutes");
 const warehouseRoutes = require("./warehouseRoutes");
 const rajaOngkirRoutes = require("./rajaOngkirRoutes");
+const adminProductRoutes = require("./adminProductRoutes");
 module.exports = {
   userRoutes,
   categoryRoutes,
@@ -15,4 +16,5 @@ module.exports = {
   adminRoutes,
   warehouseRoutes,
   rajaOngkirRoutes,
+  adminProductRoutes,
 };

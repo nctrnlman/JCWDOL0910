@@ -10,6 +10,7 @@ const {
   adminRoutes,
   warehouseRoutes,
   rajaOngkirRoutes,
+  adminProductRoutes,
 } = require("../routers/");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
@@ -32,13 +33,14 @@ app.use(express.json());
 // ===========================
 // NOTE : Add your routes here
 app.use("/users", userRoutes);
-app.use("/user_profile", userProfileRoutes);
-app.use("/product_categories", categoryRoutes);
+app.use("/user-profile", userProfileRoutes);
+app.use("/categories", categoryRoutes);
 app.use("/products", productRoutes);
 app.use("/carts", cartRoutes);
 app.use("/admins", adminRoutes);
 app.use("/warehouses", warehouseRoutes);
-app.use("/rajaongkir", rajaOngkirRoutes); // Add the rajaOngkirRoutes here
+app.use("/rajaongkir", rajaOngkirRoutes);
+app.use("/admins/products", adminProductRoutes);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

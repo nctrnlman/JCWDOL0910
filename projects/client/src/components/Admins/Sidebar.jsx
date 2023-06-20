@@ -24,12 +24,15 @@ function Sidebar() {
             Products
           </button>
           <button
-            className={`btn btn-md btn-ghost ${isActive("/admin-warehouses")}`}
+            className={`btn btn-md btn-ghost  ${isActive("/admin-warehouses")}`}
             onClick={() => navigate("/admin-warehouses")}
           >
             Warehouse
           </button>
         </div>
+      </div>
+      <div className="flex justify-center items-center p-10">
+        <button className="btn btn-md btn-ghost w-[270px]">Logout</button>
       </div>
     </div>
   );
