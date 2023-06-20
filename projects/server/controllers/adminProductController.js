@@ -18,9 +18,10 @@ module.exports = {
       const offset = (page - 1) * itemsPerPage;
 
       const productsQuery = `
-        SELECT p.*, SUM(s.total_stock) AS total_stock
+         SELECT p.*, c.name AS category_name, SUM(s.total_stock) AS total_stock
         FROM products p
         INNER JOIN stocks s ON p.id_product = s.id_product
+        INNER JOIN categories c ON p.id_category = c.id_category
         GROUP BY p.id_product
         LIMIT ${itemsPerPage}
         OFFSET ${offset};

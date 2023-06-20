@@ -1,8 +1,14 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import SeeDetailButton from "./SeeDetailButton";
 import AddToCartButton from "./AddToCartButton";
+
 function ProductCard(props) {
-  const { product } = props;
+  const { product, openDeleteModal } = props;
+  const location = useLocation();
+  const isAdminRoute = location.pathname === "/admin-products";
+
   const formattedPrice = product.price.toLocaleString("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -27,13 +33,33 @@ function ProductCard(props) {
         <div className="pricing flex items-center">
           <div className="price">{formattedPrice}</div>
         </div>
+        <div>Total Stock: {product.total_stock}</div>
         <div className="flex items-center my-2 gap-3">
-          <div>
-            <SeeDetailButton productId={product.id_product} />
-          </div>
-          <div>
-            <AddToCartButton product={product} quantity={1} />
-          </div>
+          {isAdminRoute ? (
+            <div className="flex items-center my-2 gap-3">
+              <div className="gap-5 flex flex-row ">
+                <a className="btn btn-xs w-12 lg:w-3/4 btn-info">Edit</a>
+                <a
+                  className="btn btn-xs w-12 lg:w-3/4 btn-error"
+                  href="#delete_modal"
+                  onClick={() =>
+                    openDeleteModal(product.id_product, product.name)
+                  }
+                >
+                  Delete
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center my-2 gap-3">
+              <div>
+                <SeeDetailButton productId={product.id_product} />
+              </div>
+              <div>
+                <AddToCartButton product={product} quantity={1} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

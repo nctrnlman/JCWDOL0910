@@ -55,7 +55,7 @@ const WarehousesContent = () => {
       <div className="flex flex-col gap-12 lg:gap-0 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md">
         <div className="lg:flex lg:justify-start">
           <a
-            className="absolute top-10 right-15 btn lg:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2 mt-5"
+            className="absolute right-15 btn lg:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2 mt-5"
             href="#create_modal"
             onClick={() => setCreateModalOpen(true)}
           >

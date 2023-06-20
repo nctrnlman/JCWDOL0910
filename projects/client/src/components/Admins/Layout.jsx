@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
         <div className="absolute">
           <Breadcrumbs />
         </div>
-        <div className="bg-base-300">{children}</div>
+        <div className="bg-base-300 pl-2">{children}</div>
       </div>
     </div>
   );
