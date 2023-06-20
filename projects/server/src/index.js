@@ -9,6 +9,7 @@ const {
   cartRoutes,
   adminRoutes,
   warehouseRoutes,
+  rajaOngkirRoutes,
 } = require("../routers/");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
@@ -37,6 +38,7 @@ app.use("/products", productRoutes);
 app.use("/carts", cartRoutes);
 app.use("/admins", adminRoutes);
 app.use("/warehouses", warehouseRoutes);
+app.use("/rajaongkir", rajaOngkirRoutes); // Add the rajaOngkirRoutes here
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

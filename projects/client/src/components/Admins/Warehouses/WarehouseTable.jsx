@@ -1,7 +1,12 @@
 import React from "react";
 import WarehouseTableBody from "./WarehouseTableBody";
 
-const WarehouseTable = ({ warehouses, navigate, openDeleteModal }) => {
+const WarehouseTable = ({
+  warehouses,
+  navigate,
+  openDeleteModal,
+  openEditModal,
+}) => {
   return (
     <table className="table table-zebra table-pin-rows text-black bg-primary h-full max-h-fit lg:h-full lg:max-h-fit overflow-y-auto w-full lg:w-screen lg:max-w-screen-xl">
       {/* head */}
@@ -13,6 +18,7 @@ const WarehouseTable = ({ warehouses, navigate, openDeleteModal }) => {
           <th>District</th>
           <th>City</th>
           <th>Province</th>
+          <th>Postal Code</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -20,6 +26,7 @@ const WarehouseTable = ({ warehouses, navigate, openDeleteModal }) => {
       <WarehouseTableBody
         warehouses={warehouses}
         navigate={navigate}
+        openEditModal={openEditModal}
         openDeleteModal={openDeleteModal}
       />
       <tfoot className="sticky bottom-0">
@@ -30,6 +37,7 @@ const WarehouseTable = ({ warehouses, navigate, openDeleteModal }) => {
           <th>District</th>
           <th>City</th>
           <th>Province</th>
+          <th>Postal Code</th>
           <th>Actions</th>
         </tr>
       </tfoot>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const WarehouseTableBody = ({ warehouses, navigate, openDeleteModal }) => {
+const WarehouseTableBody = ({ warehouses, openEditModal, openDeleteModal }) => {
   return (
     <tbody>
       {warehouses.map((warehouse, index) => (
@@ -11,19 +11,20 @@ const WarehouseTableBody = ({ warehouses, navigate, openDeleteModal }) => {
           <td>{warehouse.district}</td>
           <td>{warehouse.city}</td>
           <td>{warehouse.province}</td>
+          <td>{warehouse.postal_code}</td>
+          {/* Add this line to display postal_code */}
           <td className="relative">
             <div className="gap-5 grid grid-cols-1 items-center justify-center">
-              <button
+              <a
+                href="#edit_modal"
                 className="btn btn-xs w-12 lg:w-full btn-info"
-                onClick={() => {
-                  navigate("admin-warehouses/edit");
-                }}
+                onClick={() => openEditModal(warehouse.id_warehouse)}
               >
                 Edit
-              </button>
+              </a>
               <a
                 className="btn btn-xs w-12 lg:w-full btn-error"
-                href="#modal_delete_warehouse"
+                href="#delete_modal"
                 onClick={() =>
                   openDeleteModal(warehouse.id_warehouse, warehouse.name)
                 }

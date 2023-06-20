@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+import CustomToast from "../../components/CustomToast/CustomToast";
+import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 
 export const warehouseSlice = createSlice({
   name: "warehouses",
@@ -63,7 +66,7 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
-      await axios.put(
+      let response = await axios.put(
         `http://localhost:8000/warehouses/${id_warehouse}`,
         updatedWarehouse,
         {
@@ -72,6 +75,11 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
       );
 
       dispatch(updateWarehouse({ id_warehouse, updatedWarehouse }));
+      console.log(response.data.message);
+      toast(
+        <CustomToast type="success" message={response.data.message} />,
+        CustomToastOptions
+      );
     } catch (error) {
       console.error("Error editing warehouse:", error);
     }

@@ -7,7 +7,7 @@ const DeleteModal = ({
   deleteItemId,
 }) => {
   return (
-    <div className="modal" id="modal_delete_warehouse">
+    <div className="modal" id="delete_modal">
       <div className="modal-box">
         <h3 className="font-bold text-lg">Hello!</h3>
         <p className="py-4 text-warning font-semibold">
