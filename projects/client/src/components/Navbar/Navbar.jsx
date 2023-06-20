@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SearchInput from "./SearchInput";
 import UserDropdown from "./UserDropDown";
@@ -25,7 +24,7 @@ const Navbar = () => {
       <div className="hidden md:flex">
         <a
           href="/"
-          className="btn btn-ghost normal-case text-2xl lg:text-4xl text-primary-focus italic"
+          className="btn btn-ghost normal-case text-2xl lg:text-4xl text-primary-focus italic lg:fixed lg:left-5"
         >
           Shopify
         </a>

@@ -46,7 +46,7 @@ function App() {
 
   useEffect(() => {
     navigateLastVisitedPage(userToken, location, navigate);
-  }, [userToken, location.pathname, navigate]);
+  }, [userToken, location, navigate]);
 
   useEffect(() => {
     redirectWithoutToken(userToken, location.pathname, navigate, setShowToast);
