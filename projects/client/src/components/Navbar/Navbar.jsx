@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SearchInput from "./SearchInput";
 import UserDropdown from "./UserDropDown";
@@ -27,7 +27,7 @@ const Navbar = () => {
       <SearchInput />
       <div className="flex flex-row gap-2">
         {userToken ? (
-          <UserDropdown key={user.id_user} user={user} />
+          <UserDropdown key={user.id} user={user} />
         ) : (
           <div className="text-slate-100">
             <AuthButtons
