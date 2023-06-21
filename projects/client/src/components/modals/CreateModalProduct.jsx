@@ -1,39 +1,18 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { editProduct } from "../../features/products/adminProductSlice";
+import {
+  addNewProduct,
+  createProduct,
+} from "../../features/products/adminProductSlice";
 
-const EditModalProduct = ({
-  closeEditModal,
-  handleEdit,
-  editItemId,
-  categories,
-  openEditModal, // Add this line
-  products,
-}) => {
+const CreateModalProduct = ({ closeCreateModal, categories }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
-  const [imagePreview, setImagePreview] = useState(""); // New state for image preview
-
-  useEffect(() => {
-    const selectedProduct = products.find(
-      (product) => product.id_product === editItemId
-    );
-
-    if (selectedProduct) {
-      setName(selectedProduct.name);
-      setPrice(selectedProduct.price);
-      setCategory(selectedProduct.id_category);
-      setDescription(selectedProduct.description);
-      setImage(selectedProduct.image_url);
-      setImagePreview(`http://localhost:8000${selectedProduct.image_url}`); // Set initial image preview
-    }
-    console.log(image, "urlimg");
-  }, [editItemId, products]);
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -42,26 +21,25 @@ const EditModalProduct = ({
       setImagePreview(URL.createObjectURL(file));
     }
   };
-  console.log(image, "image");
-  console.log(imagePreview, "IP");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const formData = new FormData();
-    formData.append("id_product", editItemId);
     formData.append("name", name);
     formData.append("price", price);
     formData.append("id_category", category);
     formData.append("description", description);
     formData.append("image_url", image);
-    dispatch(editProduct(editItemId, formData));
-    closeEditModal();
+
+    dispatch(addNewProduct(formData));
+    closeCreateModal();
   };
 
   return (
-    <div className="modal" id="edit_modal_product">
+    <div className="modal" id="create_modal_product">
       <div className="modal-box">
-        <h3 className="font-bold text-lg">Edit Products</h3>
+        <h3 className="font-bold text-lg">Add New Product</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-control">
             <label className="label">
@@ -72,7 +50,7 @@ const EditModalProduct = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="input input-bordered"
-              placeholder="Enter warehouse name"
+              placeholder="Enter product name"
               required
             />
           </div>
@@ -107,7 +85,6 @@ const EditModalProduct = ({
               ))}
             </select>
           </div>
-
           <div className="form-control">
             <label className="label">
               <span className="label-text">Description:</span>
@@ -116,7 +93,7 @@ const EditModalProduct = ({
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="input input-bordered "
+              className="input input-bordered"
               placeholder="Enter product description"
               required
             />
@@ -129,8 +106,9 @@ const EditModalProduct = ({
               type="file"
               className="file-input file-input-bordered file-input-primary w-full max-w-xs"
               onChange={handleImageChange}
+              required
             />
-            {imagePreview && ( // Display image preview if available
+            {imagePreview && (
               <div className="w-40 h-40 mt-2 lg:w-60 lg:h-60">
                 <img
                   src={imagePreview}
@@ -140,15 +118,14 @@ const EditModalProduct = ({
               </div>
             )}
           </div>
-
           <div className="modal-action">
             <button type="submit" className="btn btn-primary">
-              Save
+              Add Product
             </button>
             <button
               type="button"
               className="btn btn-error"
-              onClick={closeEditModal}
+              onClick={closeCreateModal}
             >
               Cancel
             </button>
@@ -159,4 +136,4 @@ const EditModalProduct = ({
   );
 };
 
-export default EditModalProduct;
+export default CreateModalProduct;

@@ -9,6 +9,7 @@ import DeleteModal from "../../modals/DeleteModal";
 import { useNavigate } from "react-router-dom";
 import EditModalProduct from "../../modals/EditModalProduct";
 import { getAllProductCategories } from "../../../features/categories/ProductCategoriesSlice";
+import CreateModalProduct from "../../modals/CreateModalProduct"; // Add this line
 
 function ProductContent() {
   const products = useSelector((state) => state.adminProducts.products);
@@ -21,6 +22,7 @@ function ProductContent() {
   const [editItemId, setEditItemId] = useState(null);
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false); // Add this line
 
   const openEditModal = (id_product) => {
     setEditItemId(id_product);
@@ -67,20 +69,21 @@ function ProductContent() {
     <div className="bg-base-200 flex flex-col lg:flex-row lg:justify-start justify-center w-screen lg:h-full lg:w-screen p-8 pl-3 lg:ml-0 lg:pl-0">
       <div className="flex flex-col gap-12 lg:gap-0 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md">
         <div className="lg:flex lg:justify-start">
-          <button
+          <a
+            href="#create_modal_product"
             className="absolute top-10 right-12 btn lg:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2 mt-5"
             onClick={() => {
-              navigate("/admin-products/add");
+              setCreateModalOpen(true);
             }}
           >
             Add New Product
-          </button>
+          </a>
         </div>
         <div className="max-h-full h-3/4 lg:max-w-screen-xl lg:max-h-fit lg:h-5/6 lg:w-screen flex justify-center lg:justify-start mt-8 lg:mt-0 mr-10 lg:mr-0">
           {/* diset fixed biar ga bisa geser,harus dicek lagi */}
           <div
-            className={`rounded-xl text-neutral gap-10 lg:gap-5 grid  w-full h-[640px] justify-center fixed lg:relative lg:grid-cols-5 ${
-              isOverflowVisible ? "overflow-x-auto" : ""
+            className={`rounded-xl text-neutral gap-10 lg:gap-5 grid  w-full lg:mr-8 lg:px-6 h-[500px] lg:h-screen lg:max-h-[630px] justify-center fixed lg:relative lg:grid-cols-5 ${
+              isOverflowVisible ? "overflow-x-auto" : " overflow-y-auto"
             }`}
           >
             {products.map((product) => {
@@ -113,6 +116,12 @@ function ProductContent() {
           categories={categories}
           openEditModal={openEditModal}
           products={products} // Add this line
+        />
+      )}
+      {isCreateModalOpen && ( // Add this block
+        <CreateModalProduct
+          closeCreateModal={() => setCreateModalOpen(false)}
+          categories={categories}
         />
       )}
     </div>

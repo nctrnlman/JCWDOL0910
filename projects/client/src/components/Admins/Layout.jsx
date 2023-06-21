@@ -4,7 +4,7 @@ import Breadcrumbs from "./Breadcrumbs";
 
 const Layout = ({ children }) => {
   return (
-    <div className="h-screen flex overflow-auto lg:overflow-hidden bg-red-500">
+    <div className="h-screen flex overflow-auto lg:overflow-hidden">
       <div className="w-1/5 lg:w-1/6 flex-shrink-0 z-10">
         <Sidebar />
       </div>

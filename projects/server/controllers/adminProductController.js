@@ -3,6 +3,8 @@ require("dotenv").config({
 });
 const { db, query } = require("../database");
 const { parseTotalStock } = require("../helper/productHelper");
+const allowedExtensions = ["jpg", "jpeg", "png"];
+const maxFileSize = 5 * 1024 * 1024; // 5MB
 
 module.exports = {
   fetchProducts: async (req, res) => {
@@ -42,6 +44,16 @@ module.exports = {
       // Check if a file was uploaded
       if (!req.file) {
         return res.status(400).send("No image file provided");
+      }
+      // Validate file extension
+      const fileExtension = file.originalname.split(".").pop().toLowerCase();
+      if (!allowedExtensions.includes(fileExtension)) {
+        return res.status(400).send("Invalid file extension");
+      }
+
+      // Validate file size
+      if (file.size > maxFileSize) {
+        return res.status(400).send("File size exceeds the limit");
       }
 
       // Get the image URL from the uploaded file
@@ -135,10 +147,21 @@ module.exports = {
 
       const existingProduct = productResult[0];
 
+      // Validate file extension
+      const fileExtension = file.originalname.split(".").pop().toLowerCase();
+      if (!allowedExtensions.includes(fileExtension)) {
+        return res.status(400).send("Invalid file extension");
+      }
+
+      // Validate file size
+      if (file.size > maxFileSize) {
+        return res.status(400).send("File size exceeds the limit");
+      }
+
       // Check if a file was uploaded
       const { file } = req;
       let image_url = existingProduct.image_url;
-
+      console.log(file);
       if (file) {
         // Update the image URL if a new file was uploaded
         image_url = "/" + file.filename;

@@ -9,7 +9,7 @@ function Sidebar() {
     return location.pathname === path ? "btn-active" : "";
   };
   return (
-    <div className="absolute left-0 flex flex-col justify-between shadow-lg h-screen w-[90px] lg:w-[275px] bg-base-200">
+    <div className="absolute left-0 flex flex-col justify-between shadow-lg h-screen w-[90px] lg:w-[260px] bg-base-200">
       <div className="gap-14 flex flex-col">
         <div className="pb-10">
           <h1 className="card-title flex justify-center pt-5 text-primary-focus">
