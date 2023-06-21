@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import Breadcrumbs from "../Breadcrumbs";
 import NavbarDashboardDrawer from "./NavbarDashboardDrawer";
 import NavbarDashboardMenu from "./NavbarDashboardMenu";
 
 function NavbarDashboard({ children }) {
+  const navigate = useNavigate();
   return (
     <div className="drawer">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
@@ -12,7 +14,14 @@ function NavbarDashboard({ children }) {
         {/* Navbar */}
         <div className="w-auto navbar bg-base-300">
           <NavbarDashboardDrawer />
-          <div className="flex-1 px-2 mx-2 text-lg font-bold">Dashboard</div>
+          <div
+            className="flex-1 px-2 mx-2 text-2xl font-bold hover:cursor-pointer text-primary italic md:text-3xl lg:text-4xl"
+            onClick={() => {
+              navigate("/admin-dashboard");
+            }}
+          >
+            Shopify
+          </div>
           {/* Navbar menu content here */}
           <NavbarDashboardMenu menuType="horizontal" />
         </div>
@@ -27,7 +36,7 @@ function NavbarDashboard({ children }) {
           </div>
           <div className="absolute right-0 bottom-0">
             <li className="btn btn-wide justify-end items-end">
-              <a className="text-lg">
+              <a href="/admin-login" className="text-lg">
                 Logout <RiLogoutBoxLine />
               </a>
             </li>

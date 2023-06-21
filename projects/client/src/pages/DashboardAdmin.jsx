@@ -1,12 +1,14 @@
 import React from "react";
-import Layout from "../components/Admins/Layout";
 import DashboardContent from "../components/Admins/Dashboard/DashboardContent";
+import NavbarDashboard from "../components/Admins/Navbar/NavbarDashboard";
 
 function DashboardAdmin() {
   return (
-    <Layout>
-      <DashboardContent />
-    </Layout>
+    <div>
+      <NavbarDashboard>
+        <DashboardContent />
+      </NavbarDashboard>
+    </div>
   );
 }
 

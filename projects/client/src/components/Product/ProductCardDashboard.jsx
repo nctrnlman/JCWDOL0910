@@ -1,6 +1,5 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
 import SeeDetailButton from "./SeeDetailButton";
 import AddToCartButton from "./AddToCartButton";
 

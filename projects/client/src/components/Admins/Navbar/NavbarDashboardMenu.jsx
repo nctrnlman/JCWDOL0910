@@ -23,7 +23,7 @@ function NavbarDashboardMenu({ menuType }) {
               </a>
             </li>
             <li className="flex justify-center items-center">
-              <a className="text-xl">
+              <a href="/admin-login" className="text-xl">
                 <RiLogoutBoxLine />
               </a>
             </li>
