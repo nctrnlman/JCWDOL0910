@@ -10,6 +10,7 @@ const {
   adminRoutes,
   warehouseRoutes,
   rajaOngkirRoutes,
+  orderRoutes,
 } = require("../routers/");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
@@ -38,6 +39,7 @@ app.use("/products", productRoutes);
 app.use("/carts", cartRoutes);
 app.use("/admins", adminRoutes);
 app.use("/warehouses", warehouseRoutes);
+app.use("/orders", orderRoutes);
 app.use("/rajaongkir", rajaOngkirRoutes); // Add the rajaOngkirRoutes here
 
 app.get("/api", (req, res) => {

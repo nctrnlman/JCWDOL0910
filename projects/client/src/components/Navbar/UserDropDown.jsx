@@ -114,6 +114,11 @@ const UserDropdown = ({ user }) => {
             </a>
           </li>
           <li>
+            <a href="/order" className="justify-between">
+              Your Order
+            </a>
+          </li>
+          <li>
             <button onClick={handleLogout}>Logout</button>
           </li>
         </ul>

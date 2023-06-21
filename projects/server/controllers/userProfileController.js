@@ -4,7 +4,6 @@ require("dotenv").config({
 const { db, query } = require("../database");
 
 module.exports = {
-
   getUserProfile: async (req, res) => {
     // console.log(req)
     try {
@@ -32,7 +31,7 @@ module.exports = {
       }
 
       const editUserQuery = `UPDATE users SET ${dataUpdate} WHERE id_user=${idUser}`;
-      console.log(editUserQuery)
+      console.log(editUserQuery);
 
       const editUser = await query(editUserQuery);
 
@@ -82,9 +81,11 @@ module.exports = {
         ${db.escape(postal_code)},
         ${db.escape(is_primary)}
       )`;
-      console.log(addAddressQuery)
+      console.log(addAddressQuery);
       let addAddressResult = await query(addAddressQuery);
-      res.status(200).send({ data: addAddressResult, message: "Add Address Success" });
+      res
+        .status(200)
+        .send({ data: addAddressResult, message: "Add Address Success" });
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
@@ -92,7 +93,7 @@ module.exports = {
 
   editAddress: async (req, res) => {
     try {
-      console.log(req.params)
+      console.log(req.params);
       const idUser = req.user.id;
       const id_address = req.params.id;
       let addressDataUpdate = [];
@@ -101,15 +102,16 @@ module.exports = {
       }
 
       const editAddressQuery = `UPDATE addresses SET ${addressDataUpdate} WHERE id_address=${id_address}`;
-      console.log(editAddressQuery)
+      console.log(editAddressQuery);
 
       const editAddress = await query(editAddressQuery);
 
-      const getAddressQuery = `SELECT * FROM addresses WHERE id_address = ${db.escape(id_address)}`;
+      const getAddressQuery = `SELECT * FROM addresses WHERE id_address = ${db.escape(
+        id_address
+      )}`;
       const getAddress = await query(getAddressQuery);
 
       return res.status(200).send(getAddress);
-
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
@@ -117,9 +119,11 @@ module.exports = {
 
   deleteAddress: async (req, res) => {
     try {
-      id_address = req.params.id
-      let deleteAddressQuery = `DELETE FROM addresses WHERE id_address=${db.escape(id_address)};`
-      console.log(deleteAddressQuery)
+      id_address = req.params.id;
+      let deleteAddressQuery = `DELETE FROM addresses WHERE id_address=${db.escape(
+        id_address
+      )};`;
+      console.log(deleteAddressQuery);
       const execute_delete = await query(deleteAddressQuery);
       return res.status(200).send("Delete Address Succeed");
     } catch (error) {
@@ -140,6 +144,4 @@ module.exports = {
       return res.status(error.status || 500).send(error);
     }
   },
-
-
-}
+};
