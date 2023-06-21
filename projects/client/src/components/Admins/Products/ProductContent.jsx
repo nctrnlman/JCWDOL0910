@@ -6,23 +6,20 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../../Product/ProductCard";
 import DeleteModal from "../../modals/DeleteModal";
-import { useNavigate } from "react-router-dom";
 import EditModalProduct from "../../modals/EditModalProduct";
 import { getAllProductCategories } from "../../../features/categories/ProductCategoriesSlice";
-import CreateModalProduct from "../../modals/CreateModalProduct"; // Add this line
-
+import CreateModalProduct from "../../modals/CreateModalProduct";
 function ProductContent() {
   const products = useSelector((state) => state.adminProducts.products);
   const categories = useSelector(
     (state) => state.productCategories.productCategories
   );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [isOverflowVisible, setOverflowVisible] = useState(false);
   const [editItemId, setEditItemId] = useState(null);
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
-  const [isCreateModalOpen, setCreateModalOpen] = useState(false); // Add this line
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
 
   const openEditModal = (id_product) => {
     setEditItemId(id_product);
@@ -82,7 +79,7 @@ function ProductContent() {
         <div className="max-h-full h-3/4 lg:max-w-screen-xl lg:max-h-fit lg:h-5/6 lg:w-screen flex justify-center lg:justify-start mt-8 lg:mt-0 mr-10 lg:mr-0">
           {/* diset fixed biar ga bisa geser,harus dicek lagi */}
           <div
-            className={`rounded-xl text-neutral gap-10 lg:gap-5 grid  w-full lg:mr-8 lg:px-6 h-[500px] lg:h-screen lg:max-h-[630px] justify-center fixed lg:relative lg:grid-cols-5 ${
+            className={`rounded-xl text-neutral gap-10 lg:gap-5 grid  w-full lg:mr-8 lg:pr-6 h-[500px] lg:h-screen lg:max-h-[630px] justify-center fixed lg:relative lg:grid-cols-5 ${
               isOverflowVisible ? "overflow-x-auto" : " overflow-y-auto"
             }`}
           >
@@ -106,7 +103,7 @@ function ProductContent() {
           deleteItemName={deleteItemName}
           handleDelete={() => handleDelete(deleteItemId)}
           closeDeleteModal={closeDeleteModal}
-          deleteItemId={deleteItemId} // Add this line
+          deleteItemId={deleteItemId}
         />
       )}
       {editItemId && (
@@ -115,10 +112,10 @@ function ProductContent() {
           closeEditModal={closeEditModal}
           categories={categories}
           openEditModal={openEditModal}
-          products={products} // Add this line
+          products={products}
         />
       )}
-      {isCreateModalOpen && ( // Add this block
+      {isCreateModalOpen && (
         <CreateModalProduct
           closeCreateModal={() => setCreateModalOpen(false)}
           categories={categories}
