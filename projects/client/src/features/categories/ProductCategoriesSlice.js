@@ -20,8 +20,6 @@ export function getAllProductCategories() {
   return async (dispatch) => {
     try {
       let response = await Axios.get("http://localhost:8000/categories");
-      console.log("hm");
-      console.log(response);
       dispatch(setProductCategories(response.data));
     } catch (error) {
       console.log(error);

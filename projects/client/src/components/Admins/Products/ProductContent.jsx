@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteProducts,
   fetchAdminProducts,
+  setCurrentPage,
 } from "../../../features/products/adminProductSlice";
-import { useDispatch, useSelector } from "react-redux";
-import ProductCard from "../../Product/ProductCard";
 import DeleteModal from "../../modals/DeleteModal";
 import EditModalProduct from "../../modals/EditModalProduct";
 import { getAllProductCategories } from "../../../features/categories/ProductCategoriesSlice";
 import CreateModalProduct from "../../modals/CreateModalProduct";
+import ProductCardDashboard from "../../Product/ProductCardDashboard";
+import Pagination from "../../Pagination";
+
 function ProductContent() {
   const products = useSelector((state) => state.adminProducts.products);
+  const totalPages = useSelector((state) => state.adminProducts.totalPages);
   const categories = useSelector(
     (state) => state.productCategories.productCategories
   );
+  const currentPage = useSelector((state) => state.adminProducts.currentPage);
   const dispatch = useDispatch();
-  const [isOverflowVisible, setOverflowVisible] = useState(false);
   const [editItemId, setEditItemId] = useState(null);
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
@@ -49,26 +53,12 @@ function ProductContent() {
     dispatch(getAllProductCategories());
   }, [dispatch]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setOverflowVisible(window.innerWidth < 640);
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
-    <div className="bg-base-200 flex flex-col lg:flex-row lg:justify-start justify-center w-screen lg:h-full lg:w-screen p-8 pl-3 lg:ml-0 lg:pl-0">
-      <div className="flex flex-col gap-12 lg:gap-0 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md">
-        <div className="lg:flex lg:justify-start">
+    <div className=" w-full">
+      <div className="">
+        <div className="btn btn-primary mt-4 mx-2">
           <a
             href="#create_modal_product"
-            className="absolute top-10 right-12 btn lg:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2 mt-5"
             onClick={() => {
               setCreateModalOpen(true);
             }}
@@ -76,26 +66,17 @@ function ProductContent() {
             Add New Product
           </a>
         </div>
-        <div className="max-h-full h-3/4 lg:max-w-screen-xl lg:max-h-fit lg:h-5/6 lg:w-screen flex justify-center lg:justify-start mt-8 lg:mt-0 mr-10 lg:mr-0">
-          {/* diset fixed biar ga bisa geser,harus dicek lagi */}
-          <div
-            className={`rounded-xl text-neutral gap-10 lg:gap-5 grid  w-full lg:mr-8 lg:pr-6 h-[500px] lg:h-screen lg:max-h-[630px] justify-center fixed lg:relative lg:grid-cols-5 ${
-              isOverflowVisible ? "overflow-x-auto" : " overflow-y-auto"
-            }`}
-          >
-            {products.map((product) => {
-              const imageSrc = `http://localhost:8000${product.image_url}`;
-              return (
-                <ProductCard
-                  product={product}
-                  key={product.id_product}
-                  openDeleteModal={openDeleteModal}
-                  openEditModal={openEditModal}
-                  imageSrc={imageSrc}
-                />
-              );
-            })}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+          {products.map((product) => {
+            return (
+              <ProductCardDashboard
+                product={product}
+                key={product.id_product}
+                openDeleteModal={openDeleteModal}
+                openEditModal={openEditModal}
+              />
+            );
+          })}
         </div>
       </div>
       {deleteItemId && (
@@ -121,6 +102,14 @@ function ProductContent() {
           categories={categories}
         />
       )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={(newPage) => {
+          dispatch(setCurrentPage(newPage));
+          dispatch(fetchAdminProducts(newPage));
+        }}
+      />
     </div>
   );
 }

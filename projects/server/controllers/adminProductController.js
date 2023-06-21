@@ -8,7 +8,7 @@ module.exports = {
   fetchProducts: async (req, res) => {
     try {
       let { page } = req.query;
-      const itemsPerPage = 10;
+      const itemsPerPage = 8;
 
       page = parseInt(page);
       if (isNaN(page) || page < 1) {
@@ -18,18 +18,31 @@ module.exports = {
       const offset = (page - 1) * itemsPerPage;
 
       const productsQuery = `
-         SELECT p.*, c.name AS category_name, SUM(s.total_stock) AS total_stock
-        FROM products p
-        INNER JOIN stocks s ON p.id_product = s.id_product
-        INNER JOIN categories c ON p.id_category = c.id_category
-        GROUP BY p.id_product
-        LIMIT ${itemsPerPage}
-        OFFSET ${offset};
-      `;
-      const products = await query(productsQuery);
+      SELECT p.*, c.name AS category_name, SUM(s.total_stock) AS total_stock
+      FROM products p
+      INNER JOIN stocks s ON p.id_product = s.id_product
+      INNER JOIN categories c ON p.id_category = c.id_category
+      GROUP BY p.id_product
+      LIMIT ${itemsPerPage}
+      OFFSET ${offset};
+    `;
+
+      const countQuery = `
+      SELECT COUNT(*) AS total FROM products;
+    `;
+
+      const [products, countResult] = await Promise.all([
+        query(productsQuery),
+        query(countQuery),
+      ]);
+
+      const totalItems = countResult[0].total;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
       parseTotalStock(products);
       console.log(products);
-      return res.status(200).send(products);
+
+      return res.status(200).send({ products, totalPages });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }

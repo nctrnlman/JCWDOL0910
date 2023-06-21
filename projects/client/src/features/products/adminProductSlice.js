@@ -5,6 +5,8 @@ export const adminProductSlice = createSlice({
   name: "admin-products",
   initialState: {
     products: [],
+    currentPage: 1,
+    totalPages: 1,
   },
   reducers: {
     setProducts: (state, action) => {
@@ -22,20 +24,36 @@ export const adminProductSlice = createSlice({
     addProduct: (state, action) => {
       state.products.push(action.payload);
     },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+    setTotalPages: (state, action) => {
+      state.totalPages = action.payload;
+    },
   },
 });
 
-export const { setProducts, updateProduct, addProduct } =
-  adminProductSlice.actions;
+export const {
+  setProducts,
+  updateProduct,
+  addProduct,
+  setCurrentPage,
+  setTotalPages,
+} = adminProductSlice.actions;
 
 export default adminProductSlice.reducer;
-export function fetchAdminProducts() {
+
+export function fetchAdminProducts(page = 1) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/admins/products/"
+        `http://localhost:8000/admins/products/?page=${page}`
       );
-      dispatch(setProducts(response.data));
+      const { products, totalPages } = response.data;
+      dispatch(setProducts(products));
+      dispatch(setCurrentPage(page));
+      // Add the following line to update the total pages
+      dispatch(setTotalPages(totalPages));
     } catch (error) {
       console.log(error);
     }
@@ -61,24 +79,7 @@ export function editProduct(id, productData) {
       console.log(response);
       dispatch(fetchAdminProducts());
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        const { data } = error.response;
-        if (typeof data === "string") {
-          // Handle general error message
-          console.error("Error editing product:", data);
-        } else if (typeof data === "object" && data.error) {
-          // Handle specific error messages
-          if (data.error === "Invalid file extension") {
-            // Display error message for invalid file extension
-            console.error("Invalid file extension");
-          } else if (data.error === "File size exceeds the limit") {
-            // Display error message for file size limit exceeded
-            console.error("File size exceeds the limit");
-          }
-        }
-      } else {
-        console.error("Error editing product:", error);
-      }
+      console.error("Error editing product:", error);
     }
   };
 }
