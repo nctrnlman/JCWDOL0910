@@ -27,6 +27,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(express.static("public"));
 
 //#region API ROUTES
 

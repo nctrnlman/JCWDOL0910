@@ -5,6 +5,9 @@ import {
   updateCartItemQuantity,
   showCartErrorToast,
 } from "./helpers/cartHelpers";
+import { toast } from "react-toastify";
+import CustomToast from "../../components/CustomToast/CustomToast";
+import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 
 export function addToCart(id_product, quantity, cartItems) {
   return async (dispatch) => {
@@ -17,10 +20,15 @@ export function addToCart(id_product, quantity, cartItems) {
       );
       const { message, product, quantity: updatedQuantity } = response.data;
 
-      const updatedCartItems = isProductInCart(cartItems, product)
-        ? updateCartItemQuantity(cartItems, product, updatedQuantity)
-        : [...cartItems, { ...product, quantity: updatedQuantity }];
-      dispatch(setCartItems(updatedCartItems));
+      if (product.total_stock > updatedQuantity) {
+        // Check if stock is more than the updated quantity
+        const updatedCartItems = isProductInCart(cartItems, product)
+          ? updateCartItemQuantity(cartItems, product, updatedQuantity)
+          : [...cartItems, { ...product, quantity: updatedQuantity }];
+        dispatch(setCartItems(updatedCartItems));
+      } else {
+        showCartErrorToast("Product stock is insufficient"); // Show error message or notification
+      }
     } catch (error) {
       console.error("Error adding product to cart: ", error);
       showCartErrorToast(error.response.data.message);
@@ -57,6 +65,10 @@ export function increaseCartItemQuantity(id_product) {
       dispatch(fetchItemsCart());
     } catch (error) {
       console.error("Error increasing quantity: ", error);
+      toast(
+        <CustomToast type="error" message={error.response.data.message} />,
+        CustomToastOptions
+      );
     }
   };
 }

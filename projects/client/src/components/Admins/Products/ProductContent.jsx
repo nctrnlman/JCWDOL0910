@@ -7,14 +7,28 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../../Product/ProductCard";
 import DeleteModal from "../../modals/DeleteModal";
 import { useNavigate } from "react-router-dom";
+import EditModalProduct from "../../modals/EditModalProduct";
+import { getAllProductCategories } from "../../../features/categories/ProductCategoriesSlice";
 
 function ProductContent() {
   const products = useSelector((state) => state.adminProducts.products);
+  const categories = useSelector(
+    (state) => state.productCategories.productCategories
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isOverflowVisible, setOverflowVisible] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
+
+  const openEditModal = (id_product) => {
+    setEditItemId(id_product);
+  };
+
+  const closeEditModal = () => {
+    setEditItemId(null);
+  };
 
   const handleDelete = async (id_product) => {
     await dispatch(deleteProducts(id_product));
@@ -33,6 +47,7 @@ function ProductContent() {
 
   useEffect(() => {
     dispatch(fetchAdminProducts());
+    dispatch(getAllProductCategories());
   }, [dispatch]);
 
   useEffect(() => {
@@ -68,13 +83,18 @@ function ProductContent() {
               isOverflowVisible ? "overflow-x-auto" : ""
             }`}
           >
-            {products.map((product) => (
-              <ProductCard
-                product={product}
-                key={product.id_product}
-                openDeleteModal={openDeleteModal} // Pass the openDeleteModal function as a prop
-              />
-            ))}
+            {products.map((product) => {
+              const imageSrc = `http://localhost:8000${product.image_url}`;
+              return (
+                <ProductCard
+                  product={product}
+                  key={product.id_product}
+                  openDeleteModal={openDeleteModal}
+                  openEditModal={openEditModal}
+                  imageSrc={imageSrc}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
@@ -84,6 +104,15 @@ function ProductContent() {
           handleDelete={() => handleDelete(deleteItemId)}
           closeDeleteModal={closeDeleteModal}
           deleteItemId={deleteItemId} // Add this line
+        />
+      )}
+      {editItemId && (
+        <EditModalProduct
+          editItemId={editItemId}
+          closeEditModal={closeEditModal}
+          categories={categories}
+          openEditModal={openEditModal}
+          products={products} // Add this line
         />
       )}
     </div>

@@ -5,7 +5,7 @@ import SeeDetailButton from "./SeeDetailButton";
 import AddToCartButton from "./AddToCartButton";
 
 function ProductCard(props) {
-  const { product, openDeleteModal } = props;
+  const { product, openDeleteModal, openEditModal, imageSrc } = props;
   const location = useLocation();
   const isAdminRoute = location.pathname === "/admin-products";
 
@@ -21,7 +21,7 @@ function ProductCard(props) {
       <div className="top">
         <img
           className="w-[300px] h-[200px] object-cover p-2"
-          src={product.image_url}
+          src={imageSrc}
           alt="img"
         />
       </div>
@@ -38,7 +38,13 @@ function ProductCard(props) {
           {isAdminRoute ? (
             <div className="flex items-center my-2 gap-3">
               <div className="gap-5 flex flex-row ">
-                <a className="btn btn-xs w-12 lg:w-3/4 btn-info">Edit</a>
+                <a
+                  className="btn btn-xs w-12 lg:w-3/4 btn-info"
+                  href="#edit_modal_product"
+                  onClick={() => openEditModal(product.id_product)}
+                >
+                  Edit
+                </a>
                 <a
                   className="btn btn-xs w-12 lg:w-3/4 btn-error"
                   href="#delete_modal"

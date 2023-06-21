@@ -37,7 +37,7 @@ module.exports = {
 
   addProduct: async (req, res) => {
     try {
-      const { category_name, name, price, description } = req.body;
+      const { id_category, name, price, description } = req.body;
 
       // Check if a file was uploaded
       if (!req.file) {
@@ -45,34 +45,69 @@ module.exports = {
       }
 
       // Get the image URL from the uploaded file
-      const image_url = req.file.path;
+      let image_url = "";
+      const { file } = req;
+      if (file) {
+        image_url = file ? "/" + file.filename : null;
+      } else {
+        throw new Error("Image is required");
+      }
 
-      // Retrieve the category id and name from the category table
+      // Check if the category exists
       const getCategoryQuery = `
-      SELECT id_category, c.name FROM categories c WHERE c.name = ${db.escape(
-        category_name
+      SELECT id_category, name FROM categories WHERE id_category = ${db.escape(
+        id_category
       )};
     `;
       const categoryResult = await query(getCategoryQuery);
 
       if (categoryResult.length === 0) {
-        return res.status(400).send("Invalid category name");
+        return res.status(400).send("Invalid category ID");
       }
 
-      const { id_category, category_name: categoryName } = categoryResult[0];
+      // Check if the product name is unique within the category
+      const checkProductNameQuery = `
+      SELECT id_product FROM products WHERE name = ${db.escape(name)};
+    `;
+      const productNameResult = await query(checkProductNameQuery);
 
+      if (productNameResult.length > 0) {
+        return res.status(400).send("Product already exists");
+      }
+
+      // Insert the product into the products table
       const addProductQuery = `
       INSERT INTO products (id_category, name, price, description, image_url)
       VALUES (${db.escape(id_category)}, ${db.escape(name)}, ${db.escape(
         price
       )}, ${db.escape(description)}, ${db.escape(image_url)});
     `;
-      const result = await query(addProductQuery);
+      const productResult = await query(addProductQuery);
 
-      const insertedProductId = result.insertId;
+      const insertedProductId = productResult.insertId;
+
+      // Get all warehouses
+      const getWarehousesQuery = `
+      SELECT id_warehouse FROM warehouses;
+    `;
+      const warehouses = await query(getWarehousesQuery);
+
+      // Insert into the stock table for all warehouses
+      const insertStockPromises = warehouses.map((warehouse) => {
+        const addStockQuery = `
+        INSERT INTO stocks (id_product, id_warehouse, total_stock)
+        VALUES (${db.escape(insertedProductId)}, ${db.escape(
+          warehouse.id_warehouse
+        )}, 0);
+      `;
+        return query(addStockQuery);
+      });
+
+      await Promise.all(insertStockPromises);
+
       return res.status(200).send({
         id: insertedProductId,
-        category_name: categoryName,
+        id_category,
         name,
         price,
         description,
@@ -86,40 +121,55 @@ module.exports = {
   editProduct: async (req, res) => {
     try {
       const { productId } = req.params;
-      const { category_name, name, price, description } = req.body;
-      // Check if a file was uploaded
-      if (!req.file) {
-        return res.status(400).send("No image file provided");
-      }
+      const { name, price, description, id_category } = req.body;
 
-      // Get the image URL from the uploaded file
-      const image_url = req.file.path;
-      // Retrieve the category id and name from the category table
-      const getCategoryQuery = `
-      SELECT id_category, c.name FROM categories c WHERE c.name = ${db.escape(
-        category_name
-      )};
+      // Get the existing product data
+      const getProductQuery = `
+      SELECT * FROM products WHERE id_product = ${db.escape(productId)};
     `;
-      const categoryResult = await query(getCategoryQuery);
+      const productResult = await query(getProductQuery);
 
-      if (categoryResult.length === 0) {
-        return res.status(400).send("Invalid category name");
+      if (productResult.length === 0) {
+        return res.status(400).send("Invalid product ID");
       }
 
-      const { id_category, category_name: categoryName } = categoryResult[0];
+      const existingProduct = productResult[0];
 
-      const editProductQuery = `
-      UPDATE products AS p
-      INNER JOIN categories AS c ON p.id_category = c.id_category
-      SET p.id_category=${db.escape(id_category)}, p.name = ${db.escape(
+      // Check if a file was uploaded
+      const { file } = req;
+      let image_url = existingProduct.image_url;
+
+      if (file) {
+        // Update the image URL if a new file was uploaded
+        image_url = "/" + file.filename;
+      }
+
+      // Check if the product name is unique within the category
+      const checkProductNameQuery = `
+      SELECT id_product FROM products WHERE name = ${db.escape(
         name
-      )}, p.price = ${db.escape(price)}, p.description = ${db.escape(
-        description
-      )}, p.image_url = ${db.escape(image_url)}
-      WHERE p.id_product = ${db.escape(productId)}
-        AND c.category_name = ${db.escape(category_name)};
-      `;
-      await query(editProductQuery);
+      )} AND id_product != ${db.escape(
+        productId
+      )} AND id_category = ${db.escape(id_category)};
+    `;
+      const productNameResult = await query(checkProductNameQuery);
+
+      if (productNameResult.length > 0) {
+        return res
+          .status(400)
+          .send("Product name already exists in the category");
+      }
+
+      // Update the product data
+      const updateProductQuery = `
+      UPDATE products SET name = ${db.escape(name)}, price = ${db.escape(
+        price
+      )}, description = ${db.escape(description)}, id_category = ${db.escape(
+        id_category
+      )}, image_url = ${db.escape(image_url)}
+      WHERE id_product = ${db.escape(productId)};
+    `;
+      await query(updateProductQuery);
 
       return res.status(200).send({
         id: productId,
@@ -138,15 +188,31 @@ module.exports = {
     try {
       const { productId } = req.params;
 
+      // Delete the product
       const deleteProductQuery = `
-        DELETE FROM products
-        WHERE id_product = ${db.escape(productId)};
-      `;
+      DELETE FROM products
+      WHERE id_product = ${db.escape(productId)};
+    `;
       await query(deleteProductQuery);
 
-      return res
-        .status(200)
-        .send({ id: productId, message: "Product deleted successfully" });
+      // Delete the stock for the product in every warehouse
+      const deleteStockQuery = `
+      DELETE FROM stocks
+      WHERE id_product = ${db.escape(productId)};
+    `;
+      await query(deleteStockQuery);
+
+      // Delete the order items for the product
+      const deleteOrderItemsQuery = `
+      DELETE FROM order_items
+      WHERE id_product = ${db.escape(productId)};
+    `;
+      await query(deleteOrderItemsQuery);
+
+      return res.status(200).send({
+        id: productId,
+        message: "Product, stock, and order items deleted successfully",
+      });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }

@@ -10,10 +10,19 @@ export const adminProductSlice = createSlice({
     setProducts: (state, action) => {
       state.products = action.payload;
     },
+    updateProduct: (state, action) => {
+      const updatedProduct = action.payload;
+      const index = state.products.findIndex(
+        (product) => product.id === updatedProduct.id
+      );
+      if (index !== -1) {
+        state.products[index] = updatedProduct;
+      }
+    },
   },
 });
 
-export const { setProducts } = adminProductSlice.actions;
+export const { setProducts, updateProduct } = adminProductSlice.actions;
 
 export default adminProductSlice.reducer;
 export function fetchAdminProducts() {
@@ -25,6 +34,26 @@ export function fetchAdminProducts() {
       dispatch(setProducts(response.data));
     } catch (error) {
       console.log(error);
+    }
+  };
+}
+
+export function editProduct(id, productData) {
+  return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/admins/products/${id}`,
+        productData,
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
+      );
+      dispatch(updateProduct(response.data));
+      console.log(response);
+      // dispatch(fetchAdminProducts());
+    } catch (error) {
+      console.error("Error editing product:", error);
     }
   };
 }
