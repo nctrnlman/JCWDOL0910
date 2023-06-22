@@ -27,7 +27,7 @@ function Verification() {
         );
       } else {
         let response = await Axios.post(
-          "http://localhost:8000/users/verification",
+          "http://localhost:8000/api/users/verification",
           { otp, password, confirmPassword },
           {
             headers: {

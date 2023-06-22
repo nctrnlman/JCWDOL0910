@@ -19,7 +19,7 @@ export default productCatSLice.reducer;
 export function getAllProductCategories() {
   return async (dispatch) => {
     try {
-      let response = await Axios.get("http://localhost:8000/categories");
+      let response = await Axios.get("http://localhost:8000/api/categories");
       dispatch(setProductCategories(response.data));
     } catch (error) {
       console.log(error);

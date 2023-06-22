@@ -14,7 +14,7 @@ export function addToCart(id_product, quantity, cartItems) {
     try {
       const token = localStorage.getItem("user_token");
       const response = await axios.post(
-        "http://localhost:8000/carts",
+        "http://localhost:8000/api/carts",
         { id_product, quantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -40,7 +40,7 @@ export function fetchItemsCart() {
   return async (dispatch) => {
     try {
       const token = localStorage.getItem("user_token");
-      const response = await axios.get("http://localhost:8000/carts", {
+      const response = await axios.get("http://localhost:8000/api/carts", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@ export function increaseCartItemQuantity(id_product) {
   return async (dispatch) => {
     try {
       const token = localStorage.getItem("user_token");
-      await axios.put("http://localhost:8000/carts/update-quantity", null, {
+      await axios.put("http://localhost:8000/api/carts/update-quantity", null, {
         params: { id_product, action: "increase" },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -77,7 +77,7 @@ export function decreaseCartItemQuantity(id_product) {
   return async (dispatch) => {
     try {
       const token = localStorage.getItem("user_token");
-      await axios.put("http://localhost:8000/carts/update-quantity", null, {
+      await axios.put("http://localhost:8000/api/carts/update-quantity", null, {
         params: { id_product, action: "decrease" },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -93,7 +93,7 @@ export function deleteProductFromCart(id_product) {
   return async (dispatch) => {
     try {
       const token = localStorage.getItem("user_token");
-      await axios.delete("http://localhost:8000/carts", {
+      await axios.delete("http://localhost:8000/api/carts", {
         headers: { Authorization: `Bearer ${token}` },
         params: { id_product },
       });

@@ -19,7 +19,7 @@ const CreateModalWarehouse = ({
     const fetchProvinces = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/rajaongkir/provinces"
+          "http://localhost:8000/api/rajaongkir/provinces"
         );
         setProvinces(response.data);
       } catch (error) {
@@ -33,7 +33,7 @@ const CreateModalWarehouse = ({
   const fetchCities = async (provinceId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/rajaongkir/cities/${provinceId}`
+        `http://localhost:8000/api/rajaongkir/cities/${provinceId}`
       );
       setCities(response.data);
     } catch (error) {
