@@ -44,9 +44,10 @@ function Verification() {
       navigate("/login");
     } catch (error) {
       toast(
-        <CustomToast type="success" message="Failed to Verified" />,
+        <CustomToast type="error" message="Failed to Verified" />,
         CustomToastOptions
       );
+      console.log(error);
     }
   };
 
