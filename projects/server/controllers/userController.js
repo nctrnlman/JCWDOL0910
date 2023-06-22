@@ -41,6 +41,7 @@ module.exports = {
       const id_user = addUserResult.insertId;
 
       const token = jwt.sign({ id_user }, env.JWT_SECRET, { expiresIn: "24h" });
+      console.log(token);
 
       await sendVerificationEmail(nodemailer, email, fullName, otp, token);
 
@@ -77,13 +78,12 @@ module.exports = {
       }
 
       const payload = {
-        id: isEmailExist[0].id_user,
+        id_user: isEmailExist[0].id_user,
       };
 
       const expiresIn = 60 * 60; // Set the token expiration time to 1 hour
       const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp (in seconds)
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
-
       return res.status(200).send({
         message: "Login Success",
         token,
@@ -114,7 +114,7 @@ module.exports = {
         `SELECT * FROM users WHERE id_user =${db.escape(userId)}`
       );
 
-      if (otp !== checkEmail[0].otp) {
+      if (parseInt(otp) !== checkEmail[0].otp) {
         return res.status(400).send({ message: "OTP not same" });
       }
 

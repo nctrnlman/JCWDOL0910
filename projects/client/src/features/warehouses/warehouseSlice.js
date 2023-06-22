@@ -53,7 +53,7 @@ export function deleteWarehouse(id_warehouse) {
     const adminToken = localStorage.getItem("admin_token");
     try {
       await axios.delete(
-        `http://localhost:8000/api/api/warehouses/${id_warehouse}`,
+        `http://localhost:8000/api/warehouses/${id_warehouse}`,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
         }
