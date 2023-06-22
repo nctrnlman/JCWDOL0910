@@ -86,7 +86,6 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
   };
 }
 
-// Create warehouse action
 export function createWarehouse(warehouseData) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");

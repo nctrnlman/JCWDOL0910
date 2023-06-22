@@ -12,6 +12,7 @@ function Breadcrumbs() {
     { label: "Dashboard", path: "/admin-dashboard" },
     { label: "Products", path: "/admin-products" },
     { label: "Warehouse", path: "/admin-warehouses" },
+    { label: "Categories", path: "/admin-categories" },
   ];
 
   // Find the breadcrumb that matches the current path
