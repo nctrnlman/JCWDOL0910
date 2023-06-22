@@ -27,13 +27,15 @@ module.exports = {
     };
 
     const otp = generateOTP();
+    const id_role = 3;
 
     let addUserQuery = `INSERT INTO users VALUES (null, ${db.escape(
       email
     )}, ${db.escape(first_name)}, ${db.escape(last_name)}, ${db.escape(
       gender
-    )}, null,null,false, ${otp})`;
+    )}, null,null,false, ${otp}, ${id_role})`;
     let addUserResult = await query(addUserQuery);
+    // tambah id_role untuk customer = 3
 
     const id_user = addUserResult.insertId; // Retrieve the newly generated id_user from the insert operation
 
@@ -61,6 +63,7 @@ module.exports = {
       .status(200)
       .send({ data: addUserResult, message: "Register success" });
   },
+
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -87,6 +90,7 @@ module.exports = {
 
       let payload = {
         id: isEmailExist[0].id_user,
+        id_role: isEmailExist[0].id_role,
       };
       const expiresIn = 60 * 60; // Set the token expiration time{1hr}
       const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp{in second}
@@ -98,9 +102,10 @@ module.exports = {
         data: {
           id: isEmailExist[0].id_user,
           email: isEmailExist[0].email,
-          first_name: isEmailExist[0].first_name,
-          last_name: isEmailExist[0].last_name,
-          image_path: isEmailExist[0].image_path,
+          id_role: isEmailExist[0].id_role,
+          // first_name: isEmailExist[0].first_name,
+          // last_name: isEmailExist[0].last_name,
+          // image_path: isEmailExist[0].image_path,
           expToken: expirationTimestamp,
         },
       });
@@ -108,6 +113,7 @@ module.exports = {
       res.status(error.status || 500).send(error);
     }
   },
+
   verify: async (req, res) => {
     try {
       const { otp, password, confirmPassword } = req.body;
