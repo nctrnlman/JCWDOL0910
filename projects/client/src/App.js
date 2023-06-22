@@ -22,6 +22,7 @@ import redirectWithoutToken from "./effects/redirectWithoutToken";
 import navigateLastVisitedPage from "./effects/navigateLastVisitedPage";
 import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
+import AdminCategory from "./pages/AdminCategory";
 
 function App() {
   const location = useLocation();
@@ -88,6 +89,7 @@ function App() {
         <Route path="/admin-dashboard" element={<DashboardAdmin />} />
         <Route path="/admin-products" element={<ProductsAdmin />} />
         <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
+        <Route path="/admin-category" element={<AdminCategory />} />
       </Routes>
     </div>
   );
