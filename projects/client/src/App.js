@@ -89,7 +89,7 @@ function App() {
         <Route path="/admin-dashboard" element={<DashboardAdmin />} />
         <Route path="/admin-products" element={<ProductsAdmin />} />
         <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
-        <Route path="/admin-category" element={<AdminCategory />} />
+        <Route path="/admin-categories" element={<AdminCategory />} />
       </Routes>
     </div>
   );

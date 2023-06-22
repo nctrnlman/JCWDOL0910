@@ -5,6 +5,7 @@ import { getAllProductCategories } from "../features/categories/ProductCategorie
 import CustomToast from "../components/CustomToast/CustomToast";
 import { toast } from "react-toastify";
 import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
+import NavbarDashboard from "../components/Admins/Navbar/NavbarDashboard";
 
 function AdminCategory() {
   const product_categories = useSelector(
@@ -98,12 +99,12 @@ function AdminCategory() {
     return product_categories?.map((category, index) => {
       const currentCount = index + 1;
       return (
-        <tr key={category.id}>
+        <tr key={category.id_category}>
           <td>{currentCount}</td>
           <td>{category.name}</td>
           <td>
             <button
-              className="btn"
+              className="btn btn-info btn-outline"
               onClick={() =>
                 selectCategory(category.id_category, category.name)
               }
@@ -113,7 +114,7 @@ function AdminCategory() {
           </td>
           <td>
             <button
-              className="btn"
+              className="btn btn-error btn-outline"
               onClick={() => {
                 setId(category.id_category);
                 setShowModalDelete(true);
@@ -132,23 +133,91 @@ function AdminCategory() {
   }, []);
 
   return (
-    <div className="overflow-x-auto w-3/4 m-auto">
-      <h1 className="text-center p-4">Admin : Category</h1>
-      <div>
-        <button className="btn" onClick={() => setShowModalAdd(true)}>
-          Create Category
-        </button>
-        {showModalAdd && (
+    <NavbarDashboard>
+      <div className="overflow-x-auto w-full px-3 lg:w-3/4 m-auto">
+        <h1 className="text-center p-4 font-bold uppercase">Categories List</h1>
+        <div>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowModalAdd(true)}
+          >
+            Create Category
+          </button>
+          {showModalAdd && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="modal modal-open">
+                <div className="modal-box">
+                  <button
+                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                    onClick={() => setShowModalAdd(false)}
+                  >
+                    ✕
+                  </button>
+                  <div className="card-body">
+                    <div className="form-control">
+                      <label className="label">
+                        <span className="label-text">Category Name</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Category Name"
+                        className="input input-bordered"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-control mt-6">
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleSubmitAdd}
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <table className="table table-zebra">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Name</th>
+              <th>Action</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>{renderCategoryList()}</tbody>
+        </table>
+        {showModalEdit && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="modal modal-open">
               <div className="modal-box">
                 <button
                   className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                  onClick={() => setShowModalAdd(false)}
+                  onClick={() => {
+                    setShowModalEdit(false);
+                    setId(null);
+                    setName("");
+                  }}
                 >
                   ✕
                 </button>
                 <div className="card-body">
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text">Category ID</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Category ID"
+                      className="input input-bordered"
+                      value={id}
+                      readOnly
+                    />
+                  </div>
                   <div className="form-control">
                     <label className="label">
                       <span className="label-text">Category Name</span>
@@ -164,7 +233,7 @@ function AdminCategory() {
                   <div className="form-control mt-6">
                     <button
                       className="btn btn-primary"
-                      onClick={handleSubmitAdd}
+                      onClick={handleSubmitEdit}
                     >
                       Submit
                     </button>
@@ -174,101 +243,38 @@ function AdminCategory() {
             </div>
           </div>
         )}
+        {showModalDelete && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="modal modal-open">
+              <div className="modal-box">
+                <button
+                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                  onClick={() => {
+                    setShowModalDelete(false);
+                    setId(null);
+                  }}
+                >
+                  ✕
+                </button>
+                <div className="card-body">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Are you sure you want to delete this category?
+                  </h3>
+                  <div className="form-control mt-6">
+                    <button
+                      className="btn btn-error"
+                      onClick={handleDeleteCategory}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <table className="table table-zebra">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Name</th>
-            <th>Action</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>{renderCategoryList()}</tbody>
-      </table>
-      {showModalEdit && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="modal modal-open">
-            <div className="modal-box">
-              <button
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                onClick={() => {
-                  setShowModalEdit(false);
-                  setId(null);
-                  setName("");
-                }}
-              >
-                ✕
-              </button>
-              <div className="card-body">
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Category ID</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Category ID"
-                    className="input input-bordered"
-                    value={id}
-                    readOnly
-                  />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Category Name</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Category Name"
-                    className="input input-bordered"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div className="form-control mt-6">
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleSubmitEdit}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {showModalDelete && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="modal modal-open">
-            <div className="modal-box">
-              <button
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                onClick={() => {
-                  setShowModalDelete(false);
-                  setId(null);
-                }}
-              >
-                ✕
-              </button>
-              <div className="card-body">
-                <h3 className="text-lg font-semibold mb-4">
-                  Are you sure you want to delete this category?
-                </h3>
-                <div className="form-control mt-6">
-                  <button
-                    className="btn btn-danger"
-                    onClick={handleDeleteCategory}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </NavbarDashboard>
   );
 }
 
