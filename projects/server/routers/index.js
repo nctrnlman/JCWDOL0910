@@ -4,6 +4,7 @@ const productRoutes = require("./productRoutes");
 const cartRoutes = require("./cartRoutes");
 const userProfileRoutes = require("./userProfileRoutes");
 const adminRoutes = require("./adminRoutes");
+
 module.exports = {
   userController,
   categoryRoutes,

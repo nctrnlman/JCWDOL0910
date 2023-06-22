@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { fetchProducts } from "../features/products/productSlice";
 import DisplayProduct from "../components/DisplayProduct";
 
+
 function LandingPage() {
   const dispatch = useDispatch();
 

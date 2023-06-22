@@ -17,6 +17,7 @@ import { fetchItemsCart } from "./features/carts/cartActions";
 import ProductCategory from "./pages/ProductCategory";
 import ProductDetail from "./pages/ProductDetail";
 import Products from "./pages/Products";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   const location = useLocation();
@@ -113,6 +114,7 @@ function App() {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/" element={<ResetPassword />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </div>
   );

@@ -6,6 +6,6 @@ const router = express.Router();
 router.get("/all-user", verifyToken, adminController.getAllUser);
 router.post("/assign-wh-admin/:id", verifyToken, adminController.assignWarehouseAdmin);
 router.get("/all-wh-admin", verifyToken, adminController.getAllWarehouseAdmin);
-router.post("/edit-admin/:id", verifyToken, adminController.editAdmin);
+router.post("/assign-wh-admin-to-wh/:id", verifyToken, adminController.assignWarehouseAdminToWH);
 
 module.exports = router;

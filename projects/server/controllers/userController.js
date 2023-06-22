@@ -103,9 +103,9 @@ module.exports = {
           id: isEmailExist[0].id_user,
           email: isEmailExist[0].email,
           id_role: isEmailExist[0].id_role,
-          // first_name: isEmailExist[0].first_name,
-          // last_name: isEmailExist[0].last_name,
-          // image_path: isEmailExist[0].image_path,
+          first_name: isEmailExist[0].first_name,
+          last_name: isEmailExist[0].last_name,
+          image_path: isEmailExist[0].image_path,
           expToken: expirationTimestamp,
         },
       });
@@ -231,4 +231,6 @@ module.exports = {
       res.status(e.status || 500).send(e);
     }
   },
+
+
 };
