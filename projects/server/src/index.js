@@ -33,15 +33,16 @@ app.use(express.static("public"));
 
 // ===========================
 // NOTE : Add your routes here
-app.use("/users", userRoutes);
-app.use("/user-profile", userProfileRoutes);
-app.use("/categories", categoryRoutes);
-app.use("/products", productRoutes);
-app.use("/carts", cartRoutes);
-app.use("/admins", adminRoutes);
-app.use("/warehouses", warehouseRoutes);
-app.use("/rajaongkir", rajaOngkirRoutes);
-app.use("/admins/products", adminProductRoutes);
+
+app.use("/api/users", userRoutes);
+app.use("/api/user-profile", userProfileRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/carts", cartRoutes);
+app.use("/api/admins", adminRoutes);
+app.use("/api/warehouses", warehouseRoutes);
+app.use("/api/rajaongkir", rajaOngkirRoutes);
+app.use("/api/admins/products", adminProductRoutes);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

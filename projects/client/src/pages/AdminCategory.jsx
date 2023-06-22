@@ -28,7 +28,7 @@ function AdminCategory() {
     e.preventDefault();
     try {
       let response = await Axios.post(
-        "http://localhost:8000/product_categories/add",
+        "http://localhost:8000/api/categories/add",
         { name }
       );
 
@@ -52,7 +52,7 @@ function AdminCategory() {
     e.preventDefault();
     try {
       let response = await Axios.patch(
-        `http://localhost:8000/product_categories/update`,
+        `http://localhost:8000/api/categories/update`,
         { name, id }
       );
 
@@ -76,7 +76,7 @@ function AdminCategory() {
   const handleDeleteCategory = async () => {
     try {
       let response = await Axios.delete(
-        `http://localhost:8000/product_categories/delete/${id}`
+        `http://localhost:8000/api/categories/delete/${id}`
       );
 
       toast(

@@ -30,7 +30,7 @@ export function fetchProducts(offset, limit, sort, filter) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/products/all-product",
+        "http://localhost:8000/api/products/all-product",
         {
           params: {
             offset: offset || 0,
@@ -51,7 +51,7 @@ export function getLatestProducts() {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/products/latest_products"
+        "http://localhost:8000/api/products/latest_products"
       );
       dispatch(setLatestProducts(response.data));
     } catch (error) {
@@ -64,7 +64,7 @@ export function getProductById(id) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/products/product-detail/${id}`
+        `http://localhost:8000/api/products/product-detail/${id}`
       );
       dispatch(setProducts(response.data));
     } catch (error) {
@@ -77,7 +77,7 @@ export function getProductByCategory(category, offset, limit, sort, filter) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/products/category`,
+        `http://localhost:8000/api/products/category`,
         {
           params: {
             offset: offset || 0,

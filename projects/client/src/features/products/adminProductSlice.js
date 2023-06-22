@@ -47,7 +47,7 @@ export function fetchAdminProducts(page = 1) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/admins/products/?page=${page}`
+        `http://localhost:8000/api/admins/products/?page=${page}`
       );
       const { products, totalPages } = response.data;
       dispatch(setProducts(products));
@@ -66,7 +66,7 @@ export function editProduct(id, productData) {
     console.log(productData, "productdata");
     try {
       const response = await axios.put(
-        `http://localhost:8000/admins/products/${id}`,
+        `http://localhost:8000/api/admins/products/${id}`,
         productData,
         {
           headers: {
@@ -89,7 +89,7 @@ export function deleteProducts(id_product) {
     const adminToken = localStorage.getItem("admin_token");
     try {
       await axios.delete(
-        `http://localhost:8000/admins/products/${id_product}`,
+        `http://localhost:8000/api/admins/products/${id_product}`,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
         }
@@ -105,7 +105,7 @@ export function addNewProduct(productData) {
     const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await axios.post(
-        "http://localhost:8000/admins/products/",
+        "http://localhost:8000/api/admins/products/",
         productData,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
