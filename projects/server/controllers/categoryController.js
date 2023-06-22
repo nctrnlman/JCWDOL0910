@@ -9,7 +9,6 @@ module.exports = {
       const product_categories = await query(
         `SELECT * FROM categories ORDER BY name ASC`
       );
-      // console.log(product_categories);
       return res.status(200).send(product_categories);
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
@@ -26,7 +25,6 @@ module.exports = {
           name
         )};`
       );
-      // console.log(checkCategory, "inicategory");
 
       if (checkCategory.length == 1) {
         return res
@@ -67,7 +65,10 @@ module.exports = {
         )} WHERE id_category = ${db.escape(id)} `
       );
 
-      return res.status(200).send(updateDatabase);
+      console.log(updateDatabase);
+      return res
+        .status(200)
+        .send({ updateDatabase, message: "Category update successfully" });
     } catch (error) {
       return res.status(error.statusCode || 500).status(error);
     }
