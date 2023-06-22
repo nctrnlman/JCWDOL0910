@@ -2,54 +2,44 @@ require("dotenv").config({
   path: ".env.local",
 });
 const { db, query } = require("../database");
+const { parseTotalStock } = require("../helper/productHelper");
+
 module.exports = {
   getLatestProducts: async (req, res) => {
     try {
-      const latest_products = await query(
-        `SELECT p.*, SUM(s.total_stock) AS total_stock
-		    FROM products p
-        INNER JOIN stocks s ON p.id_product=s.id_product
-        GROUP BY p.id_product
-        order by p.id_product desc limit 5;`
-      );
-      // Parse total_stock as an integer
-      latest_products.forEach((product) => {
-        product.total_stock = parseInt(product.total_stock);
-      });
-      console.log(latest_products);
-      return res.status(200).send(latest_products);
-    } catch (error) {
-      return res.status(error.statusCode || 500).send(error);
-    }
-  },
-  fetchProducts: async (req, res) => {
-    try {
-      const products = await query(
-        `SELECT p.*, SUM(s.total_stock) AS total_stock
+      const latestProductsQuery = `
+        SELECT p.*, SUM(s.total_stock) AS total_stock
         FROM products p
-        INNER JOIN stocks s ON p.id_product=s.id_product
-        GROUP BY p.id_product;`
-      );
-      // Parse total_stock as an integer
-      products.forEach((product) => {
-        product.total_stock = parseInt(product.total_stock);
-      });
-      console.log(products);
-      return res.status(200).send(products);
+        INNER JOIN stocks s ON p.id_product = s.id_product
+        GROUP BY p.id_product
+        ORDER BY p.id_product DESC
+        LIMIT 5;
+      `;
+      const latestProducts = await query(latestProductsQuery);
+      parseTotalStock(latestProducts);
+      console.log(latestProducts);
+      return res.status(200).send(latestProducts);
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
   },
+
   getAllProducts: async (req, res) => {
     try {
       const { offset, limit, sort, filter } = req.query;
 
-      let countProduct = `SELECT COUNT(*) AS total FROM products WHERE 1=1`;
-      let productsQuery = ` SELECT * FROM products WHERE 1=1`;
+      let countProductQuery = `SELECT COUNT(*) AS total FROM products`;
+      let productsQuery = `
+        SELECT p.*, SUM(s.total_stock) AS total_stock
+        FROM products p
+        JOIN stocks s ON p.id_product = s.id_product
+        WHERE 1=1
+        GROUP BY p.id_product
+      `;
 
       if (filter) {
         productsQuery += ` AND name LIKE '%${filter}%'`;
-        countProduct += ` AND name LIKE '%${filter}%'`;
+        countProductQuery += ` AND name LIKE '%${filter}%'`;
       }
 
       if (sort === "asc") {
@@ -62,7 +52,8 @@ module.exports = {
 
       console.log(productsQuery, "ini product");
       const products = await query(productsQuery);
-      const totalItems = await query(countProduct);
+      parseTotalStock(products);
+      const totalItems = await query(countProductQuery);
 
       return res.status(200).send({
         data: products,
@@ -78,18 +69,24 @@ module.exports = {
     try {
       const { offset, limit, sort, filter, category } = req.query;
 
-      let countProduct = `SELECT COUNT(DISTINCT p.id_product) as total FROM products p
-    JOIN categories c on p.id_category = c.id_category
-    WHERE c.name = "${category}"`;
+      let countProductQuery = `
+        SELECT COUNT(DISTINCT p.id_product) AS total
+        FROM products p
+        JOIN categories c ON p.id_category = c.id_category
+        WHERE c.name = "${category}"
+      `;
 
-      let productsQuery = `SELECT p.id_product, p.id_category, c.name as category, p.name as name, p.price, p.description, SUM(s.total_stock) as total_stock, p.image_url FROM products p
-    JOIN categories c on p.id_category = c.id_category
-    JOIN stocks s on p.id_product = s.id_product
-    WHERE c.name = "${category}"`;
+      let productsQuery = `
+        SELECT p.id_product, p.id_category, c.name AS category, p.name AS name, p.price, p.description, SUM(s.total_stock) AS total_stock, p.image_url
+        FROM products p
+        JOIN categories c ON p.id_category = c.id_category
+        JOIN stocks s ON p.id_product = s.id_product
+        WHERE c.name = "${category}"
+      `;
 
       if (filter) {
         productsQuery += ` AND p.name LIKE '%${filter}%'`;
-        countProduct += ` AND p.name LIKE '%${filter}%'`;
+        countProductQuery += ` AND p.name LIKE '%${filter}%'`;
       }
 
       if (sort === "asc") {
@@ -103,7 +100,8 @@ module.exports = {
       productsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
 
       const products = await query(productsQuery);
-      const totalItems = await query(countProduct);
+      parseTotalStock(products);
+      const totalItems = await query(countProductQuery);
 
       return res.status(200).send({
         data: products,
@@ -117,13 +115,16 @@ module.exports = {
     try {
       const idProduct = req.params.id;
 
-      const productQuery = `SELECT p.id_product, p.id_category, c.name as category, p.name as product_name, p.price, p.description, SUM(s.total_stock) as total_stock, p.image_url 
-                          FROM products p
-                          JOIN categories c ON p.id_category = c.id_category
-                          JOIN stocks s ON p.id_product = s.id_product
-                          WHERE p.id_product = ${db.escape(idProduct)};`;
+      const productQuery = `
+        SELECT p.id_product, p.id_category, c.name AS category, p.name AS product_name, p.price, p.description, SUM(s.total_stock) AS total_stock, p.image_url 
+        FROM products p
+        JOIN categories c ON p.id_category = c.id_category
+        JOIN stocks s ON p.id_product = s.id_product
+        WHERE p.id_product = ${db.escape(idProduct)};
+      `;
 
       const productById = await query(productQuery);
+      parseTotalStock(productById);
 
       return res.status(200).send(productById[0]);
     } catch (error) {

@@ -7,14 +7,20 @@ import {
 } from "../../features/carts/cartActions";
 import { updateCartItemQuantity } from "../../features/carts/helpers/cartHelpers";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import ConfirmationDialog from "./ConfirmationDialog";
+import DeleteModal from "../../components/modals/DeleteModal";
 import QuantityControl from "./QuantityControl";
 
 function CartItems({ item }) {
   const dispatch = useDispatch();
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
+  const [deleteItemName, setDeleteItemName] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleIncrease = () => {
+    const { quantity, total_stock } = item;
+    if (quantity >= total_stock) {
+      alert("Cannot increase quantity beyond available stock.");
+    }
     dispatch(increaseCartItemQuantity(item.id_product));
   };
 
@@ -22,7 +28,9 @@ function CartItems({ item }) {
     if (item.quantity > 1) {
       dispatch(decreaseCartItemQuantity(item.id_product));
     } else {
-      setShowConfirmation(true);
+      setShowDeleteModal(true);
+      setDeleteItemId(item.id_product);
+      setDeleteItemName(item.name);
     }
   };
 
@@ -32,12 +40,12 @@ function CartItems({ item }) {
   };
 
   const handleDelete = () => {
-    setShowConfirmation(false);
-    dispatch(deleteProductFromCart(item.id_product));
+    setShowDeleteModal(false);
+    dispatch(deleteProductFromCart(deleteItemId));
   };
 
   const handleCancelDelete = () => {
-    setShowConfirmation(false);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -59,12 +67,17 @@ function CartItems({ item }) {
           </div>
         </div>
         <div className="flex flex-row">
-          <button
+          <a
+            href="#delete_modal"
             className="px-2 py-1 bg-error text-white rounded"
-            onClick={() => setShowConfirmation(true)}
+            onClick={() => {
+              setShowDeleteModal(true);
+              setDeleteItemId(item.id_product);
+              setDeleteItemName(item.name);
+            }}
           >
             <RiDeleteBin5Line />
-          </button>
+          </a>
         </div>
       </div>
       <div className="flex justify-between items-center mt-3">
@@ -78,8 +91,9 @@ function CartItems({ item }) {
           Subtotal: {item.price * item.quantity}
         </p>
       </div>
-      {showConfirmation && (
-        <ConfirmationDialog
+      {showDeleteModal && (
+        <DeleteModal
+          deleteItemName={deleteItemName}
           handleDelete={handleDelete}
           handleCancelDelete={handleCancelDelete}
         />

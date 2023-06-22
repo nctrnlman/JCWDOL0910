@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../features/products/productSlice";
+import { fetchProducts } from "../../features/products/productSlice";
 import ProductCard from "./ProductCard";
 
 function DisplayProduct() {
@@ -21,7 +21,7 @@ function DisplayProduct() {
   const renderProductList = () => {
     const thisProduct = productList.data;
     return thisProduct?.map((product) => {
-      return <ProductCard product={product} />;
+      return <ProductCard key={product.id_product} product={product} />;
     });
   };
 

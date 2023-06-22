@@ -12,7 +12,9 @@ const AddToCartButton = ({ product, quantity }) => {
   }, [product.total_stock]);
 
   const handleButtonClick = () => {
-    dispatch(addToCart(product.id_product, quantity, cartItems));
+    if (isStockAvailable) {
+      dispatch(addToCart(product.id_product, quantity, cartItems));
+    }
   };
 
   const isUserLoggedIn = !!localStorage.getItem("user_token");
@@ -21,7 +23,7 @@ const AddToCartButton = ({ product, quantity }) => {
     <button
       onClick={handleButtonClick}
       disabled={!isUserLoggedIn || !isStockAvailable}
-      className="btn btn-secondary text-xs"
+      className="btn btn-primary text-xs"
     >
       {isStockAvailable ? "Add To Cart" : "Out of Stock"}
     </button>

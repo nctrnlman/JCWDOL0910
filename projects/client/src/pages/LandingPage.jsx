@@ -5,7 +5,7 @@ import LatestProducts from "../components/LatestProducts";
 import Navbar from "../components/Navbar/Navbar";
 import { useDispatch } from "react-redux";
 import { fetchProducts } from "../features/products/productSlice";
-import DisplayProduct from "../components/DisplayProduct";
+import DisplayProduct from "../components/Product/DisplayProduct";
 
 function LandingPage() {
   const dispatch = useDispatch();
@@ -15,7 +15,6 @@ function LandingPage() {
   }, []);
   return (
     <div className="bg-base-100">
-      <Navbar />
       <Header />
       <LatestProducts />
       <DisplayProduct />

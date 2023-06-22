@@ -30,8 +30,8 @@ export function getAddress() {
                         headers: { Authorization: `Bearer ${token}` },
                     }
                 );
-                console.log(response)
-                dispatch(setAddresses(response.data[0]));
+                console.log("slice", response)
+                dispatch(setAddresses(response.data));
             }
 
         } catch (error) {

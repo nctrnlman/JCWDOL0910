@@ -1,5 +1,5 @@
 import React from "react";
-import AddToCartButton from "./Cart/AddToCartButton";
+import AddToCartButton from "./Product/AddToCartButton";
 import BuyNowButton from "./Cart/BuyNowButton";
 
 const NewProduct = ({ product }) => {

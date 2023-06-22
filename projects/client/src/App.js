@@ -3,12 +3,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "./features/users/userSlice";
 import Profiling from "./pages/Profiling";
 import Cart from "./pages/Cart";
-import { toast } from "react-toastify";
-import CustomToast from "./components/CustomToast/CustomToast";
-import CustomToastOptions from "./components/CustomToast/CustomToastOptions";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Verification from "./pages/Verification";
@@ -17,6 +13,15 @@ import { fetchItemsCart } from "./features/carts/cartActions";
 import ProductCategory from "./pages/ProductCategory";
 import ProductDetail from "./pages/ProductDetail";
 import Products from "./pages/Products";
+import Navbar from "./components/Navbar/Navbar";
+import DashboardAdmin from "./pages/DashboardAdmin";
+import showToastProtectedRoutes from "./effects/showToastProtectedRoutes";
+import setLastVisitedPage from "./effects/setLastVisitedPage";
+import checkTokenExpiration from "./effects/checkTokenExpiration";
+import redirectWithoutToken from "./effects/redirectWithoutToken";
+import navigateLastVisitedPage from "./effects/navigateLastVisitedPage";
+import ProductsAdmin from "./pages/ProductsAdmin";
+import WarehousesAdmin from "./pages/WarehousesAdmin";
 import AdminCategory from "./pages/AdminCategory";
 
 function App() {
@@ -25,68 +30,34 @@ function App() {
   const navigate = useNavigate();
   const userToken = localStorage.getItem("user_token");
   const [showToast, setShowToast] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(false);
 
   useEffect(() => {
-    if (location.pathname !== "/login" && location.pathname !== "/register") {
-      sessionStorage.setItem(
-        "lastVisitedPage",
-        location.pathname + location.search
-      );
-    }
+    const isAdminRoute = location.pathname.startsWith("/admin");
+    setShowNavbar(!isAdminRoute);
   }, [location]);
 
   useEffect(() => {
-    const checkTokenExpiration = () => {
-      const expToken = localStorage.getItem("exp_token");
-      const currentTimestamp = Math.floor(Date.now() / 1000);
+    setLastVisitedPage(location);
+  }, [location]);
 
-      if (expToken && parseInt(expToken) <= currentTimestamp) {
-        dispatch(logoutUser());
-        navigate("/login");
-      }
-    };
-    checkTokenExpiration(); // Check token expiration on component mount
-    // Check token expiration every second
-    const interval = setInterval(checkTokenExpiration, 1000);
-    return () => {
-      clearInterval(interval); // Clear the interval on component unmount
-    };
+  useEffect(() => {
+    checkTokenExpiration(dispatch, navigate);
   }, [dispatch, navigate]);
 
   useEffect(() => {
-    if (
-      userToken &&
-      (location.pathname === "/login" || location.pathname === "/register")
-    ) {
-      navigate(sessionStorage.getItem("lastVisitedPage")); //if user tried to access login or register when they login,the user will navigate into last visited page
-    }
+    navigateLastVisitedPage(userToken, location, navigate);
+  }, [userToken, location, navigate]);
+
+  useEffect(() => {
+    redirectWithoutToken(userToken, location.pathname, navigate, setShowToast);
   }, [userToken, location.pathname, navigate]);
 
   useEffect(() => {
-    if (
-      !userToken &&
-      (location.pathname === "/cart" || location.pathname === "/profiling")
-    ) {
-      navigate("/"); // Redirect to "/" if user without token tries to access "/cart" or "/profiling"
-      setShowToast(true);
-    }
-  }, [userToken, location.pathname, navigate]);
-
-  useEffect(() => {
-    if (showToast) {
-      toast(
-        <CustomToast
-          type="error"
-          message={"You must be logged in to access this page."}
-        />,
-        CustomToastOptions
-      );
-      setShowToast(false);
-    }
+    showToastProtectedRoutes(showToast, setShowToast);
   }, [showToast]);
 
   useEffect(() => {
-    // Fetch the cart items when the user logs in
     if (userToken) {
       dispatch(fetchItemsCart());
     }
@@ -94,11 +65,14 @@ function App() {
 
   return (
     <div>
+      {showNavbar && <Navbar />}
       <Routes>
         {userToken === null ? (
           <>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password/" element={<ResetPassword />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
           </>
         ) : (
           <>
@@ -111,9 +85,10 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/verification/" element={<Verification />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/forget-password" element={<ForgetPassword />} />
-        <Route path="/reset-password/" element={<ResetPassword />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/admin-dashboard" element={<DashboardAdmin />} />
+        <Route path="/admin-products" element={<ProductsAdmin />} />
+        <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
         <Route path="/admin-category" element={<AdminCategory />} />
       </Routes>
     </div>
