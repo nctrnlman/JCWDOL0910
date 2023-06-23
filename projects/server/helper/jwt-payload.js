@@ -12,6 +12,6 @@ module.exports = {
       });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded?.id_user;
+    return decoded?.id;
   },
 };
