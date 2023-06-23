@@ -40,7 +40,7 @@ module.exports = {
 
       const id_user = addUserResult.insertId;
 
-      const token = jwt.sign({ id_user }, env.JWT_SECRET, { expiresIn: "24h" });
+      const token = jwt.sign({ id }, env.JWT_SECRET, { expiresIn: "24h" });
       console.log(token);
 
       await sendVerificationEmail(nodemailer, email, fullName, otp, token);
@@ -78,9 +78,9 @@ module.exports = {
       }
 
       const payload = {
-        id_user: isEmailExist[0].id_user,
+        id: isEmailExist[0].id_user,
       };
-      console.log(payload);
+      console.log(payload, "paylooaddd");
       const expiresIn = 60 * 60; // Set the token expiration time to 1 hour
       const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp (in seconds)
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
@@ -147,7 +147,7 @@ module.exports = {
           .send({ message: "Email does not exist", success: false });
       }
 
-      const payload = { id_user: checkEmail[0].id_user };
+      const payload = { id: checkEmail[0].id_user };
 
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
 

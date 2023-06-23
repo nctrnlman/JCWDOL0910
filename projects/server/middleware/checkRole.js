@@ -13,17 +13,12 @@ const checkAdminRole = async (req, res, next) => {
         INNER JOIN roles ON admins.id_role = roles.id_role
         WHERE admins.id_admin =${db.escape(adminId)}
     `;
+    console.log(adminId, "id admin");
     const result = await query(getAdminRoleQuery);
-
-    if (result.length === 0) {
-      res.status(404).send({
-        error: "You are not admins",
-      });
-      return;
-    }
+    console.log(result, "result");
 
     const adminRole = result[0].name.toLowerCase();
-
+    console.log(adminRole, "test");
     if (adminRole === "super admin") {
       next();
     } else {
