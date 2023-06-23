@@ -5,7 +5,7 @@ import SeeDetailButton from "./SeeDetailButton";
 import AddToCartButton from "./AddToCartButton";
 
 function ProductCard(props) {
-  const { product, openDeleteModal, openEditModal, imageSrc } = props;
+  const { product, openDeleteModal, openEditModal } = props;
   const location = useLocation();
   const isAdminRoute = location.pathname === "/admin-products";
 
@@ -15,6 +15,7 @@ function ProductCard(props) {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
+  const imageSrc = `http://localhost:8000${product.image_url}`;
 
   return (
     <div className="card bg-white w-[200px] lg:w-auto h-auto m-2 rounded-lg shadow-lg">

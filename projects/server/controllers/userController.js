@@ -80,7 +80,7 @@ module.exports = {
       const payload = {
         id_user: isEmailExist[0].id_user,
       };
-
+      console.log(payload);
       const expiresIn = 60 * 60; // Set the token expiration time to 1 hour
       const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp (in seconds)
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });

@@ -19,7 +19,6 @@ export default ProfileSLice.reducer;
 
 export function getProfile() {
   return async (dispatch) => {
-    // console.log(localStorage.user_token)
     try {
       const token = localStorage.user_token;
       if (token) {
@@ -29,7 +28,6 @@ export function getProfile() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log(response);
         dispatch(setProfile(response.data[0]));
       }
     } catch (error) {

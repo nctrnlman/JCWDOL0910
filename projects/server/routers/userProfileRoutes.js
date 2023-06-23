@@ -8,10 +8,23 @@ const uploadz = require("../middleware/multer");
 
 router.get("/", verifyToken, userProfileController.getUserProfile);
 router.post("/edit-data", verifyToken, userProfileController.editUserProfile);
-router.post("/upload", verifyToken, uploadz.single("file"), userProfileController.uploadProfilePicture);
+router.post(
+  "/upload",
+  verifyToken,
+  uploadz.single("file"),
+  userProfileController.uploadProfilePicture
+);
 router.post("/add-address", verifyToken, userProfileController.addAddress);
-router.post("/edit-address/:id", verifyToken, userProfileController.editAddress);
-router.delete("/delete-address/:id", verifyToken, userProfileController.deleteAddress);
+router.post(
+  "/edit-address/:id",
+  verifyToken,
+  userProfileController.editAddress
+);
+router.delete(
+  "/delete-address/:id",
+  verifyToken,
+  userProfileController.deleteAddress
+);
 router.get("/get-address", verifyToken, userProfileController.getUserAddress);
 
 module.exports = router;
