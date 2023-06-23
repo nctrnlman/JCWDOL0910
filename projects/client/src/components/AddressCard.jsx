@@ -31,23 +31,14 @@ function AddressCard() {
   }, []);
 
   useEffect(() => {
-    console.log("existing", existing_address);
-    console.log("temp", temp_address);
-    console.log("changed", changed);
-  });
-
-  useEffect(() => {
     if (existing_address) {
       setTempAddress(existing_address);
     }
   }, [existing_address]);
 
   const handleInputChange = (id_address, e) => {
-    console.log(e);
-    console.log("id_address dari handleinputchange", id_address);
     const { name, value } = e.target;
-    console.log("name dari handleinputchange", name);
-    console.log("value dari handleinputchange", value);
+
     setChanged(true);
     setTempAddress((prevState) => {
       const updatedAddress = prevState.map((address) => {
@@ -64,9 +55,6 @@ function AddressCard() {
   };
 
   const editAddress = async (id_address, event) => {
-    console.log(event.preventDefault());
-    console.log(event.target.value);
-    console.log("dari edit address", id_address);
     try {
       event.preventDefault();
       const token = localStorage.user_token;
@@ -83,10 +71,6 @@ function AddressCard() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
-        console.log(response);
-        // console.log(response.data[0]);
-        // dispatch(setUser(response.data[0]));
       }
     } catch (error) {
       console.log(error);
@@ -104,8 +88,6 @@ function AddressCard() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        // console.log(response.data[0]);
-        // dispatch(setUser(response.data[0]));
       }
     } catch (error) {
       console.log(error);
@@ -126,7 +108,10 @@ function AddressCard() {
       {existing_address
         ? temp_address.map((address_point) => {
             return (
-              <div className="mt-6 border-t border-gray-300">
+              <div
+                className="mt-6 border-t border-gray-300"
+                key={address_point.id_address}
+              >
                 <dl className="divide-y divide-gray-100">
                   <form id="address">
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

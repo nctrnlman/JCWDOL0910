@@ -2,13 +2,14 @@ require("dotenv").config({
   path: ".env.local",
 });
 const { db, query } = require("../database");
+const { getIdFromToken } = require("../helper/jwt-payload");
 
 module.exports = {
-
   getUserProfile: async (req, res) => {
     // console.log(req)
     try {
-      const idUser = req.user.id;
+      const idUser = req.user.id_user;
+      console.log(idUser);
       const getUserProfile = await query(
         `SELECT * FROM users WHERE id_user = ${db.escape(idUser)}`
       );
@@ -21,7 +22,7 @@ module.exports = {
 
   editUserProfile: async (req, res) => {
     try {
-      const idUser = req.user.id;
+      const idUser = req.user.id_user;
       // console.log(idUser)
       let dataUpdate = [];
       for (let prop in req.body) {
@@ -32,7 +33,7 @@ module.exports = {
       }
 
       const editUserQuery = `UPDATE users SET ${dataUpdate} WHERE id_user=${idUser}`;
-      console.log(editUserQuery)
+      console.log(editUserQuery);
 
       const editUser = await query(editUserQuery);
 
@@ -53,7 +54,7 @@ module.exports = {
     // console.log(req.file.filename)
     try {
       const { file } = req;
-      const idUser = req.user.id;
+      const idUser = req.user.id_user;
       const filepath = file ? "/" + file.filename : null;
       let response = await query(
         `UPDATE users SET image_path=${db.escape(
@@ -71,7 +72,7 @@ module.exports = {
     // console.log(req.body)
     try {
       // console.log(req.body)
-      const idUser = req.user.id;
+      const idUser = req.user.id_user;
       const { address, city, province, postal_code, is_primary } = req.body;
       // console.log(idUser)
       let addAddressQuery = `INSERT INTO addresses VALUES (null, 
@@ -82,9 +83,11 @@ module.exports = {
         ${db.escape(postal_code)},
         ${db.escape(is_primary)}
       )`;
-      console.log(addAddressQuery)
+      console.log(addAddressQuery);
       let addAddressResult = await query(addAddressQuery);
-      res.status(200).send({ data: addAddressResult, message: "Add Address Success" });
+      res
+        .status(200)
+        .send({ data: addAddressResult, message: "Add Address Success" });
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
@@ -92,7 +95,7 @@ module.exports = {
 
   editAddress: async (req, res) => {
     try {
-      console.log(req.params)
+      console.log(req.params);
       const idUser = req.user.id;
       const id_address = req.params.id;
       let addressDataUpdate = [];
@@ -101,15 +104,16 @@ module.exports = {
       }
 
       const editAddressQuery = `UPDATE addresses SET ${addressDataUpdate} WHERE id_address=${id_address}`;
-      console.log(editAddressQuery)
+      console.log(editAddressQuery);
 
       const editAddress = await query(editAddressQuery);
 
-      const getAddressQuery = `SELECT * FROM addresses WHERE id_address = ${db.escape(id_address)}`;
+      const getAddressQuery = `SELECT * FROM addresses WHERE id_address = ${db.escape(
+        id_address
+      )}`;
       const getAddress = await query(getAddressQuery);
 
       return res.status(200).send(getAddress);
-
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
@@ -117,9 +121,11 @@ module.exports = {
 
   deleteAddress: async (req, res) => {
     try {
-      id_address = req.params.id
-      let deleteAddressQuery = `DELETE FROM addresses WHERE id_address=${db.escape(id_address)};`
-      console.log(deleteAddressQuery)
+      id_address = req.params.id;
+      let deleteAddressQuery = `DELETE FROM addresses WHERE id_address=${db.escape(
+        id_address
+      )};`;
+      console.log(deleteAddressQuery);
       const execute_delete = await query(deleteAddressQuery);
       return res.status(200).send("Delete Address Succeed");
     } catch (error) {
@@ -130,7 +136,8 @@ module.exports = {
   getUserAddress: async (req, res) => {
     // console.log(req)
     try {
-      const idUser = req.user.id;
+      const idUser = getIdFromToken(req, res);
+      console.log(idUser, "getaddress");
       const getUserAddresses = await query(
         `SELECT * FROM addresses WHERE id_user = ${db.escape(idUser)}`
       );
@@ -140,6 +147,4 @@ module.exports = {
       return res.status(error.status || 500).send(error);
     }
   },
-
-
-}
+};

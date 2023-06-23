@@ -20,14 +20,14 @@ export function addToCart(id_product, quantity, cartItems) {
       );
       const { message, product, quantity: updatedQuantity } = response.data;
 
-      if (product.total_stock > updatedQuantity) {
+      if ((product.total_stock = updatedQuantity)) {
         // Check if stock is more than the updated quantity
         const updatedCartItems = isProductInCart(cartItems, product)
           ? updateCartItemQuantity(cartItems, product, updatedQuantity)
           : [...cartItems, { ...product, quantity: updatedQuantity }];
+        console.log(response, "cart");
+
         dispatch(setCartItems(updatedCartItems));
-      } else {
-        showCartErrorToast("Product stock is insufficient"); // Show error message or notification
       }
     } catch (error) {
       console.error("Error adding product to cart: ", error);
