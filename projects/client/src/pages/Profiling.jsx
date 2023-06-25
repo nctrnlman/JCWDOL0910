@@ -1,7 +1,9 @@
 import React from "react";
 import Navbar from "../components/Navbar/Navbar";
 import FormProfile from "../components/FormProfile";
-import AddressCard from "../components/AddressCard";
+import AddressContent from "../components/Address/AddressContent";
+import UserAddressTable from "../components/UserAddressTable";
+import UserAddressTable2 from "../components/UserAddressTable2";
 
 function Profiling() {
   return (
@@ -12,8 +14,15 @@ function Profiling() {
           <FormProfile />
         </div>
         <div className="col-start-2 col-span-4">
-          <AddressCard />
+          <UserAddressTable />
         </div>
+        <div className="col-start-2 col-span-4">
+          <UserAddressTable2 />
+        </div>
+        <div className="col-start-2 col-span-4">
+          <AddressContent />
+        </div>
+        {/* <AddressContent /> */}
         {/* <AddressCard /> */}
       </div>
     </div>

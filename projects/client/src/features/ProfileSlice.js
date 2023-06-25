@@ -1,37 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Axios from "axios";
 
-export const AddressSLice = createSlice({
-  name: "addresses",
+export const ProfileSLice = createSlice({
+  name: "profile",
   initialState: {
-    addresses: [],
+    profile: [],
   },
   reducers: {
-    setAddresses: (state, action) => {
-      state.addresses = action.payload;
+    setProfile: (state, action) => {
+      state.profile = action.payload;
     },
   },
 });
 
-export const { setAddresses } = AddressSLice.actions;
+export const { setProfile } = ProfileSLice.actions;
 
-export default AddressSLice.reducer;
+export default ProfileSLice.reducer;
 
-export function getAddress() {
+export function getProfile() {
   return async (dispatch) => {
     // console.log(localStorage.user_token)
     try {
       const token = localStorage.user_token;
+      console.log("token dari profile slice", token)
       if (token) {
-        console.log("hm");
         let response = await Axios.get(
-          `http://localhost:8000/api/user-profile/get-address`,
+          `http://localhost:8000/api/user-profile/`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("slice", response);
-        dispatch(setAddresses(response.data));
+        dispatch(setProfile(response.data[0]));
       }
     } catch (error) {
       console.log(error);

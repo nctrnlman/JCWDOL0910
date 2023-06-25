@@ -10,7 +10,7 @@ function FormProfile() {
   const [temp_profile, setTempProfile] = useState(existing_profile);
   const [changed, setChanged] = useState(false);
   const dispatch = useDispatch();
-
+  console.log("existing_profile", existing_profile)
   useEffect(() => {
     dispatch(getProfile());
     // console.log("dispatch", dispatch(getProfile()))

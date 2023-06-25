@@ -6,13 +6,14 @@ const { db, query } = require("../database");
 module.exports = {
 
   getUserProfile: async (req, res) => {
-    // console.log(req)
+    console.log(req)
     try {
       const idUser = req.user.id;
+      console.log(idUser);
       const getUserProfile = await query(
         `SELECT * FROM users WHERE id_user = ${db.escape(idUser)}`
       );
-      // console.log(getUserProfile);
+      console.log(getUserProfile);
       return res.status(200).send(getUserProfile);
     } catch (error) {
       return res.status(error.status || 500).send(error);
