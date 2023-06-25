@@ -45,9 +45,16 @@ export default adminProductSlice.reducer;
 
 export function fetchAdminProducts(page = 1) {
   return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/admins/products/?page=${page}`
+        `http://localhost:8000/api/admins/products/?page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+            ContentType: "multipart/form-data",
+          },
+        }
       );
       const { products, totalPages } = response.data;
       dispatch(setProducts(products));

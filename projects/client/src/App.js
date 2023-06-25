@@ -23,6 +23,7 @@ import navigateLastVisitedPage from "./effects/navigateLastVisitedPage";
 import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
 import AdminCategory from "./pages/AdminCategory";
+import StocksAdmin from "./pages/StocksAdmin";
 
 function App() {
   const location = useLocation();
@@ -90,6 +91,7 @@ function App() {
         <Route path="/admin-products" element={<ProductsAdmin />} />
         <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
         <Route path="/admin-categories" element={<AdminCategory />} />
+        <Route path="/admin-stocks" element={<StocksAdmin />} />
       </Routes>
     </div>
   );

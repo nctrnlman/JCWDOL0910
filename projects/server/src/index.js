@@ -11,6 +11,7 @@ const {
   warehouseRoutes,
   rajaOngkirRoutes,
   adminProductRoutes,
+  stockRoutes,
 } = require("../routers/");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
@@ -43,6 +44,7 @@ app.use("/api/admins", adminRoutes);
 app.use("/api/warehouses", warehouseRoutes);
 app.use("/api/rajaongkir", rajaOngkirRoutes);
 app.use("/api/admins/products", adminProductRoutes);
+app.use("/api/stocks", stockRoutes);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

@@ -25,7 +25,7 @@ function NavbarDashboard({ children }) {
           {/* Navbar menu content here */}
           <NavbarDashboardMenu menuType="horizontal" />
         </div>
-        <Breadcrumbs />
+        {/* <Breadcrumbs /> */}
         {children}
       </div>
       <div className="drawer-side">
