@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { RiLogoutBoxLine } from "react-icons/ri";
-import Breadcrumbs from "../Breadcrumbs";
 import NavbarDashboardDrawer from "./NavbarDashboardDrawer";
 import NavbarDashboardMenu from "./NavbarDashboardMenu";
 
@@ -25,7 +24,6 @@ function NavbarDashboard({ children }) {
           {/* Navbar menu content here */}
           <NavbarDashboardMenu menuType="horizontal" />
         </div>
-        {/* <Breadcrumbs /> */}
         {children}
       </div>
       <div className="drawer-side">

@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  addNewProduct,
-  createProduct,
-  fetchAdminProducts,
-} from "../../features/products/adminProductSlice";
+import { addNewProduct } from "../../features/products/adminProductSlice";
 
 const CreateModalProduct = ({ closeCreateModal, categories }) => {
   const dispatch = useDispatch();

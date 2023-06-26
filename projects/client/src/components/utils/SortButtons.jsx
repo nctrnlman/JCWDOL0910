@@ -1,9 +1,4 @@
 import React, { useState } from "react";
-import {
-  AiOutlineSortAscending,
-  AiOutlineSortDescending,
-} from "react-icons/ai";
-import { BsSortNumericDown, BsSortNumericUp } from "react-icons/bs";
 
 const SortButtons = ({ handleSort }) => {
   const [selectedSort, setSelectedSort] = useState("");

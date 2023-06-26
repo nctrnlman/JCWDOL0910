@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import StocksTable from "./StocksTable";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchStockData, setSort } from "../../../features/stocks/stocksSlice";
-import Pagination from "../../Pagination";
+import Pagination from "../../utils/Pagination";
 import SearchInputList from "../../utils/SearchInputList";
 import SortButtons from "../../utils/SortButtons";
 
