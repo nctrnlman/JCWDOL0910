@@ -30,7 +30,7 @@ function NavbarDashboard({ children }) {
       </div>
       <div className="drawer-side">
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-        <ul className="menu menu-vertical items-start p-4 w-64 h-full bg-base-200 justify-between">
+        <ul className="menu menu-vertical items-start p-4 w-56 sm:w-64 h-full bg-base-200 justify-between">
           <div>
             <NavbarDashboardMenu menuType="vertical" />
           </div>

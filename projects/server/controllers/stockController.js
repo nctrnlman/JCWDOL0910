@@ -1,13 +1,10 @@
-require("dotenv").config({
-  path: ".env.local",
-});
 const { db, query } = require("../database");
 const { parseTotalStock } = require("../helper/productHelper");
 
 module.exports = {
   fetchStocks: async (req, res) => {
     try {
-      let { page } = req.query;
+      let { page, search } = req.query;
       const itemsPerPage = 10;
 
       page = parseInt(page);
@@ -17,18 +14,30 @@ module.exports = {
 
       const offset = (page - 1) * itemsPerPage;
 
-      const stocksQuery = `
+      let stocksQuery = `
         SELECT s.*, p.name AS product_name, w.name AS warehouse_name
         FROM stocks s
         INNER JOIN products p ON s.id_product = p.id_product
         INNER JOIN warehouses w ON s.id_warehouse = w.id_warehouse
+      `;
+
+      let countQuery = `
+        SELECT COUNT(*) AS total
+        FROM stocks s
+        INNER JOIN products p ON s.id_product = p.id_product
+        INNER JOIN warehouses w ON s.id_warehouse = w.id_warehouse
+      `;
+
+      if (search) {
+        search = search.toLowerCase();
+        stocksQuery += ` WHERE LOWER(p.name) LIKE '%${search}%'`;
+        countQuery += ` WHERE LOWER(p.name) LIKE '%${search}%'`;
+      }
+
+      stocksQuery += `
         ORDER BY id_product
         LIMIT ${itemsPerPage}
         OFFSET ${offset};
-      `;
-
-      const countQuery = `
-        SELECT COUNT(*) AS total FROM stocks;
       `;
 
       const [stocks, countResult] = await Promise.all([

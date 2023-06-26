@@ -30,12 +30,12 @@ export const { setStock, setCurrentPage, setTotalPages, setItemsPerPage } =
 
 export default stockSlice.reducer;
 
-export function fetchStockData(page = 1) {
+export function fetchStockData(page = 1, search = "") {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/stocks/?page=${page}`,
+        `http://localhost:8000/api/stocks/?page=${page}&search=${search}`,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
         }

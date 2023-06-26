@@ -1,7 +1,7 @@
 import React from "react";
 
 const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
-  const pageRange = 5; // Number of page buttons to display
+  const pageRange = 2; // Number of page buttons to display
 
   const renderPageButtons = () => {
     const pageButtons = [];
@@ -28,6 +28,32 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
       );
     }
 
+    // Add ellipsis button if there are more pages beyond the page range
+    if (endPage < totalPages) {
+      pageButtons.push(
+        <button
+          key="ellipsis"
+          className="join-item btn btn-disabled btn-sm"
+          disabled
+        >
+          ...
+        </button>
+      );
+
+      // Add the last page button
+      pageButtons.push(
+        <button
+          key={totalPages}
+          className={`join-item btn ${
+            totalPages === currentPage ? "btn-primary" : "btn-outline"
+          } btn-sm`}
+          onClick={() => handlePageChange(totalPages)}
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
     return pageButtons;
   };
 
@@ -38,7 +64,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
         disabled={currentPage === 1}
         onClick={() => handlePageChange(1)}
       >
-        First
+        «
       </button>
       <button
         className="join-item btn btn-primary btn-outline btn-sm"
@@ -60,7 +86,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
         disabled={currentPage === totalPages}
         onClick={() => handlePageChange(totalPages)}
       >
-        Last
+        »
       </button>
     </div>
   );
