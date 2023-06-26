@@ -1,7 +1,7 @@
 import React from "react";
 import StocksTableBody from "./StocksTableBody";
 
-function StocksTable({ stockProducts, currentPage, itemsPerPage }) {
+function StocksTable({ stockProducts, currentPage }) {
   return (
     <table className="table table-zebra  text-black bg-primary h-3/4 lg:h-full lg:max-h-fit w-full lg:w-screen lg:max-w-screen-xl">
       {/* head */}

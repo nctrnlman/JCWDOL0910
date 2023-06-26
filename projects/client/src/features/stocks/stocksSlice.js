@@ -8,6 +8,7 @@ export const stockSlice = createSlice({
     currentPage: 1,
     totalPages: 1,
     itemsPerPage: 0,
+    sort: "",
   },
   reducers: {
     setStock: (state, action) => {
@@ -23,19 +24,27 @@ export const stockSlice = createSlice({
     setItemsPerPage: (state, action) => {
       state.itemsPerPage = action.payload;
     },
+    setSort: (state, action) => {
+      state.sort = action.payload;
+    },
   },
 });
-export const { setStock, setCurrentPage, setTotalPages, setItemsPerPage } =
-  stockSlice.actions;
+export const {
+  setStock,
+  setCurrentPage,
+  setTotalPages,
+  setItemsPerPage,
+  setSort,
+} = stockSlice.actions;
 
 export default stockSlice.reducer;
 
-export function fetchStockData(page = 1, search = "") {
+export function fetchStockData(page = 1, search = "", sort = "") {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/stocks/?page=${page}&search=${search}`,
+        `http://localhost:8000/api/stocks/?page=${page}&search=${search}&sort=${sort}`,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
         }

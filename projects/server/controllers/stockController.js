@@ -4,7 +4,7 @@ const { parseTotalStock } = require("../helper/productHelper");
 module.exports = {
   fetchStocks: async (req, res) => {
     try {
-      let { page, search } = req.query;
+      let { page, search, sort } = req.query;
       const itemsPerPage = 10;
 
       page = parseInt(page);
@@ -30,12 +30,27 @@ module.exports = {
 
       if (search) {
         search = search.toLowerCase();
-        stocksQuery += ` WHERE LOWER(p.name) LIKE '%${search}%'`;
-        countQuery += ` WHERE LOWER(p.name) LIKE '%${search}%'`;
+        stocksQuery += ` WHERE LOWER(p.name) LIKE '%${search}%' OR LOWER(w.name) LIKE '%${search}%'`;
+        countQuery += ` WHERE LOWER(p.name) LIKE '%${search}%' OR LOWER(w.name) LIKE '%${search}%'`;
+      }
+
+      if (sort === "a-z") {
+        stocksQuery += ` ORDER BY p.name ASC`;
+      } else if (sort === "z-a") {
+        stocksQuery += ` ORDER BY p.name DESC`;
+      } else if (sort === "highest") {
+        stocksQuery += ` ORDER BY s.total_stock DESC`;
+      } else if (sort === "lowest") {
+        stocksQuery += ` ORDER BY s.total_stock ASC`;
+      } else if (sort === "warehouse-asc") {
+        stocksQuery += ` ORDER BY w.name ASC`;
+      } else if (sort === "warehouse-desc") {
+        stocksQuery += ` ORDER BY w.name DESC`;
+      } else {
+        stocksQuery += ` ORDER BY p.name ASC`;
       }
 
       stocksQuery += `
-        ORDER BY id_product
         LIMIT ${itemsPerPage}
         OFFSET ${offset};
       `;
