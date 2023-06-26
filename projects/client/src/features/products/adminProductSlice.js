@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+import CustomToast from "../../components/CustomToast/CustomToast";
+import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 
 export const adminProductSlice = createSlice({
   name: "admin-products",
@@ -67,6 +70,26 @@ export function fetchAdminProducts(page = 1) {
   };
 }
 
+export function fetchAllAdminProducts() {
+  return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/admins/products/all",
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
+      const { products } = response.data;
+      dispatch(setProducts(products));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export function editProduct(id, productData) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
@@ -121,8 +144,11 @@ export function addNewProduct(productData) {
       dispatch(addProduct(response.data));
       console.log(response);
     } catch (error) {
-      console.error("Error adding new product:", error);
-      console.log(error, "test");
+      console.log(error.response, "test");
+      toast(
+        <CustomToast type={"error"} message={error.response.data} />,
+        CustomToastOptions
+      );
     }
   };
 }

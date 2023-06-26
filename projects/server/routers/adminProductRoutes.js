@@ -10,6 +10,14 @@ router.get(
   checkRole.fetchDataforAdmins,
   adminProductController.fetchProducts
 );
+
+// Add the new route for getAllProducts
+router.get(
+  "/all",
+  checkRole.fetchDataforAdmins,
+  adminProductController.getAllProducts
+);
+
 router.post(
   "/",
   checkRole.checkAdminRole,

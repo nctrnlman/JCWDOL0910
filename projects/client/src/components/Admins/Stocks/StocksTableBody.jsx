@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-function StocksTableBody({ stockProducts, currentPage }) {
+function StocksTableBody({ stockProducts, currentPage, openDeleteModal }) {
   const itemsPerPage = useSelector((state) => state.stockProducts.itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
 
@@ -24,6 +24,9 @@ function StocksTableBody({ stockProducts, currentPage }) {
               <a
                 className="btn btn-xs w-12 lg:w-2/4 btn-error lg:btn-sm"
                 href="#delete_modal"
+                onClick={() =>
+                  openDeleteModal(stock.id_stock, stock.product_name)
+                }
               >
                 Delete
               </a>

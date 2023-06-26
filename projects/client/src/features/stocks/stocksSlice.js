@@ -27,14 +27,19 @@ export const stockSlice = createSlice({
     setSort: (state, action) => {
       state.sort = action.payload;
     },
+    addStock: (state, action) => {
+      state.stockProduct.push(action.payload);
+    },
   },
 });
+
 export const {
   setStock,
   setCurrentPage,
   setTotalPages,
   setItemsPerPage,
   setSort,
+  addStock,
 } = stockSlice.actions;
 
 export default stockSlice.reducer;
@@ -58,6 +63,33 @@ export function fetchStockData(page = 1, search = "", sort = "") {
       console.log(response.data, "fetchstock");
     } catch (error) {
       console.error("Error fetching warehouses:", error);
+    }
+  };
+}
+
+export function addNewStock(idWarehouse, idProduct, quantity) {
+  return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/stocks",
+        {
+          id_warehouse: idWarehouse,
+          id_product: idProduct,
+          quantity: quantity,
+        },
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
+      );
+
+      // Assuming the response contains the newly created stock object
+      const newStock = response.data;
+
+      dispatch(addStock(newStock));
+      console.log(response.data, "addStock");
+    } catch (error) {
+      console.error("Error adding stock:", error);
     }
   };
 }

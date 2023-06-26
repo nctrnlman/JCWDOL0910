@@ -30,7 +30,6 @@ const CreateModalProduct = ({ closeCreateModal, categories }) => {
     formData.append("image_url", image);
 
     dispatch(addNewProduct(formData));
-    window.location.reload();
     closeCreateModal();
   };
 
