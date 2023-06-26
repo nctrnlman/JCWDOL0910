@@ -71,4 +71,129 @@ module.exports = {
       return res.status(error.statusCode || 500).send(error);
     }
   },
+  updateStock: async (req, res) => {
+    try {
+      const { id_product, id_warehouse, quantity, status } = req.body;
+
+      const selectStockQuery = `
+        SELECT total_stock,id_stock
+        FROM stocks
+        WHERE id_product = ${db.escape(id_product)}
+          AND id_warehouse = ${db.escape(id_warehouse)}
+      `;
+      const [currentStock] = await query(selectStockQuery);
+
+      const { id_stock, total_stock } = currentStock;
+
+      let newStock;
+      if (status === "adding stock") {
+        newStock = total_stock + quantity;
+      } else if (status === "subtracting stock") {
+        newStock = total_stock - quantity;
+
+        if (newStock < 0) {
+          return res
+            .status(400)
+            .send({ message: "Stock quantity cannot be lower than 0" });
+        }
+      } else {
+        return res.status(400).send({ message: "Invalid status provided" });
+      }
+
+      const updateStockQuery = `
+        UPDATE stocks
+        SET total_stock = ${db.escape(newStock)}
+        WHERE id_product = ${db.escape(id_product)}
+          AND id_warehouse = ${db.escape(id_warehouse)}
+      `;
+      await query(updateStockQuery);
+
+      const insertHistoryQuery = `
+        INSERT INTO stock_history (id_stock, status, stock_change, created_at)
+        VALUES (${db.escape(id_stock)}, ${db.escape(status)}, ${db.escape(
+        quantity
+      )}, CURRENT_TIMESTAMP)
+      `;
+      await query(insertHistoryQuery);
+
+      return res.status(200).send({ message: "Stock updated successfully" });
+    } catch (error) {
+      return res.status(error.statusCode || 500).send(error);
+    }
+  },
+
+  addStock: async (req, res) => {
+    try {
+      const { id_product, id_warehouse, quantity } = req.body;
+
+      const checkStockQuery = `
+      SELECT id_stock, total_stock
+      FROM stocks
+      WHERE id_product = ${db.escape(id_product)}
+        AND id_warehouse = ${db.escape(id_warehouse)}
+    `;
+      const [existingStock] = await query(checkStockQuery);
+
+      if (existingStock) {
+        return res
+          .status(409)
+          .send({ message: "Stock already exists in the specified warehouse" });
+      } else {
+        const insertStockQuery = `
+        INSERT INTO stocks (id_product, id_warehouse, total_stock)
+        VALUES (${db.escape(id_product)}, ${db.escape(
+          id_warehouse
+        )}, ${db.escape(quantity)})
+      `;
+        const result = await query(insertStockQuery);
+
+        const id_stock = result.insertId;
+
+        const insertHistoryQuery = `
+          INSERT INTO stock_history (id_stock, status, stock_change, created_at)
+          VALUES (${db.escape(id_stock)}, 'adding stock', ${db.escape(
+          quantity
+        )}, CURRENT_TIMESTAMP)
+        `;
+        await query(insertHistoryQuery);
+
+        return res.status(200).send({ message: "Stock added successfully" });
+      }
+    } catch (error) {
+      return res.status(error.statusCode || 500).send(error);
+    }
+  },
+  deleteStock: async (req, res) => {
+    try {
+      const { id_stock } = req.query;
+      const checkStockQuery = `
+        SELECT id_stock
+        FROM stocks
+        WHERE id_stock = ${db.escape(id_stock)}
+      `;
+      const [existingStock] = await query(checkStockQuery);
+
+      if (!existingStock) {
+        return res
+          .status(404)
+          .send({ message: "Stock not found with the provided ID" });
+      } else {
+        const deleteStockQuery = `
+          DELETE FROM stocks
+          WHERE id_stock = ${db.escape(id_stock)}
+        `;
+        await query(deleteStockQuery);
+
+        const deleteHistoryQuery = `
+          DELETE FROM stock_history
+          WHERE id_stock = ${db.escape(id_stock)}
+        `;
+        await query(deleteHistoryQuery);
+
+        return res.status(200).send({ message: "Stock deleted successfully" });
+      }
+    } catch (error) {
+      return res.status(error.statusCode || 500).send(error);
+    }
+  },
 };

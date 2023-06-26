@@ -32,14 +32,23 @@ function StocksContent() {
   }, [dispatch, currentPage, searchInput, selectedSort]);
 
   return (
-    <div className="flex flex-col lg:justify-center lg:items-center px-5">
-      <h1 className="menu-title font-bold text-lg p-2">Stocks List</h1>
-      <div className="p-2 mb-2">
-        <SearchInputList
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-        />
-        <SortButtons handleSort={handleSort} />
+    <div className="flex flex-col px-5">
+      <div className="lg:flex-col lg:flex lg:justify-center lg:items-center">
+        <h1 className="menu-title font-bold text-lg p-2">Stocks List</h1>
+        <div className="p-2 mb-2">
+          <SearchInputList
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+          />
+        </div>
+        <div>
+          <SortButtons handleSort={handleSort} />
+        </div>
+      </div>
+      <div className="lg:flex lg:justify-start py-3">
+        <a className="btn md:btn-wide btn-primary lg:my-2" href="#create_modal">
+          Add New Warehouse
+        </a>
       </div>
       <div className="overflow-x-auto rounded-xl">
         <StocksTable stockProducts={stockProducts} currentPage={currentPage} />
