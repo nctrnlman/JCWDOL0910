@@ -73,22 +73,21 @@ module.exports = {
   },
   updateStock: async (req, res) => {
     try {
-      const { id_product, id_warehouse, quantity, status } = req.body;
+      const { id_stock, quantity, status } = req.body;
 
       const selectStockQuery = `
-        SELECT total_stock,id_stock
-        FROM stocks
-        WHERE id_product = ${db.escape(id_product)}
-          AND id_warehouse = ${db.escape(id_warehouse)}
-      `;
+      SELECT total_stock
+      FROM stocks
+      WHERE id_stock = ${db.escape(id_stock)}
+    `;
       const [currentStock] = await query(selectStockQuery);
 
-      const { id_stock, total_stock } = currentStock;
+      const { total_stock } = currentStock;
 
       let newStock;
-      if (status === "adding stock") {
+      if (status === "incoming") {
         newStock = total_stock + quantity;
-      } else if (status === "subtracting stock") {
+      } else if (status === "outgoing") {
         newStock = total_stock - quantity;
 
         if (newStock < 0) {
@@ -101,19 +100,18 @@ module.exports = {
       }
 
       const updateStockQuery = `
-        UPDATE stocks
-        SET total_stock = ${db.escape(newStock)}
-        WHERE id_product = ${db.escape(id_product)}
-          AND id_warehouse = ${db.escape(id_warehouse)}
-      `;
+      UPDATE stocks
+      SET total_stock = ${db.escape(newStock)}
+      WHERE id_stock = ${db.escape(id_stock)}
+    `;
       await query(updateStockQuery);
 
       const insertHistoryQuery = `
-        INSERT INTO stock_history (id_stock, status, stock_change, created_at)
-        VALUES (${db.escape(id_stock)}, ${db.escape(status)}, ${db.escape(
+      INSERT INTO stock_history (id_stock, status, stock_change, created_at)
+      VALUES (${db.escape(id_stock)}, ${db.escape(status)}, ${db.escape(
         quantity
       )}, CURRENT_TIMESTAMP)
-      `;
+    `;
       await query(insertHistoryQuery);
 
       return res.status(200).send({ message: "Stock updated successfully" });

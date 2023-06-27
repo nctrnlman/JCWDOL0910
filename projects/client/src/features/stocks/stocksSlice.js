@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const stockSlice = createSlice({
-  name: "stocks products",
+  name: "stocks",
   initialState: {
     stockProduct: [],
     currentPage: 1,
@@ -30,6 +30,15 @@ export const stockSlice = createSlice({
     addStock: (state, action) => {
       state.stockProduct.push(action.payload);
     },
+    updateStock: (state, action) => {
+      const updatedStock = action.payload;
+      const index = state.stockProduct.findIndex(
+        (stock) => stock.id_stock === updatedStock.id_stock
+      );
+      if (index !== -1) {
+        state.stockProduct[index] = updatedStock;
+      }
+    },
   },
 });
 
@@ -40,6 +49,7 @@ export const {
   setItemsPerPage,
   setSort,
   addStock,
+  updateStock,
 } = stockSlice.actions;
 
 export default stockSlice.reducer;
@@ -60,9 +70,8 @@ export function fetchStockData(page = 1, search = "", sort = "") {
       dispatch(setCurrentPage(page));
       dispatch(setTotalPages(totalPages));
       dispatch(setItemsPerPage(itemsPerPage));
-      console.log(response.data, "fetchstock");
     } catch (error) {
-      console.error("Error fetching warehouses:", error);
+      console.error("Error fetching stocks:", error);
     }
   };
 }
@@ -82,14 +91,58 @@ export function addNewStock(idWarehouse, idProduct, quantity) {
           headers: { Authorization: `Bearer ${adminToken}` },
         }
       );
-
-      // Assuming the response contains the newly created stock object
       const newStock = response.data;
 
       dispatch(addStock(newStock));
-      console.log(response.data, "addStock");
     } catch (error) {
       console.error("Error adding stock:", error);
+    }
+  };
+}
+
+export function updateStockData(stockId, quantity, status) {
+  return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/stocks/`,
+        {
+          id_stock: stockId,
+          quantity: quantity,
+          status: status,
+        },
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
+      );
+
+      const updatedStock = response.data;
+
+      dispatch(updateStock(updatedStock));
+      dispatch(fetchStockData());
+    } catch (error) {
+      console.error("Error editing stock:", error);
+      console.log(error.response);
+    }
+  };
+}
+
+export function deleteStockData(id_stock) {
+  return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/api/stocks?id_stock=${id_stock}`,
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
+      );
+      dispatch(fetchStockData());
+      console.log(response, "response delete");
+      console.log(id_stock, "slice");
+    } catch (error) {
+      console.error("Error deleting warehouse:", error);
+      console.log(error.response);
     }
   };
 }

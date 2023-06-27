@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import StocksTable from "./StocksTable";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchStockData, setSort } from "../../../features/stocks/stocksSlice";
+import {
+  deleteStockData,
+  fetchStockData,
+  setSort,
+} from "../../../features/stocks/stocksSlice";
 import Pagination from "../../utils/Pagination";
 import SearchInputList from "../../utils/SearchInputList";
 import SortButtons from "../../utils/SortButtons";
 import DeleteModal from "../../modals/DeleteModal";
 import CreateModalStock from "../../modals/CreateModalStock";
+import EditModalStock from "../../modals/EditModalStock";
 
 function StocksContent() {
   const stockProducts = useSelector(
@@ -18,7 +23,9 @@ function StocksContent() {
   const [selectedSort, setSelectedSort] = useState("");
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
+  const [editItemId, setEditItemId] = useState(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -39,8 +46,17 @@ function StocksContent() {
   };
 
   const handleDelete = async (id_stock) => {
-    // await dispatch(deleteWarehouse(id_warehouse));
+    await dispatch(deleteStockData(id_stock));
     closeDeleteModal();
+  };
+
+  const openEditModal = (id_stock) => {
+    setEditItemId(id_stock);
+    setEditModalOpen(true);
+  };
+  const closeEditModal = () => {
+    setEditItemId(null);
+    setEditModalOpen(false);
   };
 
   const handlePageChange = (page) => {
@@ -65,23 +81,24 @@ function StocksContent() {
           <SortButtons handleSort={handleSort} />
         </div>
       </div>
-      <div className="lg:flex lg:justify-start py-3">
+      <div className="lg:flex lg:justify-center lg:items-center py-3">
         <a
           className="btn md:btn-wide btn-primary lg:my-2"
           href="#create_modal"
           onClick={() => setCreateModalOpen(true)}
         >
-          Add New Warehouse
+          Add New Stock
         </a>
       </div>
-      <div className="overflow-x-auto rounded-xl">
+      <div className="overflow-x-auto rounded-xl lg:flex lg:justify-center lg:items-center">
         <StocksTable
           stockProducts={stockProducts}
           currentPage={currentPage}
           openDeleteModal={openDeleteModal}
+          openEditModal={openEditModal}
         />
       </div>
-      <div className="lg:w-3/4">
+      <div className="lg:flex lg:justify-center lg:items-center">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -93,6 +110,9 @@ function StocksContent() {
           stockProducts={stockProducts}
           closeCreateModal={() => setCreateModalOpen(false)}
         />
+      )}
+      {editModalOpen && editItemId && (
+        <EditModalStock stockId={editItemId} closeEditModal={closeEditModal} />
       )}
       {deleteItemId && (
         <DeleteModal

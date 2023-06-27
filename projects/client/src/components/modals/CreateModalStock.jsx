@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addNewStock,
-  fetchAllData,
-  fetchStockData,
-} from "../../features/stocks/stocksSlice";
+import { addNewStock, fetchStockData } from "../../features/stocks/stocksSlice";
 import { fetchWarehouses } from "../../features/warehouses/warehouseSlice";
-import {
-  fetchAdminProducts,
-  fetchAllAdminProducts,
-} from "../../features/products/adminProductSlice";
+import { fetchAllAdminProducts } from "../../features/products/adminProductSlice";
 
 const CreateModalStock = ({ closeCreateModal }) => {
   const dispatch = useDispatch();
   const [warehouseId, setWarehouseId] = useState("");
   const [productId, setProductId] = useState("");
   const [quantity, setQuantity] = useState("");
-  const stockProducts = useSelector((state) => state.adminProducts.products);
+  const products = useSelector((state) => state.adminProducts.products);
   const warehouses = useSelector((state) => state.warehouses.warehouse);
-  console.log(stockProducts);
   const handleWarehouseChange = (e) => {
     const selectedWarehouseId = e.target.value;
     setWarehouseId(selectedWarehouseId);
@@ -82,12 +74,9 @@ const CreateModalStock = ({ closeCreateModal }) => {
                   required
                 >
                   <option value="">Select product</option>
-                  {stockProducts.map((stockProduct) => (
-                    <option
-                      key={stockProduct.id_product}
-                      value={stockProduct.id_product}
-                    >
-                      {stockProduct.name}
+                  {products.map((product) => (
+                    <option key={product.id_product} value={product.id_product}>
+                      {product.name}
                     </option>
                   ))}
                 </select>

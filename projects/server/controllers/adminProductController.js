@@ -10,7 +10,6 @@ module.exports = {
   getAllProducts: async (req, res) => {
     try {
       const products = await query(adminProductQueries.getAllProductsQuery);
-      parseTotalStock(products);
       return res.status(200).send({ products });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
