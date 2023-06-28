@@ -7,6 +7,7 @@ import ProfileReducer from "../features/ProfileSlice";
 import AddressesReducer from "../features/UserAddress";
 import warehouseSlice from "../features/warehouses/warehouseSlice";
 import adminProductSlice from "../features/products/adminProductSlice";
+import orderSlice from "../features/orders/orderSlice";
 
 export default configureStore({
   reducer: {
