@@ -18,11 +18,10 @@ module.exports = {
 
       // Check if the product is already in the cart
       const checkProductInCartQuery = `
-        SELECT oi.quantity
-        FROM order_items oi
-        WHERE oi.id_user = ${db.escape(id_user)}
-        AND oi.id_product = ${db.escape(id_product)}
-        AND oi.id_order IS NULL
+        SELECT ci.quantity
+        FROM cart_items ci
+        WHERE ci.id_user = ${db.escape(id_user)}
+        AND ci.id_product = ${db.escape(id_product)}
       `;
       const productInCart = await query(checkProductInCartQuery);
 
@@ -39,11 +38,10 @@ module.exports = {
 
         // Update the quantity of the existing product in the cart
         const updateQuantityQuery = `
-          UPDATE order_items
+          UPDATE cart_items
           SET quantity = ${db.escape(updatedQuantity)}
           WHERE id_user = ${db.escape(id_user)}
           AND id_product = ${db.escape(id_product)}
-          AND id_order IS NULL
         `;
         await query(updateQuantityQuery);
 
@@ -70,9 +68,9 @@ module.exports = {
           return;
         }
 
-        // Insert the product as a new item in the order_items table for the specific user
+        // Insert the product as a new item in the cart_items table for the specific user
         const addProductToCartQuery = `
-          INSERT INTO order_items (id_user, id_product, quantity)
+          INSERT INTO cart_items (id_user, id_product, quantity)
           VALUES (${db.escape(id_user)}, ${db.escape(id_product)}, ${db.escape(
           quantity
         )})
@@ -106,11 +104,10 @@ module.exports = {
     const id_user = getIdFromToken(req, res);
     try {
       const fetchCartItemsQuery = `
-      SELECT oi.quantity, p.* 
-      FROM order_items oi
-      INNER JOIN products p ON oi.id_product = p.id_product
-      WHERE oi.id_user = ${db.escape(id_user)}
-      AND oi.id_order IS NULL
+      SELECT ci.quantity, p.* 
+      FROM cart_items ci
+      INNER JOIN products p ON ci.id_product = p.id_product
+      WHERE ci.id_user = ${db.escape(id_user)}
     `;
       const cartItems = await query(fetchCartItemsQuery);
       res.status(200).send({
@@ -141,11 +138,10 @@ module.exports = {
 
       // Check the current quantity of the product in the cart
       const getCurrentQuantityQuery = `
-        SELECT oi.quantity
-        FROM order_items oi
-        WHERE oi.id_user = ${db.escape(id_user)}
-        AND oi.id_product = ${db.escape(id_product)}
-        AND oi.id_order IS NULL
+        SELECT ci.quantity
+        FROM cart_items ci
+        WHERE ci.id_user = ${db.escape(id_user)}
+        AND ci.id_product = ${db.escape(id_product)}
       `;
       const currentQuantityResult = await query(getCurrentQuantityQuery);
       const currentQuantity =
@@ -181,11 +177,10 @@ module.exports = {
 
       // Update the quantity of the product in the cart
       const updateQuantityQuery = `
-        UPDATE order_items
+        UPDATE cart_items
         SET quantity = ${db.escape(updatedQuantity)}
         WHERE id_user = ${db.escape(id_user)}
         AND id_product = ${db.escape(id_product)}
-        AND id_order IS NULL
       `;
       await query(updateQuantityQuery);
 
@@ -205,10 +200,9 @@ module.exports = {
     const id_user = getIdFromToken(req, res);
     try {
       const deleteProductQuery = `
-      DELETE FROM order_items
+      DELETE FROM cart_items
       WHERE id_user = ${db.escape(id_user)}
       AND id_product = ${db.escape(id_product)}
-      AND id_order IS NULL
     `;
 
       await query(deleteProductQuery);
