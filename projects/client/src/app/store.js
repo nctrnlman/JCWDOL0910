@@ -18,6 +18,7 @@ export default configureStore({
     profile: ProfileReducer,
     addresses: AddressesReducer,
     warehouses: warehouseSlice,
+    orders: orderSlice,
     adminProducts: adminProductSlice,
   },
 });

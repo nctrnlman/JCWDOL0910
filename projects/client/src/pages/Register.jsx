@@ -16,9 +16,10 @@ function Register() {
     first_name: Yup.string()
       .required("First name is required")
       .matches(/^[a-zA-Z\s]*$/, "Only alphabetic characters are allowed"),
-    last_name: Yup.string()
-      .required("Last name is required")
-      .matches(/^[a-zA-Z\s]*$/, "Only alphabetic characters are allowed"),
+    last_name: Yup.string().matches(
+      /^[a-zA-Z\s]*$/,
+      "Only alphabetic characters are allowed"
+    ),
   });
 
   const dispatch = useDispatch();
@@ -34,29 +35,18 @@ function Register() {
   };
 
   return (
-    <div>
-      <Formik
-        initialValues={{
-          email: "",
-          first_name: "",
-          last_name: "",
-          gender: "",
-        }}
-        validationSchema={RegisterSchema}
-        onSubmit={handleRegistration}
-      >
-        {(props) => {
-          const { touched, errors } = props;
-          return (
-            <RegisterForm
-              isLoading={isLoading}
-              touched={touched}
-              errors={errors}
-            />
-          );
-        }}
-      </Formik>
-    </div>
+    <Formik
+      initialValues={{
+        email: "",
+        first_name: "",
+        last_name: "",
+        gender: "",
+      }}
+      validationSchema={RegisterSchema}
+      onSubmit={handleRegistration}
+    >
+      <RegisterForm isLoading={isLoading} />
+    </Formik>
   );
 }
 

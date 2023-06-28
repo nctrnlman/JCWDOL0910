@@ -17,6 +17,5 @@ module.exports = {
   adminRoutes,
   warehouseRoutes,
   rajaOngkirRoutes,
-
   orderRoutes,
 };

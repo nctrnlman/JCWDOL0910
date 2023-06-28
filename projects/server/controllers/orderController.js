@@ -1,14 +1,39 @@
 require("dotenv").config({
   path: ".env.local",
 });
-const { db, query } = require("../database");
 const {
   getCoordinates,
   checkProvinceAndCity,
 } = require("../helper/setAddressHelper");
 const axios = require("axios");
+const { db, query } = require("../database");
+
+const env = process.env;
 
 module.exports = {
+  orderList: async (req, res) => {
+    try {
+      const { status, id_user } = req.query;
+
+      const orderList =
+        await query(`SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.payment_proof, o.created_at,
+        JSON_ARRAYAGG(JSON_OBJECT('quantity', oi.quantity, 'product_name', oi.product_name, 'product_image', oi.product_image, 'product_price', oi.product_price)) AS productList
+ FROM orders o
+ JOIN (
+     SELECT id_order, quantity, product_name, product_image, product_price
+     FROM order_items
+     WHERE id_user = ${id_user}
+ ) oi ON o.id_order = oi.id_order
+ WHERE o.id_user = ${id_user} AND o.status = '${status}'
+ GROUP BY o.id_order, o.shipping_method, o.status, o.payment_proof, o.created_at;`);
+
+      console.log(orderList);
+
+      return res.status(200).send(orderList);
+    } catch (error) {
+      return res.status(error.statusCode || 500).send(error);
+    }
+  },
   getShippingWarehouse: async (req, res) => {
     try {
       const { id_user } = req.query;
@@ -69,14 +94,12 @@ module.exports = {
         },
         {
           headers: {
-            key: "acc57ba0b4421f27a5022a2e6ee6674d",
+            key: env.RAJA_ONGKIR_API_KEY,
           },
         }
       );
       const results =
         response.data.rajaongkir.results[0].costs[0].cost[0].value;
-
-      // console.log(results);
       return res.status(200).send({
         shipping: results,
         warehouse: checkNearestWarehouse[0],
