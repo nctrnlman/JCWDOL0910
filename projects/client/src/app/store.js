@@ -8,6 +8,8 @@ import AddressesReducer from "../features/UserAddress";
 import warehouseSlice from "../features/warehouses/warehouseSlice";
 import adminProductSlice from "../features/products/adminProductSlice";
 import stockSlice from "../features/stocks/stocksSlice";
+import orderSlice from "../features/orders/orderSlice";
+
 
 export default configureStore({
   reducer: {
@@ -18,6 +20,7 @@ export default configureStore({
     profile: ProfileReducer,
     addresses: AddressesReducer,
     warehouses: warehouseSlice,
+    orders: orderSlice,
     adminProducts: adminProductSlice,
     stockProducts: stockSlice,
   },

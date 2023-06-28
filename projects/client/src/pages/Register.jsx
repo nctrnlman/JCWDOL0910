@@ -17,8 +17,8 @@ function Register() {
       .required("First name is required")
       .matches(/^[a-zA-Z\s]*$/, "Only alphabetic characters are allowed"),
     last_name: Yup.string()
-      // .required("Last name is required")
       .matches(/^[a-zA-Z\s]*$/, "Only alphabetic characters are allowed"),
+
   });
 
   const dispatch = useDispatch();

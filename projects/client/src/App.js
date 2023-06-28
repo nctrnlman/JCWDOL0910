@@ -22,8 +22,11 @@ import redirectWithoutToken from "./effects/redirectWithoutToken";
 import navigateLastVisitedPage from "./effects/navigateLastVisitedPage";
 import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
+import OrderList from "./pages/OrderList";
 import AdminCategory from "./pages/AdminCategory";
 import StocksAdmin from "./pages/StocksAdmin";
+import CreateOrder from "./pages/CreateOrder";
+
 
 function App() {
   const location = useLocation();
@@ -87,6 +90,8 @@ function App() {
         <Route path="/verification/" element={<Verification />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/orders" element={<OrderList />} />
+        <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/admin-dashboard" element={<DashboardAdmin />} />
         <Route path="/admin-products" element={<ProductsAdmin />} />
         <Route path="/admin-warehouses" element={<WarehousesAdmin />} />

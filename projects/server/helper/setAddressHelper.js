@@ -43,7 +43,6 @@ module.exports = {
       );
       const provinces = provinceResponse.data.rajaongkir.results;
 
-      // Find the matching province by name
       const selectedProvince = provinces.find(
         (province) =>
           province.province.toLowerCase() === provinceName.toLowerCase()
@@ -57,25 +56,22 @@ module.exports = {
         `https://api.rajaongkir.com/starter/city?province=${selectedProvince.province_id}`,
         {
           headers: {
-            key: "ed6ae7b0b112eff93fb952c91378bb1d",
+            key: apiKey,
           },
         }
       );
       const cities = cityResponse.data.rajaongkir.results;
-      console.log(cities);
-      // Find the matching city by name
+
       const selectedCity = cities.find(
         (city) =>
           `${city.type.toLowerCase()} ${city.city_name.toLowerCase()}` ===
           cityName.toLowerCase()
       );
 
-      console.log(selectedCity, "selected city");
       if (!selectedCity) {
         throw new Error("City not found");
       }
 
-      // Return the selected province and city data
       return {
         province: selectedProvince,
         city: selectedCity,
