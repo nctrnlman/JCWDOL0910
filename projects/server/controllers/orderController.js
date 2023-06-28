@@ -1,9 +1,15 @@
+require("dotenv").config({
+  path: ".env.local",
+});
 const {
   getCoordinates,
   checkProvinceAndCity,
 } = require("../helper/setAddressHelper");
 const axios = require("axios");
 const { db, query } = require("../database");
+
+const env = process.env;
+
 module.exports = {
   orderList: async (req, res) => {
     try {
@@ -88,14 +94,12 @@ module.exports = {
         },
         {
           headers: {
-            key: "acc57ba0b4421f27a5022a2e6ee6674d",
+            key: env.RAJA_ONGKIR_API_KEY,
           },
         }
       );
       const results =
         response.data.rajaongkir.results[0].costs[0].cost[0].value;
-
-      // console.log(results);
       return res.status(200).send({
         shipping: results,
         warehouse: checkNearestWarehouse[0],

@@ -24,7 +24,9 @@ import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
 import OrderList from "./pages/OrderList";
 import AdminCategory from "./pages/AdminCategory";
+import StocksAdmin from "./pages/StocksAdmin";
 import CreateOrder from "./pages/CreateOrder";
+
 
 function App() {
   const location = useLocation();
@@ -94,6 +96,7 @@ function App() {
         <Route path="/admin-products" element={<ProductsAdmin />} />
         <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
         <Route path="/admin-categories" element={<AdminCategory />} />
+        <Route path="/admin-stocks" element={<StocksAdmin />} />
       </Routes>
     </div>
   );

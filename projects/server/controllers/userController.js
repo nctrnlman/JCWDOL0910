@@ -38,7 +38,7 @@ module.exports = {
       )}, null,null,false, ${otp})`;
       const addUserResult = await query(addUserQuery);
 
-      const id_user = addUserResult.insertId;
+      const id = addUserResult.insertId;
 
       const token = jwt.sign({ id }, env.JWT_SECRET, { expiresIn: "24h" });
       console.log(token);
