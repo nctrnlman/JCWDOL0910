@@ -6,14 +6,12 @@ const { getIdFromToken } = require("../helper/jwt-payload");
 
 module.exports = {
   getUserProfile: async (req, res) => {
-    // console.log(req)
     try {
-      const idUser = req.user.id_user;
-      console.log(idUser);
+      const idUser = req.user.id;
+      console.log(idUser, "userid");
       const getUserProfile = await query(
         `SELECT * FROM users WHERE id_user = ${db.escape(idUser)}`
       );
-      // console.log(getUserProfile);
       return res.status(200).send(getUserProfile);
     } catch (error) {
       return res.status(error.status || 500).send(error);
@@ -22,8 +20,7 @@ module.exports = {
 
   editUserProfile: async (req, res) => {
     try {
-      const idUser = req.user.id_user;
-      // console.log(idUser)
+      const idUser = req.user.id;
       let dataUpdate = [];
       for (let prop in req.body) {
         // email sepertinya gabisa diganti ya? -- sementara yang bisa diganti : first&last name, gender
@@ -49,19 +46,15 @@ module.exports = {
   },
 
   uploadProfilePicture: async (req, res) => {
-    // console.log(req)
-    // console.log(req.user.id)
-    // console.log(req.file.filename)
     try {
       const { file } = req;
-      const idUser = req.user.id_user;
+      const idUser = req.user.id;
       const filepath = file ? "/" + file.filename : null;
       let response = await query(
         `UPDATE users SET image_path=${db.escape(
           filepath
         )} WHERE id_user=${db.escape(idUser)}`
       );
-      // console.log(response);
       res.status(200).send({ filepath });
     } catch (error) {
       return res.status(error.status || 500).send(error);
@@ -69,12 +62,9 @@ module.exports = {
   },
 
   addAddress: async (req, res) => {
-    // console.log(req.body)
     try {
-      // console.log(req.body)
-      const idUser = req.user.id_user;
+      const idUser = req.user.id;
       const { address, city, province, postal_code, is_primary } = req.body;
-      // console.log(idUser)
       let addAddressQuery = `INSERT INTO addresses VALUES (null, 
         ${db.escape(idUser)}, 
         ${db.escape(address)}, 
@@ -134,14 +124,12 @@ module.exports = {
   },
 
   getUserAddress: async (req, res) => {
-    // console.log(req)
     try {
       const idUser = getIdFromToken(req, res);
       console.log(idUser, "getaddress");
       const getUserAddresses = await query(
         `SELECT * FROM addresses WHERE id_user = ${db.escape(idUser)}`
       );
-      // console.log(getUserProfile);
       return res.status(200).send(getUserAddresses);
     } catch (error) {
       return res.status(error.status || 500).send(error);

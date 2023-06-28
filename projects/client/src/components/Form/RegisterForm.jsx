@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Field, ErrorMessage } from "formik";
+import { Form, Field, ErrorMessage, useFormikContext } from "formik";
 import TabsLoginRegister from "../TabsLoginRegister";
 
-const RegisterForm = ({ isLoading, errors, touched }) => {
+const RegisterForm = ({ isLoading }) => {
+  const { touched, errors } = useFormikContext();
   return (
     <div className="hero min-h-screen bg-base-100">
       <div className="hero-content flex-col lg:flex-row-reverse">

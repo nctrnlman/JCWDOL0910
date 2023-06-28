@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
 
 function Verification() {
+  // perlu dibuat checker untuk password salah saat verifikasi//
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,7 +45,7 @@ function Verification() {
       navigate("/login");
     } catch (error) {
       toast(
-        <CustomToast type="error" message="Failed to Verified" />,
+        <CustomToast type="error" message={error.response.data.message} />,
         CustomToastOptions
       );
       console.log(error);
@@ -76,12 +77,13 @@ function Verification() {
                 <span className="label-text">Password</span>
               </label>
               <input
-                type="password"
+                type="password" //kalo toogle open jadi text kalo toogle close jadi password
                 placeholder=""
                 className="input input-bordered"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {/* tambah icon toogle buat password pake useState */}
             </div>
             <div className="form-control">
               <label className="label">
