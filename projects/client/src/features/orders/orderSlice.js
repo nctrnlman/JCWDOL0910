@@ -21,7 +21,7 @@ export function fetchOrder(id_user, status) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/orders/order-list",
+        "http://localhost:8000/api/orders/order-list",
         {
           params: {
             id_user: id_user,

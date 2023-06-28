@@ -12,39 +12,38 @@ function OrderList() {
   const id_user = user.id;
 
   const renderOrder = () => {
-    return orderList.map((order) => {
+    return orderList?.map((order) => {
       return (
-        <div key={order.id_order} className="min-h-[50px] flex flex-col">
-          <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
+        <div className="min-h-[50px] flex flex-col">
+          <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4 ">
             <h1 className="font-bold text-2xl">Order: #{order.id_order}</h1>
-            <h1>shipping Method : {order.shipping_method}</h1>
-            {order.items.map((item) => (
+            <h1>Shipping : {order.shipping_method}</h1>
+            {order.productList.map((product) => (
               <div
-                key={item.id_item}
-                className="hero-content justify-start lg:w-[400px] "
+                key={product.product_name}
+                className="hero-content justify-start lg:w-[400px] flex items-center"
               >
                 <img
-                  src={item.image_url}
-                  className="w-[100px] lg:w-[100px]  rounded-lg shadow-2xl"
+                  src={product.product_image}
+                  className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
                 />
-                <div>
+                <div className="flex flex-col ml-4">
                   <h1 className="text-base uppercase lg:text-3xl font-bold">
-                    {item.name}
+                    {product.product_name}
                   </h1>
-                  <p className="py-2">Desc: {item.description}</p>
-                  <p>Price: {item.price}</p>
-                  <p>Quantity: {item.quantity}</p>
+                  <p>x {product.quantity}</p>
+                  <p>Rp.{product.quantity * product.product_price}</p>
                 </div>
               </div>
             ))}
-            <p>Total Amount: {order.total_amount}</p>
+            <div className="flex justify-end text-xl">
+              <p>Total Amount : {order.total_amount}</p>
+            </div>
           </div>
         </div>
       );
     });
   };
-
-  console.log(orderList);
 
   useEffect(() => {
     dispatch(fetchOrder(id_user, status));

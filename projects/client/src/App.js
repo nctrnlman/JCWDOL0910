@@ -88,7 +88,7 @@ function App() {
         <Route path="/verification/" element={<Verification />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/order" element={<OrderList />} />
+        <Route path="/orders" element={<OrderList />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/admin-dashboard" element={<DashboardAdmin />} />
         <Route path="/admin-products" element={<ProductsAdmin />} />

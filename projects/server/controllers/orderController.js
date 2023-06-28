@@ -3,53 +3,24 @@ const {
   checkProvinceAndCity,
 } = require("../helper/setAddressHelper");
 const axios = require("axios");
-
+const { db, query } = require("../database");
 module.exports = {
   orderList: async (req, res) => {
     try {
       const { status, id_user } = req.query;
 
-      console.log(status);
-      console.log(id_user);
+      const orderList =
+        await query(`SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.payment_proof, o.created_at,
+        JSON_ARRAYAGG(JSON_OBJECT('quantity', oi.quantity, 'product_name', oi.product_name, 'product_image', oi.product_image, 'product_price', oi.product_price)) AS productList
+ FROM orders o
+ JOIN (
+     SELECT id_order, quantity, product_name, product_image, product_price
+     FROM order_items
+     WHERE id_user = ${id_user}
+ ) oi ON o.id_order = oi.id_order
+ WHERE o.id_user = ${id_user} AND o.status = '${status}'
+ GROUP BY o.id_order, o.shipping_method, o.status, o.payment_proof, o.created_at;`);
 
-      const querya = `SELECT o.*, oi.*, p.*
-      FROM orders o
-      JOIN order_items oi ON o.id_order = oi.id_order
-      JOIN products p ON oi.id_product = p.id_product
-      WHERE o.id_user = ${id_user} AND o.status = '${status}' ; `;
-
-      const x = `SELECT
-    o.id_order,
-    o.id_user,
-    o.id_warehouse,
-    o.total_amount,
-    o.shipping_method,
-    o.status,
-    o.payment_proof,
-    o.created_at,
-    JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'id_item', oi.id_item,
-            'id_product', oi.id_product,
-            'quantity', oi.quantity,
-            'name', p.name,
-            'price', p.price,
-            'description', p.description,
-            'image_url', p.image_url
-        )
-    ) AS items
-FROM
-    orders o
-    JOIN order_items oi ON o.id_order = oi.id_order
-    JOIN products p ON oi.id_product = p.id_product
-WHERE
-    o.id_user = ${id_user}
-    AND o.status = '${status}'
-GROUP BY
-    o.id_order;`;
-      // console.log(querya);
-
-      const orderList = await query(x);
       console.log(orderList);
 
       return res.status(200).send(orderList);

@@ -114,7 +114,7 @@ const UserDropdown = ({ user }) => {
             </a>
           </li>
           <li>
-            <a href="/order" className="justify-between">
+            <a href="/orders" className="justify-between">
               Your Order
             </a>
           </li>
