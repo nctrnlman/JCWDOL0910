@@ -11,7 +11,7 @@ function ForgetPassword() {
     e.preventDefault();
     try {
       let response = await Axios.post(
-        "http://localhost:8000/users/forget-password",
+        "http://localhost:8000/api/users/forget-password",
         { email }
       );
       toast(

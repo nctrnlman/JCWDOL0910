@@ -26,7 +26,7 @@ function ResetPassword() {
         );
       } else {
         let response = await Axios.post(
-          "http://localhost:8000/users/reset-password",
+          "http://localhost:8000/api/users/reset-password",
           { newPassword, confirmPassword },
           {
             headers: {

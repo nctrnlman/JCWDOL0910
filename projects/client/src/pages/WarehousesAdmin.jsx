@@ -1,12 +1,14 @@
 import React from "react";
-import Layout from "../components/Admins/Layout";
 import WarehousesContent from "../components/Admins/Warehouses/WarehousesContent";
+import NavbarDashboard from "../components/Admins/Navbar/NavbarDashboard";
 
 function WarehousesAdmin() {
   return (
-    <Layout>
-      <WarehousesContent />
-    </Layout>
+    <div>
+      <NavbarDashboard>
+        <WarehousesContent />
+      </NavbarDashboard>
+    </div>
   );
 }
 

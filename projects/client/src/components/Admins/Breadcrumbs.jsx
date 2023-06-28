@@ -12,6 +12,7 @@ function Breadcrumbs() {
     { label: "Dashboard", path: "/admin-dashboard" },
     { label: "Products", path: "/admin-products" },
     { label: "Warehouse", path: "/admin-warehouses" },
+    { label: "Categories", path: "/admin-categories" },
   ];
 
   // Find the breadcrumb that matches the current path
@@ -35,7 +36,7 @@ function Breadcrumbs() {
   }
 
   return (
-    <div className="text-sm breadcrumbs py-3 px-6 lg:px-5 mx-2 lg:mx-0">
+    <div className="text-sm breadcrumbs py-3 px-7 lg:px-5 mx-2 lg:mx-0">
       <ul>
         <li>
           <a href="/admin-dashboard">Dashboard</a>

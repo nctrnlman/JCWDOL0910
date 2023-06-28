@@ -37,7 +37,7 @@ module.exports = {
         "https://api.rajaongkir.com/starter/province",
         {
           headers: {
-            key: apiKey,
+            key: "ed6ae7b0b112eff93fb952c91378bb1d",
           },
         }
       );
@@ -62,15 +62,18 @@ module.exports = {
         }
       );
       const cities = cityResponse.data.rajaongkir.results;
-      console.log(cities);
+      // console.log(cities);
       // Find the matching city by name
       const selectedCity = cities.find(
         (city) =>
           `${city.type.toLowerCase()} ${city.city_name.toLowerCase()}` ===
           cityName.toLowerCase()
       );
+      // const selectedCity = cities.find(
+      //   (city) => city.city_name.toLowerCase() === cityName.toLowerCase()
+      // );
 
-      console.log(selectedCity, "selected city");
+      // console.log(selectedCity, "selected city");
       if (!selectedCity) {
         throw new Error("City not found");
       }

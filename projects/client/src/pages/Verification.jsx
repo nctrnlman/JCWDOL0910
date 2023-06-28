@@ -27,7 +27,7 @@ function Verification() {
         );
       } else {
         let response = await Axios.post(
-          "http://localhost:8000/users/verification",
+          "http://localhost:8000/api/users/verification",
           { otp, password, confirmPassword },
           {
             headers: {
@@ -44,9 +44,10 @@ function Verification() {
       navigate("/login");
     } catch (error) {
       toast(
-        <CustomToast type="success" message="Failed to Verified" />,
+        <CustomToast type="error" message="Failed to Verified" />,
         CustomToastOptions
       );
+      console.log(error);
     }
   };
 

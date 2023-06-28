@@ -12,8 +12,11 @@ const AddToCartButton = ({ product, quantity }) => {
   }, [product.total_stock]);
 
   const handleButtonClick = () => {
-    dispatch(addToCart(product.id_product, quantity, cartItems));
+    if (isStockAvailable) {
+      dispatch(addToCart(product.id_product, quantity, cartItems));
+    }
   };
+
   const isUserLoggedIn = !!localStorage.getItem("user_token");
 
   return (

@@ -18,7 +18,7 @@ const DeleteModal = ({
             href="#close"
             className="btn btn-error"
             onClick={() => {
-              handleDelete(deleteItemId);
+              handleDelete();
               closeDeleteModal();
             }}
           >

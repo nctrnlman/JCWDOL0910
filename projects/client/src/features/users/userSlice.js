@@ -34,7 +34,7 @@ export function registerUser(data, callback) {
     dispatch(setIsLoading(true));
     try {
       let response = await axios.post(
-        "http://localhost:8000/users/register",
+        "http://localhost:8000/api/users/register",
         data
       );
 
@@ -64,7 +64,7 @@ export function loginUser(data, callback) {
     dispatch(setIsLoading(true));
     try {
       let response = await axios.post(
-        "http://localhost:8000/users/login",
+        "http://localhost:8000/api/users/login",
         data
       );
 

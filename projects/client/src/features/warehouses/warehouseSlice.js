@@ -38,7 +38,7 @@ export function fetchWarehouses() {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
-      const response = await axios.get("http://localhost:8000/warehouses", {
+      const response = await axios.get("http://localhost:8000/api/warehouses", {
         headers: { Authorization: `Bearer ${adminToken}` },
       });
       dispatch(setWarehouse(response.data));
@@ -52,9 +52,12 @@ export function deleteWarehouse(id_warehouse) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
-      await axios.delete(`http://localhost:8000/warehouses/${id_warehouse}`, {
-        headers: { Authorization: `Bearer ${adminToken}` },
-      });
+      await axios.delete(
+        `http://localhost:8000/api/warehouses/${id_warehouse}`,
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
+      );
       dispatch(fetchWarehouses());
     } catch (error) {
       console.error("Error deleting warehouse:", error);
@@ -67,7 +70,7 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
     const adminToken = localStorage.getItem("admin_token");
     try {
       let response = await axios.put(
-        `http://localhost:8000/warehouses/${id_warehouse}`,
+        `http://localhost:8000/api/warehouses/${id_warehouse}`,
         updatedWarehouse,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
@@ -86,13 +89,12 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
   };
 }
 
-// Create warehouse action
 export function createWarehouse(warehouseData) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await axios.post(
-        "http://localhost:8000/warehouses",
+        "http://localhost:8000/api/warehouses",
         warehouseData,
         {
           headers: { Authorization: `Bearer ${adminToken}` },

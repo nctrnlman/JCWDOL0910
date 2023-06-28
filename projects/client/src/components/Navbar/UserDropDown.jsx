@@ -123,7 +123,7 @@ const UserDropdown = ({ user }) => {
           </li>
         </ul>
         <div
-          className="text-base-100 justify-center ml-2 mt-3 items-center hidden md:flex md:text-md lg:text-lg"
+          className="text-base-100 justify-center ml-2 my-3 items-center hidden md:flex md:text-md lg:text-lg"
           style={{ textTransform: "capitalize" }}
         >
           {user.first_name}

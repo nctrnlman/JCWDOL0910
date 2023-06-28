@@ -35,25 +35,3 @@ export function fetchOrder(id_user, status) {
     }
   };
 }
-
-// export function getProductByCategory(category, offset, limit, sort, filter) {
-//   return async (dispatch) => {
-//     try {
-//       const response = await axios.get(
-//         `http://localhost:8000/products/category`,
-//         {
-//           params: {
-//             offset: offset || 0,
-//             limit: limit || 10,
-//             sort: sort,
-//             filter: filter,
-//             category: category,
-//           },
-//         }
-//       );
-//       dispatch(setProductCategory(response.data));
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-// }

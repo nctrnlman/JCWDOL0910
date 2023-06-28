@@ -6,6 +6,7 @@ import cartSlice from "../features/carts/cartSlice";
 import ProfileReducer from "../features/ProfileSlice";
 import AddressesReducer from "../features/UserAddress";
 import warehouseSlice from "../features/warehouses/warehouseSlice";
+import adminProductSlice from "../features/products/adminProductSlice";
 import orderSlice from "../features/orders/orderSlice";
 
 export default configureStore({
@@ -18,5 +19,6 @@ export default configureStore({
     addresses: AddressesReducer,
     warehouses: warehouseSlice,
     orders: orderSlice,
+    adminProducts: adminProductSlice,
   },
 });

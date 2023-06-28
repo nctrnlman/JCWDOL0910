@@ -12,7 +12,7 @@ function ProductCategories() {
 
   useEffect(() => {
     dispatch(getAllProductCategories());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex justify-center px-5 mx-5 relative group">

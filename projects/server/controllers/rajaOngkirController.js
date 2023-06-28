@@ -3,8 +3,7 @@ require("dotenv").config({
   path: ".env.local",
 });
 const env = process.env;
-// Constants
-const API_KEY = env.RAJA_ONGKIR_API_KEY; // Replace with your actual API key
+const API_KEY = env.RAJA_ONGKIR_API_KEY;
 const BASE_URL = "https://api.rajaongkir.com/starter";
 
 // Helper function for making requests to the RAJA ONGKIR API
@@ -22,7 +21,6 @@ const makeRequest = async (url) => {
   }
 };
 
-// Controller methods
 const getProvinces = async (req, res) => {
   try {
     const url = `${BASE_URL}/province`;
@@ -45,7 +43,6 @@ const getCitiesByProvince = async (req, res) => {
   }
 };
 
-// Export controller methods
 module.exports = {
   getProvinces,
   getCitiesByProvince,

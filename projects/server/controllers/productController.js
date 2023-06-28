@@ -17,28 +17,12 @@ module.exports = {
       `;
       const latestProducts = await query(latestProductsQuery);
       parseTotalStock(latestProducts);
-      console.log(latestProducts);
       return res.status(200).send(latestProducts);
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
   },
-  fetchProducts: async (req, res) => {
-    try {
-      const productsQuery = `
-        SELECT p.*, SUM(s.total_stock) AS total_stock
-        FROM products p
-        INNER JOIN stocks s ON p.id_product = s.id_product
-        GROUP BY p.id_product;
-      `;
-      const products = await query(productsQuery);
-      parseTotalStock(products);
-      console.log(products);
-      return res.status(200).send(products);
-    } catch (error) {
-      return res.status(error.statusCode || 500).send(error);
-    }
-  },
+
   getAllProducts: async (req, res) => {
     try {
       const { offset, limit, sort, filter } = req.query;
@@ -65,7 +49,6 @@ module.exports = {
 
       productsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
 
-      console.log(productsQuery, "ini product");
       const products = await query(productsQuery);
       parseTotalStock(products);
       const totalItems = await query(countProductQuery);

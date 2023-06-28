@@ -19,14 +19,15 @@ export default ProfileSLice.reducer;
 
 export function getProfile() {
   return async (dispatch) => {
-    // console.log(localStorage.user_token)
     try {
       const token = localStorage.user_token;
       if (token) {
-        let response = await Axios.get(`http://localhost:8000/user_profile/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log(response);
+        let response = await Axios.get(
+          `http://localhost:8000/api/user-profile/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         dispatch(setProfile(response.data[0]));
       }
     } catch (error) {

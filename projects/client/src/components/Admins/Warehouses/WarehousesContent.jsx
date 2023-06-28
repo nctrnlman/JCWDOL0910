@@ -51,18 +51,18 @@ const WarehousesContent = () => {
   }, [dispatch]);
 
   return (
-    <div className="bg-base-200 flex flex-col lg:flex-row lg:justify-start justify-center w-screen lg:h-full lg:w-screen p-8 pl-3 lg:ml-0 lg:pl-0">
-      <div className="flex flex-col gap-12 lg:gap-0 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md">
+    <div className="bg-base-100 h-screen flex flex-col lg:flex-row lg:justify-start justify-center lg:items-center w-screen lg:h-full lg:w-full">
+      <div className="flex flex-col gap-5 lg:gap-3 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md lg:mx-5 xl:mx-10">
         <div className="lg:flex lg:justify-start">
           <a
-            className="absolute top-10 right-15 btn lg:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2 mt-5"
+            className="btn md:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2"
             href="#create_modal"
             onClick={() => setCreateModalOpen(true)}
           >
             Add New Warehouse
           </a>
         </div>
-        <div className="max-h-full h-3/4 lg:max-w-screen-xl lg:max-h-fit lg:h-5/6 lg:w-screen flex justify-center lg:justify-start mt-8 lg:mt-0 mr-10 lg:mr-0">
+        <div className="h-[520px] w-full lg:max-w-screen-xl lg:max-h-fit lg:h-screen lg:w-[950px] xl:w-screen flex justify-center lg:justify-start">
           <div className="overflow-x-auto rounded-xl">
             <WarehouseTable
               warehouses={warehouses}
