@@ -10,7 +10,7 @@ import EditModalProduct from "../../modals/EditModalProduct";
 import { getAllProductCategories } from "../../../features/categories/ProductCategoriesSlice";
 import CreateModalProduct from "../../modals/CreateModalProduct";
 import ProductCardDashboard from "../../Product/ProductCardDashboard";
-import Pagination from "../../Pagination";
+import Pagination from "../../utils/Pagination";
 
 function ProductContent() {
   const products = useSelector((state) => state.adminProducts.products);
@@ -54,7 +54,7 @@ function ProductContent() {
   }, [dispatch]);
 
   return (
-    <div className=" w-full">
+    <div className=" w-full p-5">
       <div className="">
         <div className="btn btn-primary mt-4 mx-2">
           <a

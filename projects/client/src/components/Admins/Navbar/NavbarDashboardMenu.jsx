@@ -13,6 +13,11 @@ function NavbarDashboardMenu({ menuType }) {
               </a>
             </li>
             <li>
+              <a href="/admin-stocks" className="text-lg">
+                Stocks
+              </a>
+            </li>
+            <li>
               <a href="/admin-warehouses" className="text-lg">
                 Warehouses
               </a>

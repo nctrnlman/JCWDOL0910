@@ -33,5 +33,37 @@ const checkAdminRole = async (req, res, next) => {
     });
   }
 };
+const fetchDataforAdmins = async (req, res, next) => {
+  try {
+    const adminId = getIdFromToken(req, res);
+    console.log(adminId, "adminId");
+    const getAdminRoleQuery = `
+    SELECT roles.name
+    FROM admins
+    INNER JOIN roles ON admins.id_role = roles.id_role
+    WHERE admins.id_admin = ${db.escape(adminId)}
+  `;
+    console.log(adminId, "id admin");
+    const result = await query(getAdminRoleQuery);
+    console.log(result, "result");
 
-module.exports = checkAdminRole;
+    const adminRole = result[0].name.toLowerCase();
+    console.log(adminRole, "test");
+
+    if (adminRole === "super admin" || adminRole === "warehouse admin") {
+      req.adminRole = adminRole; // Store the admin role in the request object
+      next();
+    } else {
+      res.status(401).send({
+        error: "Unauthorized",
+      });
+    }
+  } catch (error) {
+    console.error("Error during admin role check: ", error);
+    res.status(401).send({
+      error: "An error occurred during admin role check",
+    });
+  }
+};
+
+module.exports = { checkAdminRole, fetchDataforAdmins };
