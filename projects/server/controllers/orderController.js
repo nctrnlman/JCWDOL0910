@@ -44,11 +44,9 @@ module.exports = {
             id_user
           )} AND is_primary = 1
         `);
-      console.log(fetchAddress);
 
       const result = await getCoordinates(
         fetchAddress[0].address,
-        "",
         fetchAddress[0].city,
         fetchAddress[0].province,
         fetchAddress[0].postal_code
@@ -58,7 +56,7 @@ module.exports = {
         throw new Error("Coordinates not found");
       }
       const { latitude, longitude } = result;
-
+      console.log(result, "long lng");
       const checkNearestWarehouse = await query(`
       SELECT *,
       SQRT(POW((latitude - ${latitude}), 2) + POW((longitude - ${longitude}), 2)) AS distance
@@ -66,7 +64,6 @@ module.exports = {
   ORDER BY distance
   LIMIT 1;
       `);
-      console.log(checkNearestWarehouse);
 
       const originWarehouse = await checkProvinceAndCity(
         checkNearestWarehouse[0].province,
@@ -77,7 +74,6 @@ module.exports = {
         fetchAddress[0].province,
         fetchAddress[0].city
       );
-      // console.log(destinationAddress);
       const checkWeight = await query(`SELECT SUM(p.weight) AS total_weight
       FROM cart_items ci
       JOIN products p ON ci.id_product = p.id_product
@@ -106,6 +102,7 @@ module.exports = {
         address: fetchAddress[0],
       });
     } catch (error) {
+      console.log(error);
       return res.status(error.statusCode || 500).send(error);
     }
   },

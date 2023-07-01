@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrder } from "../features/orders/orderSlice";
+import PaymentButton from "../components/Buttons/PaymentButton";
+import DetailOrderButton from "../components/Buttons/DetailOrderButton";
 
 function OrderList() {
   const navigate = useNavigate();
@@ -10,7 +12,6 @@ function OrderList() {
   const orderList = useSelector((state) => state.orders.orderList);
   const user = useSelector((state) => state.users.user);
   const id_user = user.id;
-
   const renderOrder = () => {
     return orderList?.map((order) => {
       return (
@@ -37,8 +38,14 @@ function OrderList() {
                 </div>
               </div>
             ))}
-            <div className="flex justify-end text-xl">
-              <p>Total Amount : {order.total_amount}</p>
+            <div className="flex justify-between text-xl">
+              <div>
+                <p>Total Amount : {order.total_amount}</p>
+              </div>
+              <div className="flex gap-2">
+                <PaymentButton orderId={order.id_order} />
+                <DetailOrderButton />
+              </div>
             </div>
           </div>
         </div>

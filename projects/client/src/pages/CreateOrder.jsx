@@ -48,7 +48,7 @@ function CreateOrder() {
           <CustomToast type="success" message={response.data.message} />,
           CustomToastOptions
         );
-        navigate("/");
+        navigate("/orders");
       }
     } catch (error) {
       toast(
