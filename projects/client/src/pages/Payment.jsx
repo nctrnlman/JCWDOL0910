@@ -51,7 +51,11 @@ function Payment() {
         />
       )}
       {isUploadModalOpen && (
-        <UploadReceiptModal closeModal={closeUploadModal} />
+        <UploadReceiptModal
+          closeModal={closeUploadModal}
+          orderId={id}
+          orders={orders}
+        />
       )}
     </div>
   );

@@ -7,6 +7,11 @@ const {
 } = require("../helper/setAddressHelper");
 const axios = require("axios");
 const { db, query } = require("../database");
+const { getIdFromToken } = require("../helper/jwt-payload");
+const {
+  validateImageSize,
+  validateImageExtension,
+} = require("../helper/imageValidatorHelper");
 
 const env = process.env;
 
@@ -163,19 +168,30 @@ module.exports = {
   uploadPayment: async (req, res) => {
     const { orderId } = req.params;
     try {
-      if (!req.file) {
-        return res.status(400).send("No image file provided");
-      }
+      const userId = getIdFromToken(req, res); // Get the user ID from the token
 
       const { file } = req;
       const image = file ? "/" + file.filename : null;
-
+      if (!image) {
+        return res.status(400).send("No image file provided");
+      }
+      // Validate the image
+      if (!file || !image) {
+        return res.status(400).send("No image file provided");
+      }
+      if (!validateImageSize(file)) {
+        return res.status(400).send("File size exceeds the limit");
+      }
+      if (!validateImageExtension(file)) {
+        return res.status(400).send("Invalid file extension");
+      }
+      // Update the query to include the user ID
       await query(`
       UPDATE orders
-      SET payment_proof = ${db.escape(
-        image
-      )}, status = 'Menunggu Konfirmasi Pembayaran'
+      SET payment_proof = ${db.escape(image)},
+      status = 'Menunggu Konfirmasi Pembayaran'
       WHERE id_order = ${db.escape(orderId)}
+      AND id_user = ${db.escape(userId)}
     `);
 
       return res

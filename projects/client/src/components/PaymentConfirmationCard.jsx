@@ -1,4 +1,5 @@
 import React from "react";
+import UploadReceiptButton from "./Buttons/UploadReceiptButton";
 
 const PaymentConfirmationCard = ({
   order,
@@ -77,16 +78,10 @@ const PaymentConfirmationCard = ({
               </div>
             </div>
           </div>
-          <div className="card-actions justify-end">
-            <a
-              href="#upload_receipt_modal"
-              className="btn btn-primary"
-              disabled={!isChecked}
-              onClick={openUploadModal}
-            >
-              Upload Receipt
-            </a>
-          </div>
+          <UploadReceiptButton
+            disabled={!isChecked}
+            onClick={openUploadModal}
+          />
         </div>
       </div>
     </div>
