@@ -7,5 +7,10 @@ const router = express.Router();
 router.get("/order-list", orderController.orderList);
 router.get("/shipping-warehouse", orderController.getShippingWarehouse);
 router.post("/create", orderController.createOrder);
+router.post(
+  "/upload-payment/:orderId",
+  upload.single("image"),
+  orderController.uploadPayment
+);
 
 module.exports = router;

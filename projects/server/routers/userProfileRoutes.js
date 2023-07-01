@@ -4,14 +4,14 @@ const { verifyToken } = require("../middleware/authVerification");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const uploadz = require("../middleware/multer");
+const upload = require("../middleware/multer");
 
 router.get("/", verifyToken, userProfileController.getUserProfile);
 router.post("/edit-data", verifyToken, userProfileController.editUserProfile);
 router.post(
   "/upload",
   verifyToken,
-  uploadz.single("file"),
+  upload.single("file"),
   userProfileController.uploadProfilePicture
 );
 router.post("/add-address", verifyToken, userProfileController.addAddress);
