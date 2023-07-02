@@ -41,8 +41,8 @@ module.exports = {
   },
   getShippingWarehouse: async (req, res) => {
     try {
-      const { id_user } = req.query;
-      console.log(id_user);
+      const { id_user, courier } = req.query;
+      // console.log(id_user);
 
       const fetchAddress = await query(`
           SELECT * FROM addresses WHERE id_user = ${db.escape(
@@ -84,6 +84,8 @@ module.exports = {
       JOIN products p ON ci.id_product = p.id_product
       JOIN users u ON ci.id_user = u.id_user
       WHERE u.id_user = ${id_user}`);
+      // console.log(checkWeight);
+      // console.log(courier);
 
       const response = await axios.post(
         "https://api.rajaongkir.com/starter/cost",
@@ -91,7 +93,7 @@ module.exports = {
           origin: originWarehouse.city.city_id,
           destination: destinationAddress.city.city_id,
           weight: checkWeight[0].total_weight,
-          courier: "jne",
+          courier: courier.toLowerCase(),
         },
         {
           headers: {
@@ -99,10 +101,25 @@ module.exports = {
           },
         }
       );
-      const results =
-        response.data.rajaongkir.results[0].costs[0].cost[0].value;
+
+      const services = response.data.rajaongkir.results[0].costs;
+
+      // if (service == "oke") {
+      //   services = response.data.rajaongkir.results[0].costs[0];
+      // } else if (service == "jne") {
+      //   services = response.data.rajaongkir.results[0].costs[1];
+      // } else if (service == "yes") {
+      //   services = response.data.rajaongkir.results[0].costs[2];
+      // }
+      // console.log(services);
+
+      // const results = services.cost[0].value;
+      // console.log(results);
+      console.log(services);
+
       return res.status(200).send({
-        shipping: results,
+        service: services,
+        // shipping: results,
         warehouse: checkNearestWarehouse[0],
         address: fetchAddress[0],
       });
@@ -118,17 +135,16 @@ module.exports = {
         id_warehouse,
         total_amount,
         shipping_method,
-        payment_proof,
         productList,
       } = req.body;
 
       const insertOrder = await query(`
-        INSERT INTO orders (id_user, id_warehouse, total_amount, shipping_method, status, payment_proof, created_at)
+        INSERT INTO orders (id_user, id_warehouse, total_amount, shipping_method, status, created_at,payment_proof_expiry)
         VALUES (${db.escape(id_user)}, ${db.escape(id_warehouse)}, ${db.escape(
         total_amount
-      )}, ${db.escape(shipping_method)}, "Menunggu Pembayaran", ${db.escape(
-        payment_proof
-      )}, NOW())
+      )}, ${db.escape(
+        shipping_method
+      )}, "Menunggu Pembayaran" , NOW(), NOW() + INTERVAL 1 DAY)
       `);
 
       const fetchOrder = await query(`
