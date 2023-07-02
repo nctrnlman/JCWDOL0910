@@ -24,7 +24,7 @@ function OrderList() {
                 className="hero-content justify-start lg:w-[400px] flex items-center"
               >
                 <img
-                  src={product.product_image}
+                  src={`http://localhost:8000${product.product_image}`}
                   className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
                 />
                 <div className="flex flex-col ml-4">
