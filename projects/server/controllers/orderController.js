@@ -133,17 +133,16 @@ module.exports = {
         id_warehouse,
         total_amount,
         shipping_method,
-        payment_proof,
         productList,
       } = req.body;
 
       const insertOrder = await query(`
-        INSERT INTO orders (id_user, id_warehouse, total_amount, shipping_method, status, payment_proof, created_at)
+        INSERT INTO orders (id_user, id_warehouse, total_amount, shipping_method, status, created_at,payment_proof_expiry)
         VALUES (${db.escape(id_user)}, ${db.escape(id_warehouse)}, ${db.escape(
         total_amount
-      )}, ${db.escape(shipping_method)}, "Menunggu Pembayaran", ${db.escape(
-        payment_proof
-      )}, NOW())
+      )}, ${db.escape(
+        shipping_method
+      )}, "Menunggu Pembayaran" , NOW(), NOW() + INTERVAL 1 DAY)
       `);
 
       const fetchOrder = await query(`

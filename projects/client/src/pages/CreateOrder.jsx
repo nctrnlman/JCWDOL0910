@@ -15,7 +15,6 @@ const CreateOrder = () => {
   const [address, setAddress] = useState("");
   const [warehouse, setWarehouse] = useState("");
   const [shippingMethod, setShippingMethod] = useState("");
-  const [paymentProof, setPaymentProof] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shippingOptions, setShippingOptions] = useState([]);
 
@@ -32,7 +31,6 @@ const CreateOrder = () => {
         id_warehouse: warehouse,
         total_amount,
         shipping_method: shippingMethod,
-        payment_proof: paymentProof,
         productList: cartItems.map((item) => ({
           productName: item.name,
           productPrice: item.price,
@@ -149,18 +147,6 @@ const CreateOrder = () => {
               </select>
             </div>
           </div>
-        </div>
-        <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold mb-2">Payment Proof</h1>
-          <select
-            className="select select-bordered w-full max-w-xs"
-            value={paymentProof}
-            onChange={(e) => setPaymentProof(e.target.value)}
-          >
-            <option value="">None</option>
-            <option value="BCA">BCA</option>
-            <option value="Mandiri">Mandiri</option>
-          </select>
         </div>
         <div className="border border-gray-300 p-4">
           {cartItems.map((item) => (
