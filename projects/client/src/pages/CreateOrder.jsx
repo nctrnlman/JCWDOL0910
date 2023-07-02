@@ -44,8 +44,12 @@ const CreateOrder = () => {
       );
 
       if (response.data.success) {
-        toast.success(response.data.message);
-        navigate("/");
+        toast(
+          <CustomToast type="success" message={response.data.message} />,
+          CustomToastOptions
+        );
+        navigate("/orders");
+
       }
     } catch (error) {
       toast.error(error.response.data.message);

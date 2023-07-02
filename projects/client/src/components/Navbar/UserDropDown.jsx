@@ -59,7 +59,7 @@ const UserDropdown = ({ user }) => {
                     }}
                   >
                     <img
-                      src={item.image_url}
+                      src={`http://localhost:8000/${item.image_url}`}
                       alt={item.name}
                       className="w-12 h-12 mr-2"
                     />

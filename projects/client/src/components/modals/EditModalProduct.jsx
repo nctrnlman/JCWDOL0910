@@ -17,7 +17,8 @@ const EditModalProduct = ({
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  const [imagePreview, setImagePreview] = useState(""); // New state for image preview
+  const [imagePreview, setImagePreview] = useState("");
+  const [weight, setWeight] = useState("");
 
   useEffect(() => {
     const selectedProduct = products.find(
@@ -27,6 +28,7 @@ const EditModalProduct = ({
     if (selectedProduct) {
       setName(selectedProduct.name);
       setPrice(selectedProduct.price);
+      setWeight(selectedProduct.weight); // Add this line
       setCategory(selectedProduct.id_category);
       setDescription(selectedProduct.description);
       setImage(selectedProduct.image_url);
@@ -42,8 +44,6 @@ const EditModalProduct = ({
       setImagePreview(URL.createObjectURL(file));
     }
   };
-  console.log(image, "image");
-  console.log(imagePreview, "IP");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,6 +51,7 @@ const EditModalProduct = ({
     formData.append("id_product", editItemId);
     formData.append("name", name);
     formData.append("price", price);
+    formData.append("weight", weight);
     formData.append("id_category", category);
     formData.append("description", description);
     formData.append("image_url", image);
@@ -86,6 +87,19 @@ const EditModalProduct = ({
               onChange={(e) => setPrice(e.target.value)}
               className="input input-bordered"
               placeholder="Enter product price"
+              required
+            />
+          </div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Weight:</span>
+            </label>
+            <input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="input input-bordered"
+              placeholder="Enter product weight"
               required
             />
           </div>

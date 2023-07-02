@@ -3,6 +3,10 @@ require("dotenv").config({
 });
 const { db, query } = require("../database");
 const { getPaginationParams } = require("../helper/getPaginationHelper");
+const {
+  validateImageSize,
+  validateImageExtension,
+} = require("../helper/imageValidatorHelper");
 const { parseTotalStock } = require("../helper/productHelper");
 const adminProductQueries = require("../queries/adminProductQueries");
 
@@ -37,7 +41,7 @@ module.exports = {
 
   addProduct: async (req, res) => {
     try {
-      const { id_category, name, price, description } = req.body;
+      const { id_category, name, price, weight, description } = req.body;
 
       if (!req.file) {
         return res.status(400).send("No image file provided");
@@ -45,10 +49,15 @@ module.exports = {
 
       let image_url = "";
       const { file } = req;
-      if (file) {
-        image_url = file ? "/" + file.filename : null;
-      } else {
-        throw new Error("Image is required");
+      image_url = file ? "/" + file.filename : null;
+      if (!file) {
+        return res.status(400).send("No image file provided");
+      }
+      if (!validateImageSize(file)) {
+        return res.status(400).send("File size exceeds the limit");
+      }
+      if (!validateImageExtension(file)) {
+        return res.status(400).send("Invalid file extension");
       }
 
       const categoryResult = await query(
@@ -72,6 +81,7 @@ module.exports = {
           id_category,
           name,
           price,
+          weight,
           description,
           image_url
         )
@@ -84,6 +94,7 @@ module.exports = {
         id_category,
         name,
         price,
+        weight,
         description,
         image_url,
       });
@@ -95,7 +106,7 @@ module.exports = {
   editProduct: async (req, res) => {
     try {
       const { productId } = req.params;
-      const { name, price, description, id_category } = req.body;
+      const { name, price, weight, description, id_category } = req.body;
 
       const productResult = await query(
         adminProductQueries.getProductQuery(productId)
@@ -110,6 +121,14 @@ module.exports = {
       const { file } = req;
       let image_url = existingProduct.image_url;
       if (file) {
+        // New image provided
+        if (!validateImageSize(file)) {
+          return res.status(400).send("File size exceeds the limit");
+        }
+        if (!validateImageExtension(file)) {
+          return res.status(400).send("Invalid file extension");
+        }
+
         image_url = "/" + file.filename;
       }
 
@@ -128,6 +147,7 @@ module.exports = {
           productId,
           name,
           price,
+          weight,
           description,
           id_category,
           image_url
@@ -139,6 +159,7 @@ module.exports = {
         id_category,
         name,
         price,
+        weight,
         description,
         image_url,
       });
