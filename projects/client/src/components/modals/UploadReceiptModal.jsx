@@ -26,11 +26,10 @@ function UploadReceiptModal({ closeModal, orderId, orders }) {
         const responseData = await dispatch(
           uploadPaymentOrder(orderId, formData)
         );
-        closeModal();
         if (responseData && responseData.success === true) {
+          closeModal();
           navigate("/");
         }
-        closeModal();
       } catch (error) {
         console.log(error);
       }
@@ -65,7 +64,7 @@ function UploadReceiptModal({ closeModal, orderId, orders }) {
                 <img
                   src={selectedImage}
                   alt="Preview"
-                  className="w-full h-full object-cover"
+                  className="w-auto h-full"
                 />
               </div>
             )}
