@@ -168,15 +168,12 @@ module.exports = {
   uploadPayment: async (req, res) => {
     const { orderId } = req.params;
     try {
-      const userId = getIdFromToken(req, res); // Get the user ID from the token
+      const userId = getIdFromToken(req, res);
 
       const { file } = req;
       const image = file ? "/" + file.filename : null;
-      if (!image) {
-        return res.status(400).send("No image file provided");
-      }
-      // Validate the image
-      if (!file || !image) {
+
+      if (!file) {
         return res.status(400).send("No image file provided");
       }
       if (!validateImageSize(file)) {
@@ -185,7 +182,7 @@ module.exports = {
       if (!validateImageExtension(file)) {
         return res.status(400).send("Invalid file extension");
       }
-      // Update the query to include the user ID
+
       await query(`
       UPDATE orders
       SET payment_proof = ${db.escape(image)},

@@ -81,6 +81,7 @@ function ProductContent() {
       </div>
       {deleteItemId && (
         <DeleteModal
+          key={`deleteModal-${deleteItemId}`} // Add the key prop here
           deleteItemName={deleteItemName}
           handleDelete={() => handleDelete(deleteItemId)}
           closeDeleteModal={closeDeleteModal}
@@ -89,6 +90,7 @@ function ProductContent() {
       )}
       {editItemId && (
         <EditModalProduct
+          key={`editModal-${editItemId}`} // Add the key prop here
           editItemId={editItemId}
           closeEditModal={closeEditModal}
           categories={categories}

@@ -27,7 +27,7 @@ const PaymentConfirmationCard = ({
           <div className="grid lg:grid-cols-3 text-center gap-2">
             <div className="mb-3 text-sm lg:text-md">
               <label>Account Number</label>
-              <h4 className="font-semibold">80091203928</h4>
+              <h4 className="font-semibold">7380537294</h4>
             </div>
             <div className="mb-3 text-sm lg:text-md">
               <label>Account Name</label>
@@ -47,7 +47,7 @@ const PaymentConfirmationCard = ({
                 <li>
                   <div className="mt-2">
                     Silahkan melakukan pembayaran ke rekening BANK BCA atas nama
-                    Baskara Restu Wirawan 800 912 03928
+                    Baskara Restu Wirawan 738 053 7294
                   </div>
                 </li>
                 <li>

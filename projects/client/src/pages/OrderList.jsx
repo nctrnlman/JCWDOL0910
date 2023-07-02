@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrder } from "../features/orders/orderSlice";
 import PaymentButton from "../components/Buttons/PaymentButton";
-import DetailOrderButton from "../components/Buttons/DetailOrderButton";
 
 function OrderList() {
   const navigate = useNavigate();
@@ -44,7 +43,6 @@ function OrderList() {
               </div>
               <div className="flex gap-2">
                 <PaymentButton orderId={order.id_order} />
-                <DetailOrderButton />
               </div>
             </div>
           </div>
