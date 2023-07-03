@@ -214,4 +214,40 @@ module.exports = {
       return res.status(500).send({ error: error.message });
     }
   },
+
+  cancelOrder: async (req, res) => {
+    try {
+      const { orderId } = req.params;
+      const userId = getIdFromToken(req, res);
+      const order = await query(
+        `SELECT * FROM orders WHERE id_order = ${db.escape(
+          orderId
+        )} AND status = 'Menunggu Pembayaran' AND user_id = ${db.escape(
+          userId
+        )}`
+      );
+
+      if (!order || order.length === 0) {
+        return res.status(404).send({
+          error: "Order not found.",
+        });
+      }
+
+      if (order[0].status === "Dibatalkan") {
+        return res.status(400).send({ error: "Order is already canceled." });
+      }
+
+      await query(
+        `UPDATE orders SET status = 'Dibatalkan' WHERE id_order = ${db.escape(
+          orderId
+        )}`
+      );
+
+      return res
+        .status(200)
+        .send({ success: true, message: "Order canceled successfully." });
+    } catch (error) {
+      return res.status(500).send({ error: error.message });
+    }
+  },
 };

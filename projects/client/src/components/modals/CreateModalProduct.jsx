@@ -37,7 +37,7 @@ const CreateModalProduct = ({ closeCreateModal, categories }) => {
 
   return (
     <div className="modal" id="create_modal_product">
-      <div className="modal-box">
+      <div className="modal-box mr-3">
         <h3 className="font-bold text-lg">Add New Product</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-control">

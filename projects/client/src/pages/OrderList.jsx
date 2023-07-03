@@ -3,21 +3,35 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrder } from "../features/orders/orderSlice";
 import PaymentButton from "../components/Buttons/PaymentButton";
+import SeeReceiptButton from "../components/Buttons/SeeReceiptButton";
+import ReceiptModal from "../components/modals/ReceiptModal";
+import CancelOrderButton from "../components/Buttons/CancelOrderButton";
 
 function OrderList() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [status, setStatus] = useState("Menunggu Pembayaran");
   const orderList = useSelector((state) => state.orders.orderList);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedOrderPaymentProof, setSelectedOrderPaymentProof] =
+    useState(null);
   const user = useSelector((state) => state.users.user);
   const id_user = user.id;
+
   const renderOrder = () => {
     return orderList?.map((order) => {
+      const isWaitingPayment = order.status === "Menunggu Pembayaran";
+      const handleShowReceipt = (orderId, paymentInfo) => {
+        setSelectedOrderId(orderId);
+        setSelectedOrderPaymentProof(paymentInfo);
+      };
+      const isWaitingConfirmOrder =
+        order.status === "Menunggu Konfirmasi Pembayaran";
       return (
-        <div className="min-h-[50px] flex flex-col">
+        <div className="min-h-[50px] flex flex-col" key={order.id_order}>
           <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4 ">
             <h1 className="font-bold text-2xl">Order: #{order.id_order}</h1>
-            <h1>Shipping : {order.shipping_method}</h1>
+            <h1>Shipping: {order.shipping_method}</h1>
             {order.productList.map((product) => (
               <div
                 key={product.product_name}
@@ -39,10 +53,24 @@ function OrderList() {
             ))}
             <div className="flex justify-between text-xl">
               <div>
-                <p>Total Amount : {order.total_amount}</p>
+                <p>Total Amount: {order.total_amount}</p>
               </div>
               <div className="flex gap-2">
-                <PaymentButton orderId={order.id_order} />
+                {isWaitingPayment && <PaymentButton orderId={order.id_order} />}
+                {isWaitingPayment && <CancelOrderButton />}
+                {isWaitingConfirmOrder && (
+                  <SeeReceiptButton
+                    onClick={() =>
+                      handleShowReceipt(order.id_order, order.payment_proof)
+                    }
+                  />
+                )}
+                {selectedOrderId && (
+                  <ReceiptModal
+                    orderId={selectedOrderId}
+                    paymentInfo={selectedOrderPaymentProof}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -56,10 +84,10 @@ function OrderList() {
   }, [status]);
 
   return (
-    <div className=" w-screen h-screen ">
+    <div className="w-screen h-screen">
       <div className="flex flex-col pt-20 p-10 gap-3">
-        <div className="flex items-center ">
-          <h1 className="lg:text-xl">Status : </h1>
+        <div className="flex items-center">
+          <h1 className="lg:text-xl">Status:</h1>
           <select
             className="select select-bordered w-[200px] lg:w-[400px] max-w-xs ml-4 text-xs lg:text-base"
             value={status}
