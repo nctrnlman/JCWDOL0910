@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrder } from "../features/orders/orderSlice";
 import PaymentButton from "../components/Buttons/PaymentButton";
@@ -8,22 +7,20 @@ import ReceiptModal from "../components/modals/ReceiptModal";
 import CancelOrderButton from "../components/Buttons/CancelOrderButton";
 
 function OrderList() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [status, setStatus] = useState("Menunggu Pembayaran");
   const orderList = useSelector((state) => state.orders.orderList);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [selectedOrderPaymentProof, setSelectedOrderPaymentProof] =
-    useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const user = useSelector((state) => state.users.user);
   const id_user = user.id;
 
   const renderOrder = () => {
     return orderList?.map((order) => {
       const isWaitingPayment = order.status === "Menunggu Pembayaran";
-      const handleShowReceipt = (orderId, paymentInfo) => {
+      const handleShowReceipt = (orderId, selectedOrder) => {
         setSelectedOrderId(orderId);
-        setSelectedOrderPaymentProof(paymentInfo);
+        setSelectedOrder(selectedOrder);
       };
       const isWaitingConfirmOrder =
         order.status === "Menunggu Konfirmasi Pembayaran";
@@ -60,17 +57,10 @@ function OrderList() {
                 {isWaitingPayment && <CancelOrderButton />}
                 {isWaitingConfirmOrder && (
                   <SeeReceiptButton
-                    onClick={() =>
-                      handleShowReceipt(order.id_order, order.payment_proof)
-                    }
+                    onClick={() => handleShowReceipt(order.id_order, order)}
                   />
                 )}
-                {selectedOrderId && (
-                  <ReceiptModal
-                    orderId={selectedOrderId}
-                    paymentInfo={selectedOrderPaymentProof}
-                  />
-                )}
+                {selectedOrderId && <ReceiptModal order={selectedOrder} />}
               </div>
             </div>
           </div>

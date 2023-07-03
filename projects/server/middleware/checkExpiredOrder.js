@@ -19,10 +19,13 @@ const checkExpiredOrder = async (req, res, next) => {
           SET status = 'Dibatalkan'
           WHERE id_order = ${order.id_order}
         `);
+
+        await query(`
+          DELETE FROM payment_details
+          WHERE id_order = ${order.id_order}
+        `);
       }
     }
-
-    console.log("Order status update complete!");
 
     next();
   } catch (error) {
