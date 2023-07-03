@@ -54,7 +54,13 @@ function OrderList() {
               </div>
               <div className="flex gap-2">
                 {isWaitingPayment && <PaymentButton orderId={order.id_order} />}
-                {isWaitingPayment && <CancelOrderButton />}
+                {isWaitingPayment && (
+                  <CancelOrderButton
+                    orderId={order.id_order}
+                    id_user={id_user}
+                    status={status}
+                  />
+                )}
                 {isWaitingConfirmOrder && (
                   <SeeReceiptButton
                     onClick={() => handleShowReceipt(order.id_order, order)}

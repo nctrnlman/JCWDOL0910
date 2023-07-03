@@ -242,11 +242,10 @@ module.exports = {
       const order = await query(
         `SELECT * FROM orders WHERE id_order = ${db.escape(
           orderId
-        )} AND status = 'Menunggu Pembayaran' AND user_id = ${db.escape(
+        )} AND status = 'Menunggu Pembayaran' AND id_user = ${db.escape(
           userId
         )}`
       );
-
       if (!order || order.length === 0) {
         return res.status(404).send({
           error: "Order not found.",
@@ -261,6 +260,10 @@ module.exports = {
         `UPDATE orders SET status = 'Dibatalkan' WHERE id_order = ${db.escape(
           orderId
         )}`
+      );
+
+      await query(
+        `DELETE FROM payment_details WHERE id_order = ${db.escape(orderId)}`
       );
 
       return res

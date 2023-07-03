@@ -72,3 +72,27 @@ export function uploadPaymentOrder(orderId, formData) {
     }
   };
 }
+
+export function cancelOrder(orderId, id_user) {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("user_token");
+
+      await axios.put(
+        `http://localhost:8000/api/orders/cancel-order/${orderId}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      dispatch(fetchOrder(id_user, "Menunggu Pembayaran"));
+
+      toast.success("Order canceled successfully.");
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.log(error);
+    }
+  };
+}
