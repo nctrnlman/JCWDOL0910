@@ -1,11 +1,6 @@
 import React from "react";
 
-const DeleteModal = ({
-  deleteItemName,
-  closeDeleteModal,
-  handleDelete,
-  deleteItemId,
-}) => {
+const DeleteModal = ({ deleteItemName, closeDeleteModal, handleDelete }) => {
   return (
     <div className="modal" id="delete_modal">
       <div className="modal-box">

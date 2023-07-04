@@ -8,8 +8,14 @@ function SearchInputList({ setSearchInput, onSearch }) {
     onSearch();
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
-    <div className="form-control flex flex-row lg:items-center relative">
+    <div className="form-control flex flex-row lg:items-center relative gap-3 p-3">
       <div>
         <input
           type="text"
@@ -17,6 +23,7 @@ function SearchInputList({ setSearchInput, onSearch }) {
           className="input input-bordered w-72 sm:w-96 lg:w-[600px] xl:w-[800px]"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyPress}
         />
       </div>
 

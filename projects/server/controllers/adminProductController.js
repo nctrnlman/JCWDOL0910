@@ -37,6 +37,8 @@ module.exports = {
 
       if (search) {
         countQuery = adminProductQueries.getCountQueryWithSearch(search);
+      } else if (category) {
+        countQuery = adminProductQueries.getCountQueryWithCategory(category);
       }
 
       const products = await query(productsQuery);

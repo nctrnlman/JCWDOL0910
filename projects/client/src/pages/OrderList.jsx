@@ -5,7 +5,6 @@ import PaymentButton from "../components/Buttons/PaymentButton";
 import SeeReceiptButton from "../components/Buttons/SeeReceiptButton";
 import ReceiptModal from "../components/modals/ReceiptModal";
 import CancelOrderButton from "../components/Buttons/CancelOrderButton";
-import CancelOrderModal from "../components/modals/CancelOrderModal";
 
 function OrderList() {
   const dispatch = useDispatch();
@@ -69,12 +68,6 @@ function OrderList() {
                   />
                 )}
                 {selectedOrderId && <ReceiptModal order={selectedOrder} />}
-                {selectedOrderId && (
-                  <CancelOrderModal
-                    order={selectedOrder}
-                    onClick={() => handleCancelOrder(order.id_order, order)}
-                  />
-                )}
               </div>
             </div>
           </div>

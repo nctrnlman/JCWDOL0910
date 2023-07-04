@@ -74,7 +74,7 @@ export function fetchAdminProducts(
       dispatch(setCurrentPage(page));
       dispatch(setTotalPages(totalPages));
       dispatch(setItemsPerPage(itemsPerPage));
-      console.log(response);
+      console.log(response, "response product admin");
     } catch (error) {
       console.log(error);
     }

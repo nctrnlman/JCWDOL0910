@@ -13,6 +13,7 @@ import ProductCardDashboard from "../../Product/ProductCardDashboard";
 import Pagination from "../../utils/Pagination";
 import SearchInputList from "../../utils/SearchInputList";
 import SortButtons from "../../utils/SortButtons";
+import SortByCategoryButton from "../../utils/SortByCategoryButton";
 
 function ProductContent() {
   const products = useSelector((state) => state.adminProducts.products);
@@ -75,6 +76,7 @@ function ProductContent() {
       fetchAdminProducts(page, searchInput, selectedSort, selectedCategory)
     );
   };
+
   useEffect(() => {
     dispatch(getAllProductCategories());
   }, [dispatch]);
@@ -89,7 +91,6 @@ function ProductContent() {
       )
     );
   }, [dispatch, currentPage, searchInput, selectedSort, selectedCategory]);
-
   return (
     <div className="w-full p-5">
       <div className="">
@@ -103,16 +104,22 @@ function ProductContent() {
             Add New Product
           </a>
         </div>
-        <div className="p-2 mb-2">
+        <div className="p-2 mb-2 flex justify-center items-center">
           <SearchInputList
             searchInput={searchInput}
             setSearchInput={setSearchInput}
             onSearch={handleSearch}
           />
         </div>
-        <div>
+        <div className="flex lg:flex-row flex-col gap-5 lg:justify-center lg:items-center">
           <SortButtons handleSort={handleSort} />
+          <SortByCategoryButton
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           {products.map((product) => {
             return (

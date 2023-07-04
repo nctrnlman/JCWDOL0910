@@ -56,6 +56,12 @@ module.exports = {
     WHERE LOWER(name) LIKE '%${search.toLowerCase()}%';
   `,
 
+  getCountQueryWithCategory: (category) => `
+    SELECT COUNT(*) AS total
+    FROM products p
+    WHERE p.id_category = ${db.escape(category)}
+  `,
+
   getCategoryQuery: (id) => `
     SELECT id_category, name FROM categories WHERE id_category = ${db.escape(
       id
