@@ -20,31 +20,37 @@ module.exports = {
     try {
       const { status, id_user } = req.query;
 
-      const orderList = await query(`
-         SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.created_at, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number,
+      let orderListQuery;
+
+      if (status === "Dibatalkan") {
+        orderListQuery = `
+        SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.created_at,
+        JSON_ARRAYAGG(JSON_OBJECT('quantity', oi.quantity, 'product_name', oi.product_name, 'product_image', oi.product_image, 'product_price', oi.product_price)) AS productList
+        FROM orders o
+        JOIN order_items oi ON o.id_order = oi.id_order
+        WHERE o.id_user = ${id_user} AND o.status = '${status}'
+        GROUP BY o.id_order, o.shipping_method, o.status, o.created_at;
+      `;
+      } else {
+        orderListQuery = `
+        SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.created_at, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number,
         JSON_ARRAYAGG(JSON_OBJECT('quantity', oi.quantity, 'product_name', oi.product_name, 'product_image', oi.product_image, 'product_price', oi.product_price)) AS productList
         FROM orders o
         JOIN order_items oi ON o.id_order = oi.id_order
         JOIN payment_details pd ON o.id_order = pd.id_order
         WHERE o.id_user = ${id_user} AND o.status = '${status}'
-        GROUP BY o.id_order, o.shipping_method, o.status, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number, o.created_at;`);
-
-      if (status === "Dibatalkan") {
-        orderListQuery = `
-          SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.created_at,
-          JSON_ARRAYAGG(JSON_OBJECT('quantity', oi.quantity, 'product_name', oi.product_name, 'product_image', oi.product_image, 'product_price', oi.product_price)) AS productList
-          FROM orders o
-          JOIN order_items oi ON o.id_order = oi.id_order
-          WHERE o.id_user = ${id_user} AND o.status = '${status}' AND pd.payment_proof IS NULL
-          GROUP BY o.id_order, o.shipping_method, o.status, o.created_at;
-        `;
+        GROUP BY o.id_order, o.shipping_method, o.status, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number, o.created_at;
+      `;
       }
+
+      const orderList = await query(orderListQuery);
 
       return res.status(200).send(orderList);
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
   },
+
   getShippingWarehouse: async (req, res) => {
     try {
       const { id_user, courier } = req.query;
@@ -109,22 +115,10 @@ module.exports = {
 
       const services = response.data.rajaongkir.results[0].costs;
 
-      // if (service == "oke") {
-      //   services = response.data.rajaongkir.results[0].costs[0];
-      // } else if (service == "jne") {
-      //   services = response.data.rajaongkir.results[0].costs[1];
-      // } else if (service == "yes") {
-      //   services = response.data.rajaongkir.results[0].costs[2];
-      // }
-      // console.log(services);
-
-      // const results = services.cost[0].value;
-      // console.log(results);
       console.log(services);
 
       return res.status(200).send({
         service: services,
-        // shipping: results,
         warehouse: checkNearestWarehouse[0],
         address: fetchAddress[0],
       });

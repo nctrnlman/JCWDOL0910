@@ -73,7 +73,7 @@ export function uploadPaymentOrder(orderId, formData) {
   };
 }
 
-export function cancelOrder(orderId, id_user) {
+export function cancelOrder(orderId, id_user, status) {
   return async (dispatch) => {
     try {
       const token = localStorage.getItem("user_token");
@@ -87,7 +87,7 @@ export function cancelOrder(orderId, id_user) {
           },
         }
       );
-      dispatch(fetchOrder(id_user, "Menunggu Pembayaran"));
+      dispatch(fetchOrder(id_user, status));
 
       toast.success("Order canceled successfully.");
     } catch (error) {

@@ -24,16 +24,29 @@ module.exports = {
       const itemsPerPage = 8;
       const { page, offset } = getPaginationParams(req, itemsPerPage);
 
-      const products = await query(
-        adminProductQueries.getProductsByPageQuery(itemsPerPage, offset)
+      const { sort, category, search } = req.query;
+
+      let countQuery = adminProductQueries.getCountQuery;
+      let productsQuery = adminProductQueries.getProductsByPageQuery(
+        itemsPerPage,
+        offset,
+        sort,
+        category,
+        search
       );
-      const countResult = await query(adminProductQueries.getCountQuery);
+
+      if (search) {
+        countQuery = adminProductQueries.getCountQueryWithSearch(search);
+      }
+
+      const products = await query(productsQuery);
+      const countResult = await query(countQuery);
 
       const totalItems = countResult[0].total;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
       parseTotalStock(products);
 
-      return res.status(200).send({ products, totalPages });
+      return res.status(200).send({ products, totalPages, itemsPerPage });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
@@ -121,7 +134,6 @@ module.exports = {
       const { file } = req;
       let image_url = existingProduct.image_url;
       if (file) {
-        // New image provided
         if (!validateImageSize(file)) {
           return res.status(400).send("File size exceeds the limit");
         }

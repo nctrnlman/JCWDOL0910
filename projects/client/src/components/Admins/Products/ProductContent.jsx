@@ -11,6 +11,8 @@ import { getAllProductCategories } from "../../../features/categories/ProductCat
 import CreateModalProduct from "../../modals/CreateModalProduct";
 import ProductCardDashboard from "../../Product/ProductCardDashboard";
 import Pagination from "../../utils/Pagination";
+import SearchInputList from "../../utils/SearchInputList";
+import SortButtons from "../../utils/SortButtons";
 
 function ProductContent() {
   const products = useSelector((state) => state.adminProducts.products);
@@ -24,6 +26,26 @@ function ProductContent() {
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedSort, setSelectedSort] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const handleSort = (option) => {
+    setSelectedSort(option);
+    dispatch(
+      fetchAdminProducts(currentPage, searchInput, option, selectedCategory)
+    );
+  };
+  const handleSearch = () => {
+    dispatch(
+      fetchAdminProducts(
+        currentPage,
+        searchInput,
+        selectedSort,
+        selectedCategory
+      )
+    );
+  };
 
   const openEditModal = (id_product) => {
     setEditItemId(id_product);
@@ -48,13 +70,28 @@ function ProductContent() {
     setDeleteItemName("");
   };
 
+  const handlePageChange = (page) => {
+    dispatch(
+      fetchAdminProducts(page, searchInput, selectedSort, selectedCategory)
+    );
+  };
   useEffect(() => {
-    dispatch(fetchAdminProducts());
     dispatch(getAllProductCategories());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(
+      fetchAdminProducts(
+        currentPage,
+        searchInput,
+        selectedSort,
+        selectedCategory
+      )
+    );
+  }, [dispatch, currentPage, searchInput, selectedSort, selectedCategory]);
+
   return (
-    <div className=" w-full p-5">
+    <div className="w-full p-5">
       <div className="">
         <div className="btn btn-primary mt-4 mx-2">
           <a
@@ -65,6 +102,16 @@ function ProductContent() {
           >
             Add New Product
           </a>
+        </div>
+        <div className="p-2 mb-2">
+          <SearchInputList
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+            onSearch={handleSearch}
+          />
+        </div>
+        <div>
+          <SortButtons handleSort={handleSort} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           {products.map((product) => {
@@ -107,10 +154,7 @@ function ProductContent() {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        handlePageChange={(newPage) => {
-          dispatch(setCurrentPage(newPage));
-          dispatch(fetchAdminProducts(newPage));
-        }}
+        handlePageChange={handlePageChange}
       />
     </div>
   );
