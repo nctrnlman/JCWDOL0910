@@ -14,6 +14,7 @@ const {
   stockRoutes,
   orderRoutes,
   adminOrderRoutes,
+  stockMutationRoutes,
 } = require("../routers/");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
@@ -49,6 +50,7 @@ app.use("/api/admins/products", adminProductRoutes);
 app.use("/api/stocks", stockRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admins/orders", adminOrderRoutes);
+app.use("/api/admins/stock-mutation", stockMutationRoutes);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

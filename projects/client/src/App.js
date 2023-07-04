@@ -15,6 +15,7 @@ import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
 import AdminCategory from "./pages/AdminCategory";
 import StocksAdmin from "./pages/StocksAdmin";
+import StockMutationAdmin from "./pages/StockMutationAdmin";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
@@ -110,6 +111,10 @@ function App() {
             <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
             <Route path="/admin-categories" element={<AdminCategory />} />
             <Route path="/admin-stocks" element={<StocksAdmin />} />
+            <Route
+              path="/admin-stock-mutation"
+              element={<StockMutationAdmin />}
+            />
           </>
         )}
       </Routes>
