@@ -17,7 +17,7 @@ function ProductDetail() {
     <div className="hero min-h-screen bg-base-200 overflow-auto pt-16 lg:pt-20">
       <div className="hero-content flex flex-col lg:flex-row items-center lg:gap-6 lg:items-start lg:h-full">
         <img
-          src={product?.image_url}
+          src={`http://localhost:8000/${product?.image_url}`}
           className="max-w-[340px] w-3/4 lg:max-w-md rounded-lg shadow-2xl mb-4 lg:mb-0 h-3/4"
           alt="Product Image"
         />

@@ -10,6 +10,7 @@ const CreateModalProduct = ({ closeCreateModal, categories }) => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [weight, setWeight] = useState("");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -25,6 +26,7 @@ const CreateModalProduct = ({ closeCreateModal, categories }) => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("price", price);
+    formData.append("weight", weight);
     formData.append("id_category", category);
     formData.append("description", description);
     formData.append("image_url", image);
@@ -61,6 +63,19 @@ const CreateModalProduct = ({ closeCreateModal, categories }) => {
               onChange={(e) => setPrice(e.target.value)}
               className="input input-bordered"
               placeholder="Enter product price"
+              required
+            />
+          </div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Weight:</span>
+            </label>
+            <input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="input input-bordered"
+              placeholder="Enter product weight"
               required
             />
           </div>

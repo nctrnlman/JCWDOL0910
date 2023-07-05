@@ -32,11 +32,18 @@ module.exports = {
     SELECT id_product FROM products WHERE name = ${db.escape(name)};
   `,
 
-  addProductQuery: (id_category, name, price, description, image_url) => `
-    INSERT INTO products (id_category, name, price, description, image_url)
+  addProductQuery: (
+    id_category,
+    name,
+    price,
+    weight,
+    description,
+    image_url
+  ) => `
+    INSERT INTO products (id_category, name, price,weight, description, image_url)
     VALUES (${db.escape(id_category)}, ${db.escape(name)}, ${db.escape(
     price
-  )}, ${db.escape(description)}, ${db.escape(image_url)});
+  )},${db.escape(weight)}, ${db.escape(description)}, ${db.escape(image_url)});
   `,
 
   getProductQuery: (productId) => `
@@ -55,15 +62,18 @@ module.exports = {
     productId,
     name,
     price,
+    weight,
     description,
     id_category,
     image_url
   ) => `
     UPDATE products SET name = ${db.escape(name)}, price = ${db.escape(
     price
-  )}, description = ${db.escape(description)}, id_category = ${db.escape(
-    id_category
-  )}, image_url = ${db.escape(image_url)}
+  )},weight=${db.escape(weight)}, description = ${db.escape(
+    description
+  )}, id_category = ${db.escape(id_category)}, image_url = ${db.escape(
+    image_url
+  )}
     WHERE id_product = ${db.escape(productId)};
   `,
 
