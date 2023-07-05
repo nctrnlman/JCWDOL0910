@@ -1,4 +1,5 @@
 const { db, query } = require("../database");
+const orderQueries = require("../queries/orderQueries");
 
 const checkExpiredOrder = async (req, res, next) => {
   try {
@@ -12,17 +13,12 @@ const checkExpiredOrder = async (req, res, next) => {
 
     for (const order of expiredOrders) {
       const paymentProofExpiry = new Date(order.payment_proof_expiry);
-
+      const orderId = order.id_order;
       if (paymentProofExpiry < currentTime) {
-        await query(`
-          UPDATE orders
-          SET status = 'Dibatalkan'
-          WHERE id_order = ${order.id_order}
-        `);
+        await query(orderQueries.updateOrderCancellationQuery(orderId));
+        await query(orderQueries.deletePaymentDetailsQuery(orderId));
       }
     }
-
-    console.log("Order status update complete!");
 
     next();
   } catch (error) {

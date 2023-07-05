@@ -10,6 +10,7 @@ export const adminProductSlice = createSlice({
     products: [],
     currentPage: 1,
     totalPages: 1,
+    itemsPerPage: 0,
   },
   reducers: {
     setProducts: (state, action) => {
@@ -33,6 +34,9 @@ export const adminProductSlice = createSlice({
     setTotalPages: (state, action) => {
       state.totalPages = action.payload;
     },
+    setItemsPerPage: (state, action) => {
+      state.itemsPerPage = action.payload;
+    },
   },
 });
 
@@ -42,16 +46,22 @@ export const {
   addProduct,
   setCurrentPage,
   setTotalPages,
+  setItemsPerPage,
 } = adminProductSlice.actions;
 
 export default adminProductSlice.reducer;
 
-export function fetchAdminProducts(page = 1) {
+export function fetchAdminProducts(
+  page = 1,
+  search = "",
+  sort = "",
+  category = ""
+) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/admins/products/?page=${page}`,
+        `http://localhost:8000/api/admins/products/?page=${page}&search=${search}&sort=${sort}&category=${category}`,
         {
           headers: {
             Authorization: `Bearer ${adminToken}`,
@@ -59,11 +69,12 @@ export function fetchAdminProducts(page = 1) {
           },
         }
       );
-      const { products, totalPages } = response.data;
+      const { products, totalPages, itemsPerPage } = response.data;
       dispatch(setProducts(products));
       dispatch(setCurrentPage(page));
-      // Add the following line to update the total pages
       dispatch(setTotalPages(totalPages));
+      dispatch(setItemsPerPage(itemsPerPage));
+      console.log(response, "response product admin");
     } catch (error) {
       console.log(error);
     }
@@ -142,6 +153,7 @@ export function addNewProduct(productData) {
         }
       );
       dispatch(addProduct(response.data));
+      dispatch(fetchAdminProducts());
       console.log(response);
     } catch (error) {
       console.log(error.response, "test");

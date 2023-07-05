@@ -8,18 +8,58 @@ module.exports = {
     ORDER BY p.name ASC;
   `,
 
-  getProductsByPageQuery: (itemsPerPage, offset) => `
+  getProductsByPageQuery: (itemsPerPage, offset, sort, category, search) => {
+    let query = `
     SELECT p.*, c.name AS category_name, SUM(s.total_stock) AS total_stock
     FROM products p
-    INNER JOIN stocks s ON p.id_product = s.id_product
+    LEFT JOIN stocks s ON p.id_product = s.id_product
     INNER JOIN categories c ON p.id_category = c.id_category
+  `;
+
+    if (category !== undefined && category !== "") {
+      query += ` WHERE p.id_category = ${db.escape(category)}`;
+    }
+
+    if (search) {
+      query += ` AND LOWER(p.name) LIKE '%${search.toLowerCase()}%'`;
+    }
+
+    query += `
     GROUP BY p.id_product
+  `;
+
+    if (sort === "lowest") {
+      query += " ORDER BY p.price ASC";
+    } else if (sort === "highest") {
+      query += " ORDER BY p.price DESC";
+    } else if (sort === "a-z") {
+      query += " ORDER BY p.name ASC";
+    } else if (sort === "z-a") {
+      query += " ORDER BY p.name DESC";
+    }
+
+    query += `
     LIMIT ${itemsPerPage}
     OFFSET ${offset};
-  `,
+  `;
+
+    return query;
+  },
 
   getCountQuery: `
     SELECT COUNT(*) AS total FROM products;
+  `,
+
+  getCountQueryWithSearch: (search) => `
+    SELECT COUNT(*) AS total
+    FROM products
+    WHERE LOWER(name) LIKE '%${search.toLowerCase()}%';
+  `,
+
+  getCountQueryWithCategory: (category) => `
+    SELECT COUNT(*) AS total
+    FROM products p
+    WHERE p.id_category = ${db.escape(category)}
   `,
 
   getCategoryQuery: (id) => `

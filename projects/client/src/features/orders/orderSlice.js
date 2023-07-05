@@ -72,3 +72,33 @@ export function uploadPaymentOrder(orderId, formData) {
     }
   };
 }
+
+export function cancelOrder(orderId, id_user, status) {
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem("user_token");
+
+      let response = await axios.put(
+        `http://localhost:8000/api/orders/cancel-order/${orderId}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      dispatch(fetchOrder(id_user, status));
+
+      toast(
+        <CustomToast type={"success"} message={response.data.message} />,
+        CustomToastOptions
+      );
+    } catch (error) {
+      toast(
+        <CustomToast type="error" message={error.response.data} />,
+        CustomToastOptions
+      );
+      console.log(error);
+    }
+  };
+}

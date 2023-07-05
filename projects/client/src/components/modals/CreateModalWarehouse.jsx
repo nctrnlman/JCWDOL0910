@@ -103,7 +103,7 @@ const CreateModalWarehouse = ({
               value={province}
               onChange={(e) => {
                 setProvince(e.target.value);
-                setCity(""); // Reset city when province changes
+                setCity("");
                 fetchCities(e.target.value);
               }}
               className="select select-bordered"

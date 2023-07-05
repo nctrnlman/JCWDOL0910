@@ -49,7 +49,6 @@ const CreateOrder = () => {
           CustomToastOptions
         );
         navigate("/orders");
-
       }
     } catch (error) {
       toast.error(error.response.data.message);
@@ -103,7 +102,7 @@ const CreateOrder = () => {
             <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
               <div className="hero-content justify-start lg:w-[400px]">
                 <img
-                  src={item.image_url}
+                  src={`http://localhost:8000/${item.image_url}`}
                   className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
                 />
                 <div>

@@ -13,7 +13,6 @@ function Carousel() {
     {
       url: "https://i5.walmartimages.com/asr/339db0e6-8bba-469f-ba4b-5f4ae6726aed.8515c769b7a7cf27d28dd5f1782a2a5f.jpeg?odnHeight=2000&odnWidth=2000&odnBg=ffffff",
     },
-
     {
       url: "https://www.stirpad.com/images/news/230104040835_n.jpg",
     },
@@ -51,28 +50,34 @@ function Carousel() {
   }, [currentIndex]);
 
   return (
-    <div className="w-screen lg:w-[1300px] h-[450px] m-auto py-16 px-4 relative group mt-5">
-      <div className="w-full h-full rounded-2xl bg-center bg-cover duration-500">
-        <img
-          src={slides[currentIndex].url}
-          alt=""
-          className="w-full h-full object-contain rounded-2xl max-h-full"
-        />
+    <div
+      className="hero min-h-screen mt-16 mb-5"
+      style={{ backgroundImage: `url(${slides[currentIndex].url})` }}
+    >
+      <div className="hero-overlay bg-opacity-60"></div>
+      <div className="hero-content text-center text-neutral-content">
+        <div className="max-w-md">
+          <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
+          <p className="mb-5">
+            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
+          </p>
+          <button className="btn btn-primary">Get Started</button>
+        </div>
       </div>
-      {/* Left Arrow */}
-      <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
+      <div className="group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
         <BsChevronCompactLeft onClick={prevSlide} size={30} />
       </div>
-      {/* Right Arrow */}
-      <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
+      <div className="group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
         <BsChevronCompactRight onClick={nextSlide} size={30} />
       </div>
-      <div className="flex top-4 justify-center py-2">
+      <div className="flex justify-center absolute bottom-4 w-full">
         {slides.map((slide, slideIndex) => (
           <div
             key={slideIndex}
             onClick={() => goToSlide(slideIndex)}
-            className="text-2xl cursor-pointer"
+            className={`text-2xl cursor-pointer ${
+              slideIndex === currentIndex ? "text-blue-500" : "text-gray-500"
+            }`}
           >
             <RxDotFilled />
           </div>

@@ -15,5 +15,6 @@ router.post(
   upload.single("image"),
   orderController.uploadPayment
 );
+router.put("/cancel-order/:orderId", orderController.cancelOrder);
 
 module.exports = router;
