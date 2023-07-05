@@ -78,7 +78,7 @@ export function cancelOrder(orderId, id_user, status) {
     try {
       const token = localStorage.getItem("user_token");
 
-      await axios.put(
+      let response = await axios.put(
         `http://localhost:8000/api/orders/cancel-order/${orderId}`,
         null,
         {
@@ -89,9 +89,15 @@ export function cancelOrder(orderId, id_user, status) {
       );
       dispatch(fetchOrder(id_user, status));
 
-      toast.success("Order canceled successfully.");
+      toast(
+        <CustomToast type={"success"} message={response.data.message} />,
+        CustomToastOptions
+      );
     } catch (error) {
-      toast.error(error.response.data.error);
+      toast(
+        <CustomToast type="error" message={error.response.data} />,
+        CustomToastOptions
+      );
       console.log(error);
     }
   };

@@ -13,6 +13,8 @@ const {
   validateImageExtension,
 } = require("../helper/imageValidatorHelper");
 
+const orderQueries = require("../queries/orderQueries");
+
 const env = process.env;
 
 module.exports = {
@@ -95,8 +97,6 @@ module.exports = {
       JOIN products p ON ci.id_product = p.id_product
       JOIN users u ON ci.id_user = u.id_user
       WHERE u.id_user = ${id_user}`);
-      // console.log(checkWeight);
-      // console.log(courier);
 
       const response = await axios.post(
         "https://api.rajaongkir.com/starter/cost",
@@ -204,21 +204,16 @@ module.exports = {
         return res.status(400).send("Invalid file extension");
       }
 
-      await query(`
-      UPDATE orders
-      SET status = 'Menunggu Konfirmasi Pembayaran'
-      WHERE id_order = ${db.escape(orderId)}
-      AND id_user = ${db.escape(userId)}
-    `);
-
-      await query(`
-      UPDATE payment_details
-        SET payment_proof = ${db.escape(image)},
-            remitter = ${db.escape(remitter)},
-            bank_name = ${db.escape(bank_name)},
-            account_number = ${db.escape(account_number)}
-        WHERE id_order = ${db.escape(orderId)}
-    `);
+      await query(orderQueries.updateOrderStatusQuery(orderId, userId));
+      await query(
+        orderQueries.updatePaymentDetailsQuery(
+          orderId,
+          image,
+          remitter,
+          bank_name,
+          account_number
+        )
+      );
 
       return res.status(200).send({
         success: true,
@@ -233,13 +228,8 @@ module.exports = {
     try {
       const { orderId } = req.params;
       const userId = getIdFromToken(req, res);
-      const order = await query(
-        `SELECT * FROM orders WHERE id_order = ${db.escape(
-          orderId
-        )} AND status = 'Menunggu Pembayaran' AND id_user = ${db.escape(
-          userId
-        )}`
-      );
+      const order = await query(orderQueries.selectOrderQuery(orderId, userId));
+
       if (!order || order.length === 0) {
         return res.status(404).send({
           error: "Order not found.",
@@ -250,15 +240,8 @@ module.exports = {
         return res.status(400).send({ error: "Order is already canceled." });
       }
 
-      await query(
-        `UPDATE orders SET status = 'Dibatalkan' WHERE id_order = ${db.escape(
-          orderId
-        )}`
-      );
-
-      await query(
-        `DELETE FROM payment_details WHERE id_order = ${db.escape(orderId)}`
-      );
+      await query(orderQueries.updateOrderCancellationQuery(orderId));
+      await query(orderQueries.deletePaymentDetailsQuery(orderId));
 
       return res
         .status(200)

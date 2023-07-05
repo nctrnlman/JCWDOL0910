@@ -5,6 +5,7 @@ import PaymentButton from "../components/Buttons/PaymentButton";
 import SeeReceiptButton from "../components/Buttons/SeeReceiptButton";
 import ReceiptModal from "../components/modals/ReceiptModal";
 import CancelOrderButton from "../components/Buttons/CancelOrderButton";
+import CancelOrderModal from "../components/modals/CancelOrderModal";
 
 function OrderList() {
   const dispatch = useDispatch();
@@ -22,12 +23,13 @@ function OrderList() {
         setSelectedOrderId(orderId);
         setSelectedOrder(selectedOrder);
       };
-      const handleCancelOrder = (orderId, selectedOrder) => {
-        setSelectedOrder(selectedOrder);
+      const handleShowCancelModal = (orderId, selectedOrder) => {
         setSelectedOrderId(orderId);
-
+        setSelectedOrder(selectedOrder);
+      };
+      const handleCancelOrder = () => {
         setStatus("Dibatalkan");
-        dispatch(cancelOrder(orderId, id_user, status));
+        dispatch(cancelOrder(selectedOrderId, id_user, status));
       };
       const isWaitingConfirmOrder =
         order.status === "Menunggu Konfirmasi Pembayaran";
@@ -61,13 +63,23 @@ function OrderList() {
               </div>
               <div className="flex gap-2">
                 {isWaitingPayment && <PaymentButton orderId={order.id_order} />}
-                {isWaitingPayment && <CancelOrderButton />}
+                {isWaitingPayment && (
+                  <CancelOrderButton
+                    onClick={() => handleShowCancelModal(order.id_order, order)}
+                  />
+                )}
                 {isWaitingConfirmOrder && (
                   <SeeReceiptButton
                     onClick={() => handleShowReceipt(order.id_order, order)}
                   />
                 )}
                 {selectedOrderId && <ReceiptModal order={selectedOrder} />}
+                {selectedOrderId && (
+                  <CancelOrderModal
+                    order={selectedOrder}
+                    onclick={handleCancelOrder}
+                  />
+                )}
               </div>
             </div>
           </div>

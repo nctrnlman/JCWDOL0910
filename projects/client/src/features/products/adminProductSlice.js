@@ -153,6 +153,7 @@ export function addNewProduct(productData) {
         }
       );
       dispatch(addProduct(response.data));
+      dispatch(fetchAdminProducts());
       console.log(response);
     } catch (error) {
       console.log(error.response, "test");

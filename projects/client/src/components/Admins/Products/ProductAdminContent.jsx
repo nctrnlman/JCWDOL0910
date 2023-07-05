@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteProducts,
   fetchAdminProducts,
-  setCurrentPage,
 } from "../../../features/products/adminProductSlice";
 import DeleteModal from "../../modals/DeleteModal";
 import EditModalProduct from "../../modals/EditModalProduct";
@@ -11,11 +10,10 @@ import { getAllProductCategories } from "../../../features/categories/ProductCat
 import CreateModalProduct from "../../modals/CreateModalProduct";
 import ProductCardDashboard from "../../Product/ProductCardDashboard";
 import Pagination from "../../utils/Pagination";
-import SearchInputList from "../../utils/SearchInputList";
-import SortButtons from "../../utils/SortButtons";
-import SortByCategoryButton from "../../utils/SortByCategoryButton";
+import SortSection from "./SortSection";
+import SearchSection from "./SearchSection";
 
-function ProductContent() {
+function ProductAdminContent() {
   const products = useSelector((state) => state.adminProducts.products);
   const totalPages = useSelector((state) => state.adminProducts.totalPages);
   const categories = useSelector(
@@ -104,22 +102,17 @@ function ProductContent() {
             Add New Product
           </a>
         </div>
-        <div className="p-2 mb-2 flex justify-center items-center">
-          <SearchInputList
-            searchInput={searchInput}
-            setSearchInput={setSearchInput}
-            onSearch={handleSearch}
-          />
-        </div>
-        <div className="flex lg:flex-row flex-col gap-5 lg:justify-center lg:items-center">
-          <SortButtons handleSort={handleSort} />
-          <SortByCategoryButton
-            categories={categories}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-        </div>
-
+        <SearchSection
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          onSearch={handleSearch}
+        />
+        <SortSection
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          handleSort={handleSort}
+        />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           {products.map((product) => {
             return (
@@ -135,7 +128,7 @@ function ProductContent() {
       </div>
       {deleteItemId && (
         <DeleteModal
-          key={`deleteModal-${deleteItemId}`} // Add the key prop here
+          key={`deleteModal-${deleteItemId}`}
           deleteItemName={deleteItemName}
           handleDelete={() => handleDelete(deleteItemId)}
           closeDeleteModal={closeDeleteModal}
@@ -144,7 +137,7 @@ function ProductContent() {
       )}
       {editItemId && (
         <EditModalProduct
-          key={`editModal-${editItemId}`} // Add the key prop here
+          key={`editModal-${editItemId}`}
           editItemId={editItemId}
           closeEditModal={closeEditModal}
           categories={categories}
@@ -167,4 +160,4 @@ function ProductContent() {
   );
 }
 
-export default ProductContent;
+export default ProductAdminContent;

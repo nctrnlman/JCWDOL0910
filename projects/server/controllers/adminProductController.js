@@ -11,6 +11,7 @@ const { parseTotalStock } = require("../helper/productHelper");
 const adminProductQueries = require("../queries/adminProductQueries");
 
 module.exports = {
+  // renacana bakal dipindah ke productController
   getAllProducts: async (req, res) => {
     try {
       const products = await query(adminProductQueries.getAllProductsQuery);
@@ -19,6 +20,8 @@ module.exports = {
       return res.status(error.statusCode || 500).send(error);
     }
   },
+
+  // renacana bakal dipindah ke productController
   fetchProducts: async (req, res) => {
     try {
       const itemsPerPage = 8;
