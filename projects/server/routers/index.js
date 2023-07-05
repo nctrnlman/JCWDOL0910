@@ -10,6 +10,7 @@ const adminProductRoutes = require("./adminProductRoutes");
 const stockRoutes = require("./stockRoutes");
 const orderRoutes = require("./orderRoutes");
 const adminOrderRoutes = require("./adminOrderRoutes");
+const stockMutationRoutes = require("./stockMutationRoutes");
 
 module.exports = {
   userRoutes,
@@ -24,4 +25,5 @@ module.exports = {
   stockRoutes,
   orderRoutes,
   adminOrderRoutes,
+  stockMutationRoutes,
 };
