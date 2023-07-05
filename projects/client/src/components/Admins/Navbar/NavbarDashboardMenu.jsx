@@ -27,6 +27,11 @@ function NavbarDashboardMenu({ menuType }) {
                 Categories
               </a>
             </li>
+            <li>
+              <a href="/admin-stock-mutation" className="text-lg">
+                Stock Mutations
+              </a>
+            </li>
             <li className="flex justify-center items-center">
               <a href="/admin-login" className="text-xl">
                 <RiLogoutBoxLine />

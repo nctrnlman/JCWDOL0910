@@ -25,10 +25,20 @@ const SortButtons = ({ handleSort }) => {
           </>
         ) : (
           <>
-            <option value="highest">Highest Stock</option>
-            <option value="lowest">Lowest Stock</option>
-            <option value="warehouse-asc">Warehouse A-Z</option>
-            <option value="warehouse-desc">Warehouse Z-A</option>
+            {window.location.pathname === "/admin-stock-mutation" && (
+              <>
+                <option value="highest">Highest Stock</option>
+                <option value="lowest">Lowest Stock</option>
+                <option value="datetime-asc">Waktu Terdekat</option>
+                <option value="datetime-desc">Waktu Terlama</option>
+              </>
+            )}
+            {window.location.pathname !== "/admin-stock-mutation" && (
+              <>
+                <option value="warehouse-asc">Warehouse A-Z</option>
+                <option value="warehouse-desc">Warehouse Z-A</option>
+              </>
+            )}
           </>
         )}
       </select>
