@@ -25,7 +25,7 @@ module.exports = {
       `);
 
       const fetchOrder = await query(`
-    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.total_stock
+    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
     FROM orders o
     INNER JOIN order_items oi ON o.id_order = oi.id_order
     INNER JOIN products p ON oi.product_name = p.name
@@ -37,35 +37,36 @@ module.exports = {
 
       if (fetchOrder.length > 0) {
         for (const item of fetchOrder) {
-          const { id_order, id_product, quantity, id_warehouse, total_stock } =
-            item;
+          const {
+            id_order,
+            id_product,
+            quantity,
+            id_warehouse,
+            total_stock,
+            id_stock,
+          } = item;
 
           if (total_stock < quantity) {
             const stockShortage = quantity - total_stock;
-            console.log(id_product, "total stock kurang");
+
             // Lakukan mutasi stok karena stok tidak mencukupi
             const warehouseNearnest = await query(`  SELECT *,
                   SQRT(POW((latitude - (SELECT latitude FROM warehouses WHERE id_warehouse = 30)), 2) + POW((longitude - (SELECT longitude FROM warehouses WHERE id_warehouse = 30)), 2)) AS distance
                   FROM warehouses
                   WHERE id_warehouse <> ${id_warehouse}
                   ORDER BY distance;`);
-            // console.log(warehouseNearnest);
-            console.log(stockShortage, "kurangnya");
 
             let isProductAvailable = false;
 
             for (const nearestWarehouse of warehouseNearnest) {
               const checkStock = await query(`
-                    SELECT total_stock
+                    SELECT id_stock,total_stock
                     FROM stocks
                     WHERE id_warehouse = ${nearestWarehouse.id_warehouse}
                     AND id_product = ${id_product}
                   `);
 
               if (checkStock[0].total_stock >= stockShortage) {
-                console.log(checkStock[0].total_stock, "ini stocknya");
-                console.log(stockShortage, "ini");
-                console.log("adanya di", nearestWarehouse.id_warehouse);
                 // Warehouse terdekat memiliki stok yang cukup
 
                 // Lakukan proses mutasi stok atau update stok di sini
@@ -81,15 +82,15 @@ module.exports = {
                   `UPDATE stocks SET total_stock = total_stock + ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
                 );
 
-                const createHistoryRequetWarehouse = await query(`
-                INSERT INTO stock_history (id_product, stock_change, status, created_at)
-                VALUES (${id_product}, ${quantity}, "incoming", CURRENT_TIMESTAMP);
+                const createHistorySendWarehouse = await query(`
+                INSERT INTO stock_history (id_stock, stock_change, status, created_at)
+                VALUES (${checkStock[0].id_stock}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
                `);
 
-                const createHistorySendWarehouse = await query(`
-             INSERT INTO stock_history (id_product, stock_change, status, created_at)
-             VALUES (${id_product}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
-            `);
+                const createHistoryRequetWarehouse = await query(`
+                INSERT INTO stock_history (id_stock, stock_change, status, created_at)
+                VALUES (${id_stock}, ${quantity}, "incoming", CURRENT_TIMESTAMP);
+               `);
 
                 // Set flag foundWarehouse menjadi true untuk keluar dari perulangan
                 isProductAvailable = true; // Setel menjadi true jika produk tersedia di setidaknya satu gudang
@@ -98,22 +99,23 @@ module.exports = {
             }
 
             if (!isProductAvailable) {
-              console.log(
-                `Stok tidak tersedia untuk produk dengan ID ${id_product} di seluruh gudang`
-              );
+              return res
+                .status(400)
+                .send({
+                  message: `Stok tidak tersedia untuk produk dengan ID ${id_product} di seluruh gudang`,
+                });
               isAnyProductUnavailable = true; // Setel menjadi true jika setidaknya satu produk tidak tersedia di semua gudang
             }
           }
 
-          console.log(id_product, "stock cukup");
           // Update total_stock dengan pengurangan quantity
           const updateStock = await query(
             `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
           );
 
           const createHistory = await query(`
-            INSERT INTO stock_history (id_product, stock_change, status, created_at)
-            VALUES (${id_product}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
+            INSERT INTO stock_history (id_stock, stock_change, status, created_at)
+            VALUES (${id_stock}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
             `);
         }
       }
@@ -127,6 +129,12 @@ module.exports = {
   },
   rejectPayment: async (req, res) => {
     try {
+      const { id_order } = req.query;
+
+      const updateStatus = await query(`UPDATE orders
+      SET status = 'Menunggu Pembayaran'
+      WHERE id_order= ${id_order}`);
+
       return res
         .status(200)
         .send({ success: true, message: "Payment Rejected" });
