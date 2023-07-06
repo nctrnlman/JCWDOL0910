@@ -67,7 +67,7 @@ const CreateModalAddress = ({
   return (
     <div className="modal" id="create_modal">
       <div className="modal-box">
-        <h3 className="font-bold text-lg">Edit Address</h3>
+        <h3 className="font-bold text-lg">Add Address</h3>
         <form onSubmit={handleSubmit}>
           {/* <div className="form-control">
             <label className="label">

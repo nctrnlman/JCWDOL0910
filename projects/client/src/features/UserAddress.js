@@ -68,7 +68,7 @@ export function deleteAddress(id_address) {
     console.log("from user address deleteaddress slice", token)
     try {
       const response = await axios.delete(
-        `http://localhost:8000/api/user_profile/delete-address/${id_address}`,
+        `http://localhost:8000/api/user-profile/delete-address/${id_address}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

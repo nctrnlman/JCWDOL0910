@@ -15,7 +15,7 @@ const AddressContent = () => {
   const addresses = useSelector((state) => state.addresses.addresses);
   const dispatch = useDispatch();
   const [deleteItemId, setDeleteItemId] = useState(null);
-  // const [deleteItemName, setDeleteItemName] = useState("");
+  const [deleteItemName, setDeleteItemName] = useState("");
   const [editItemId, setEditItemId] = useState(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
 
@@ -76,7 +76,7 @@ const AddressContent = () => {
       </div>
       {deleteItemId && (
         <DeleteModal
-          // deleteItemName={deleteItemName}
+          deleteItemId={deleteItemId}
           handleDelete={() => handleDelete(deleteItemId)}
           closeDeleteModal={closeDeleteModal}
         />
@@ -84,6 +84,7 @@ const AddressContent = () => {
       {editItemId && (
         <EditModalAddress
           editItemId={editItemId}
+
           closeEditModal={closeEditModal}
           addresses={addresses}
         />

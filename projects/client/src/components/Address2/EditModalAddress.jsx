@@ -56,7 +56,7 @@ const EditModalAddress = ({
     }
   }, [editItemId, addresses]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const selectedProvince = provinces.find(
       (provinceItem) => provinceItem.province_id === province
@@ -76,7 +76,24 @@ const EditModalAddress = ({
       postal_code: postalCode,
     };
 
-    handleEdit(editItemId, updatedAddressData);
+    console.log(updatedAddressData)
+    // handleEdit(editItemId, updatedAddressData);
+
+    try {
+      const token = localStorage.user_token;
+      if (token) {
+        await axios.post(
+          `http://localhost:8000/api/user-profile/edit-address/${editItemId}`,
+          updatedAddressData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     closeEditModal();
   };
 

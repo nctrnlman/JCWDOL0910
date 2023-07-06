@@ -119,11 +119,11 @@ module.exports = {
   deleteAddress: async (req, res) => {
     try {
       console.log(req)
-      // id_address = req.params.id
-      // console.log(id_address)
-      // let deleteAddressQuery = `DELETE FROM addresses WHERE id_address=${db.escape(id_address)};`
-      // console.log(deleteAddressQuery)
-      // const execute_delete = await query(deleteAddressQuery);
+      id_address = req.params.id
+      console.log(id_address)
+      let deleteAddressQuery = `DELETE FROM addresses WHERE id_address=${db.escape(id_address)};`
+      console.log(deleteAddressQuery)
+      const execute_delete = await query(deleteAddressQuery);
       return res.status(200).send("Delete Address Succeed");
     } catch (error) {
       console.log(error)
