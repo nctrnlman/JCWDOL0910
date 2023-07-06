@@ -103,6 +103,7 @@ const CreateOrder = () => {
               <div className="hero-content justify-start lg:w-[400px]">
                 <img
                   src={`http://localhost:8000/${item.image_url}`}
+                  alt="item cart"
                   className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
                 />
                 <div>

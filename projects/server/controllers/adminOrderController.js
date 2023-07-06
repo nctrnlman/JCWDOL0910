@@ -101,11 +101,9 @@ module.exports = {
             }
 
             if (!isProductAvailable) {
-              return res
-                .status(400)
-                .send({
-                  message: `Stok tidak tersedia untuk produk dengan ID ${id_product} di seluruh gudang`,
-                });
+              return res.status(400).send({
+                message: `Stok tidak tersedia untuk produk dengan ID ${id_product} di seluruh gudang`,
+              });
               isAnyProductUnavailable = true; // Setel menjadi true jika setidaknya satu produk tidak tersedia di semua gudang
             }
           }
@@ -137,6 +135,10 @@ module.exports = {
       SET status = 'Menunggu Pembayaran'
       WHERE id_order= ${id_order}`);
 
+      const deletePaymentDetails = await query(`
+      DELETE FROM payment_details
+      WHERE id_order = ${id_order}
+    `);
       return res
         .status(200)
         .send({ success: true, message: "Payment Rejected" });

@@ -1,47 +1,33 @@
 import React from "react";
-import Axios from "axios";
 
-function PaymentConfirmationButton(props) {
-  const { id_order } = props;
-
-  const confirmButton = async (e, id_order) => {
-    e.preventDefault();
-    try {
-      let response = await Axios.post(
-        `http://localhost:8000/api/admins/orders/payment/confirm?id_order=${id_order}`
-      );
-
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+function PaymentConfirmationButton({ id_order, setId, status }) {
+  const handleConfirm = () => {
+    setId(id_order);
+    window.confirm_order.showModal();
   };
 
-  const rejectButton = async (e, id_order) => {
-    e.preventDefault();
-    try {
-      let response = await Axios.post(
-        `http://localhost:8000/api/admins/orders/payment/reject?id_order=${id_order}`
-      );
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleClick = () => {
+    setId(id_order);
+    window.reject_modal.showModal();
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col gap-2">
       <button
-        className="btn btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-        onClick={rejectButton}
+        className="btn btn-success btn-xs lg:btn-sm"
+        onClick={handleConfirm}
+        disabled={status !== "Menunggu Konfirmasi Pembayaran"}
       >
-        Reject
+        Confirm
       </button>
       <button
-        className="btn btn-primary  btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-        onClick={confirmButton}
+        className="btn btn-primary btn-xs lg:btn-sm"
+        onClick={handleClick}
+        disabled={
+          status !== "Menunggu Konfirmasi Pembayaran" && status !== "Diproses"
+        }
       >
-        Approve
+        Reject
       </button>
     </div>
   );

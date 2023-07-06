@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchOrderPaymentList } from "../../../features/orders/orderListAdminSlice";
 import SearchInputList from "../../utils/SearchInputList";
 import SortButtons from "../../utils/SortButtons";
+import RejectOrderModal from "../../modals/RejectOrderModal";
+import ConfirmOrderModal from "../../modals/ConfirmOrderModal";
 
 function OrderListAdminContent() {
   const dispatch = useDispatch();
@@ -14,6 +16,7 @@ function OrderListAdminContent() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedId, setId] = useState();
 
   const handlePageChange = (page) => {
     dispatch(
@@ -56,7 +59,11 @@ function OrderListAdminContent() {
         </div>
       </div>
       <div className="overflow-x-auto rounded-xl lg:flex lg:justify-center lg:items-center">
-        <OrderListTable orders={orders} currentPage={currentPage} />
+        <OrderListTable
+          orders={orders}
+          currentPage={currentPage}
+          setId={setId}
+        />
       </div>
       <div className="lg:flex lg:justify-center lg:items-center">
         <Pagination
@@ -65,6 +72,8 @@ function OrderListAdminContent() {
           handlePageChange={handlePageChange}
         />
       </div>
+      <RejectOrderModal selectedId={selectedId} />
+      <ConfirmOrderModal selectedId={selectedId} />
     </div>
   );
 }
