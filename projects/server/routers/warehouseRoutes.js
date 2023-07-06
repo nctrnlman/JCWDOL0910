@@ -4,21 +4,17 @@ const checkRole = require("../middleware/checkRole");
 
 const router = express.Router();
 
-router.post("/", checkRole.checkAdminRole, warehouseController.createWarehouse);
+router.post("/", checkRole.superAdmin, warehouseController.createWarehouse);
 router.put(
   "/:id_warehouse",
-  checkRole.checkAdminRole,
+  checkRole.superAdmin,
   warehouseController.editWarehouse
 );
 router.delete(
   "/:id_warehouse",
-  checkRole.checkAdminRole,
+  checkRole.superAdmin,
   warehouseController.deleteWarehouse
 );
-router.get(
-  "/",
-  checkRole.checkAdminRole,
-  warehouseController.fetchWarehouseList
-);
+router.get("/", checkRole.superAdmin, warehouseController.fetchWarehouseList);
 
 module.exports = router;

@@ -2,6 +2,8 @@ require("dotenv").config({
   path: ".env.local",
 });
 const { db, query } = require("../database");
+const { getPaginationParams } = require("../helper/getPaginationHelper");
+const adminOrderQueries = require("../queries/adminOrderQueries");
 
 module.exports = {
   fetchPaymentConfirmation: async (req, res) => {
@@ -130,6 +132,38 @@ module.exports = {
       return res
         .status(200)
         .send({ success: true, message: "Payment Rejected" });
+    } catch (error) {
+      return res.status(error.statusCode || 500).send(error);
+    }
+  },
+
+  fetchOrderList: async (req, res) => {
+    try {
+      const itemsPerPage = 8;
+      const { page, offset } = getPaginationParams(req, itemsPerPage);
+      const { sort, search, status } = req.query;
+
+      const orderPaymentList = await query(
+        adminOrderQueries.orderPaymentListQuery(
+          itemsPerPage,
+          offset,
+          sort,
+          search,
+          status
+        )
+      );
+
+      countQuery = adminOrderQueries.getCountQueryWithSearchAndStatus(
+        search,
+        status
+      );
+
+      const countResult = await query(countQuery);
+      const totalItems = countResult[0].total;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      return res
+        .status(200)
+        .send({ orderPaymentList, totalPages, itemsPerPage });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }

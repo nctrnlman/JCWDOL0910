@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/", adminController.createAdmin);
 router.post(
   "/warehouse-admin",
-  checkRole.checkAdminRole,
+  checkRole.superAdmin,
   adminController.createWarehouseAdmin
 );
 router.post("/login", adminController.loginAdmin); // Add the login route

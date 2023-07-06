@@ -10,6 +10,7 @@ import adminProductSlice from "../features/products/adminProductSlice";
 import stockSlice from "../features/stocks/stocksSlice";
 import stockMutationSlice from "../features/stock-mutation/stockMutationSlice";
 import orderSlice from "../features/orders/orderSlice";
+import orderListAdminSlice from "../features/orders/orderListAdminSlice";
 
 export default configureStore({
   reducer: {
@@ -24,5 +25,6 @@ export default configureStore({
     adminProducts: adminProductSlice,
     stockProducts: stockSlice,
     stockMutations: stockMutationSlice,
+    orderListAdmin: orderListAdminSlice,
   },
 });
