@@ -6,22 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiFillDelete } from "react-icons/ai";
 import AddressModal from "./AddAddressModal";
 import { Card, Typography } from "@material-tailwind/react";
-// import EditAddressModal from "./EditAddressModal";
+import EditAddressModal from "./EditAddressModal3";
 
-function UserAddressTable() {
-    // const existing_address = useSelector((state) => state.addresses.addresses);
-    // const dispatch = useDispatch();
-
-    // useEffect(() => {
-    //     dispatch(getAddress());
-    //     // console.log("dispatch", dispatch(getProfile()))
-    // }, []);
-
-    // console.log(existing_address)
-    // return (
-    //     <div>Addresses</div>
-    // )
-
+function UserAddressTable2() {
     const existing_address = useSelector((state) => state.addresses.addresses);
     const [temp_address, setTempAddress] = useState(existing_address);
     const [changed, setChanged] = useState(false);
@@ -29,8 +16,7 @@ function UserAddressTable() {
 
     useEffect(() => {
         dispatch(getAddress());
-        // console.log("dispatch", dispatch(getProfile()))
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         if (existing_address) {
@@ -40,7 +26,6 @@ function UserAddressTable() {
 
     const handleInputChange = (id_address, e) => {
         const { name, value } = e.target;
-
         setChanged(true);
         setTempAddress((prevState) => {
             const updatedAddress = prevState.map((address) => {
@@ -56,17 +41,11 @@ function UserAddressTable() {
         });
     };
 
-    const editAddress = async (id_address, event) => {
+    const editAddress = async (id_address, editedAddress) => {
         try {
-            event.preventDefault();
             const token = localStorage.user_token;
-
-            const editedAddress = temp_address.find(
-                (address) => address.id_address === id_address
-            );
-
             if (token) {
-                let response = await axios.post(
+                await axios.post(
                     `http://localhost:8000/api/user-profile/edit-address/${id_address}`,
                     editedAddress,
                     {
@@ -81,10 +60,9 @@ function UserAddressTable() {
 
     const deleteAddress = async (id_address, event) => {
         try {
-            console.log(id_address);
             const token = localStorage.user_token;
             if (token) {
-                let response = await axios.delete(
+                await axios.delete(
                     `http://localhost:8000/api/user-profile/delete-address/${id_address}`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
@@ -100,14 +78,10 @@ function UserAddressTable() {
 
     return (
         <div>
-            {/* <div className="px-4 sm:px-0"> */}
             <div className="grid grid-cols-6 my-3">
                 <h3 className="font-bold leading-7 text-gray-900 text-xl">
                     My Addresses
                 </h3>
-                {/* <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-                    Personal addresses.
-                </p> */}
                 <div className="col-start-6 col-span-6">
                     <AddressModal></AddressModal>
                 </div>
@@ -118,7 +92,7 @@ function UserAddressTable() {
                     <thead>
                         <tr>
                             {TABLE_HEAD.map((head) => (
-                                <th key={head} className="border-b border-slate-200 bg-slate-100 p-7 ">
+                                <th key={head} className="border-b border-slate-200 bg-slate-100 p-7">
                                     <Typography
                                         variant="small"
                                         className="font-bold leading-none opacity-70 text-slate-700"
@@ -130,37 +104,45 @@ function UserAddressTable() {
                         </tr>
                     </thead>
                     <tbody>
-                        {existing_address ? temp_address.map((address_point) => (
-                            <tr key={address_point.id_address} className="even:bg-slate-100">
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {address_point.address}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {address_point.city}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {address_point.province}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {address_point.postal_code}
-                                    </Typography>
-                                </td>
-                            </tr>
-                        )) : null}
+                        {existing_address &&
+                            temp_address.map((address_point) => (
+                                <tr key={address_point.id_address} className="even:bg-slate-100">
+                                    <td className="p-4">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            {address_point.address}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            {address_point.city}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            {address_point.province}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            {address_point.postal_code}
+                                        </Typography>
+                                    </td>
+                                    <td className="p-4">
+                                        <EditAddressModal
+                                            address={address_point}
+                                            handleInputChange={handleInputChange}
+                                            editAddress={editAddress}
+                                            deleteAddress={deleteAddress}
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
+
             </Card>
-
-
         </div>
     );
 }
 
-export default UserAddressTable;
+export default UserAddressTable2;

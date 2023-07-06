@@ -7,6 +7,7 @@ const { getIdFromToken } = require("../helper/jwt-payload");
 const checkAdminRole = async (req, res, next) => {
   try {
     const adminId = getIdFromToken(req, res);
+    console.log(adminId)
     const getAdminRoleQuery = `
         SELECT roles.name
         FROM admins

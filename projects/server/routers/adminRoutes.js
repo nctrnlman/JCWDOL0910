@@ -11,5 +11,10 @@ router.post(
   adminController.createWarehouseAdmin
 );
 router.post("/login", adminController.loginAdmin); // Add the login route
+router.get("/all-user", checkAdminRole, adminController.getAllUserForAdmin);
+router.get("/all-admins", checkAdminRole, adminController.getAllAdmins);
+router.post("/edit-admin/:id", checkAdminRole, adminController.editWarehouseAdmin)
+router.post("/assign-admin/:id", checkAdminRole, adminController.assignWarehouseAdmin)
+router.delete("/delete-admin/:id", checkAdminRole, adminController.deleteWarehouseAdmin)
 
 module.exports = router;

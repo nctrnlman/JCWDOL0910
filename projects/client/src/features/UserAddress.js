@@ -65,14 +65,17 @@ export function addAddress(addressData) {
 export function deleteAddress(id_address) {
   return async (dispatch) => {
     const token = localStorage.getItem("user_token");
+    console.log("from user address deleteaddress slice", token)
     try {
-      await axios.delete(
+      const response = await axios.delete(
         `http://localhost:8000/api/user_profile/delete-address/${id_address}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       dispatch(getAddress());
+      console.log("masuk from slice", response)
+
     } catch (error) {
       console.error("Error deleting warehouse:", error);
     }

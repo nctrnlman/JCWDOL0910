@@ -6,6 +6,7 @@ module.exports = {
   // getIdFromToken is a helper function to get user id from token and if token is not valid, it will return 401 status code
   getIdFromToken: (req, resp) => {
     const token = req.headers.authorization?.split(" ")[1];
+    console.log(token)
     if (!token) {
       resp.status(401).json({
         message: "Unauthorized",

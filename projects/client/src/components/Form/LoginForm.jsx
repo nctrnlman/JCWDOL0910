@@ -25,9 +25,8 @@ const LoginForm = ({ isLoading, errors, touched }) => {
                 name="email"
                 placeholder="Enter your email"
                 autoComplete="current-email"
-                className={`input input-bordered ${
-                  touched.email && errors.email ? "input-error" : ""
-                }`}
+                className={`input input-bordered ${touched.email && errors.email ? "input-error" : ""
+                  }`}
               />
               <ErrorMessage
                 component="div"
@@ -42,9 +41,8 @@ const LoginForm = ({ isLoading, errors, touched }) => {
                 name="password"
                 autoComplete="current-password"
                 placeholder="Enter your password"
-                className={`input input-bordered ${
-                  touched.password && errors.password ? "input-error" : ""
-                }`}
+                className={`input input-bordered ${touched.password && errors.password ? "input-error" : ""
+                  }`}
               />
               <ErrorMessage
                 component="div"
@@ -74,6 +72,7 @@ const LoginForm = ({ isLoading, errors, touched }) => {
               </div>
             </Form>
           </div>
+
           <div className="flex justify-center items-center pb-4">
             <div
               target="_blank"
@@ -96,6 +95,30 @@ const LoginForm = ({ isLoading, errors, touched }) => {
               </span>
             </div>
           </div>
+
+          <div className="flex justify-center items-center pb-4">
+            <div
+              target="_blank"
+              className="
+                    inline-flex
+                    items-center
+                    text-gray-700
+                    font-medium
+                    text-xs text-center
+                    "
+            >
+              <span className="ml-2 text-base-content">
+                Are you an admin?
+                <a
+                  href="/login-admin"
+                  className="text-xs ml-2 text-primary-focus font-semibold hover:underline"
+                >
+                  Login here
+                </a>
+              </span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

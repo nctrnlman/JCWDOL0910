@@ -44,7 +44,7 @@ function FormProfile() {
       event.preventDefault();
       const token = localStorage.user_token;
       const { first_name, last_name, email } = temp_profile;
-
+      console.log("from edit profile", token)
       if (token) {
         let response = await axios.post(
           `http://localhost:8000/api/user-profile/edit-data`,

@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import LoginAdmin from "./pages/LoginAdmin";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Profiling from "./pages/Profiling";
@@ -29,6 +30,7 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userToken = localStorage.getItem("user_token");
+  const adminToken = localStorage.getItem("admin_token");
   const [showToast, setShowToast] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
 
@@ -67,10 +69,11 @@ function App() {
     <div>
       {showNavbar && <Navbar />}
       <Routes>
-        {userToken === null ? (
+        {(userToken === null) ? (
           <>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/login-admin" element={<LoginAdmin />} />
             <Route path="/reset-password/" element={<ResetPassword />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
           </>
@@ -80,16 +83,34 @@ function App() {
             <Route path="/cart" element={<Cart />} />
           </>
         )}
+        {(adminToken === null) ? (
+          <>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/login-admin" element={<LoginAdmin />} />
+            <Route path="/reset-password/" element={<ResetPassword />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/profiling" element={<Profiling />} />
+            <Route path="/admin-dashboard" element={<DashboardAdmin />} />
+            <Route path="/admin-products" element={<ProductsAdmin />} />
+            <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
+            <Route path="/admin-categories" element={<AdminCategory />} />
+          </>
+        )}
         <Route path="/" element={<LandingPage />} />
         <Route path="/products/:category" element={<ProductCategory />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/verification/" element={<Verification />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/admin-dashboard" element={<DashboardAdmin />} />
+        {/* <Route path="/admin-dashboard" element={<DashboardAdmin />} />
         <Route path="/admin-products" element={<ProductsAdmin />} />
         <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
-        <Route path="/admin-categories" element={<AdminCategory />} />
+        <Route path="/admin-categories" element={<AdminCategory />} /> */}
       </Routes>
     </div>
   );

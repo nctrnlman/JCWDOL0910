@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "../features/users/userSlice";
+import adminSlice from "../features/users/adminSlice";
 import ProductCatReducer from "../features/categories/ProductCategoriesSlice";
 import productSlice from "../features/products/productSlice";
 import cartSlice from "../features/carts/cartSlice";
@@ -7,6 +8,8 @@ import ProfileReducer from "../features/ProfileSlice";
 import AddressesReducer from "../features/UserAddress";
 import warehouseSlice from "../features/warehouses/warehouseSlice";
 import adminProductSlice from "../features/products/adminProductSlice";
+import allUsersSlice from "../features/users/usersForAdminSlice";
+import allAdminsSlice from "../features/users/adminsListSlice";
 
 export default configureStore({
   reducer: {
@@ -18,5 +21,8 @@ export default configureStore({
     addresses: AddressesReducer,
     warehouses: warehouseSlice,
     adminProducts: adminProductSlice,
+    admins: adminSlice,
+    allusers: allUsersSlice,
+    alladmins: allAdminsSlice
   },
 });
