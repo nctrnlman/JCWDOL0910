@@ -90,7 +90,7 @@ function OrderList() {
 
   useEffect(() => {
     dispatch(fetchOrder(id_user, status));
-  }, [status]);
+  }, [dispatch, status, id_user]);
 
   return (
     <div className="w-screen h-screen">

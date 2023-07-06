@@ -1,6 +1,4 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { cancelOrder } from "../../features/orders/orderSlice";
 
 function CancelOrderButton({ onClick }) {
   return (
