@@ -5,33 +5,25 @@ const upload = require("../middleware/multer");
 
 const router = express.Router();
 
-router.get(
-  "/",
-  checkRole.fetchDataforAdmins,
-  adminProductController.fetchProducts
-);
+router.get("/", checkRole.admins, adminProductController.fetchProducts);
 
-router.get(
-  "/all",
-  checkRole.fetchDataforAdmins,
-  adminProductController.getAllProducts
-);
+router.get("/all", checkRole.admins, adminProductController.getAllProducts);
 
 router.post(
   "/",
-  checkRole.checkAdminRole,
+  checkRole.superAdmin,
   upload.single("image_url"),
   adminProductController.addProduct
 );
 router.put(
   "/:productId",
-  checkRole.checkAdminRole,
+  checkRole.superAdmin,
   upload.single("image_url"),
   adminProductController.editProduct
 );
 router.delete(
   "/:productId",
-  checkRole.checkAdminRole,
+  checkRole.superAdmin,
   adminProductController.deleteProduct
 );
 

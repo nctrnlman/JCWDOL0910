@@ -31,6 +31,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Products from "./pages/Products";
 import Verification from "./pages/Verification";
 import { fetchItemsCart } from "./features/carts/cartActions";
+import OrderListAdmin from "./pages/OrderListAdmin";
 
 function App() {
   const location = useLocation();
@@ -115,6 +116,7 @@ function App() {
               path="/admin-stock-mutation"
               element={<StockMutationAdmin />}
             />
+            <Route path="/admin-order-list" element={<OrderListAdmin />} />
           </>
         )}
       </Routes>

@@ -4,7 +4,7 @@ require("dotenv").config({
 const { db, query } = require("../database");
 const { getIdFromToken } = require("../helper/jwt-payload");
 
-const checkAdminRole = async (req, res, next) => {
+const superAdmin = async (req, res, next) => {
   try {
     const adminId = getIdFromToken(req, res);
     const getAdminRoleQuery = `
@@ -33,7 +33,7 @@ const checkAdminRole = async (req, res, next) => {
     });
   }
 };
-const fetchDataforAdmins = async (req, res, next) => {
+const admins = async (req, res, next) => {
   try {
     const adminId = getIdFromToken(req, res);
     console.log(adminId, "adminId");
@@ -66,4 +66,4 @@ const fetchDataforAdmins = async (req, res, next) => {
   }
 };
 
-module.exports = { checkAdminRole, fetchDataforAdmins };
+module.exports = { superAdmin, admins };
