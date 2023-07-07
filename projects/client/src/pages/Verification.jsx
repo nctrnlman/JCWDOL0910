@@ -9,7 +9,6 @@ import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 function Verification() {
-  // perlu dibuat checker untuk password salah saat verifikasi//
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
@@ -54,7 +53,7 @@ function Verification() {
         CustomToastOptions
       );
 
-      if (response.data.message.success === "true") {
+      if (response.data.success == true) {
         navigate("/login");
       }
     } catch (error) {
