@@ -149,7 +149,7 @@ module.exports = {
 
   fetchOrderList: async (req, res) => {
     try {
-      const itemsPerPage = 8;
+      const itemsPerPage = 10;
       const { page, offset } = getPaginationParams(req, itemsPerPage);
       const { sort, search, status } = req.query;
 
