@@ -103,19 +103,17 @@ module.exports = {
 
   verify: async (req, res) => {
     try {
-      const { otp, password, confirmPassword } = req.body;
+      const { otp, password } = req.body;
       const userId = getIdFromToken(req, res);
-
-      if (password !== confirmPassword) {
-        return res.status(400).send({ message: "Password not same" });
-      }
 
       const checkEmail = await query(
         `SELECT * FROM users WHERE id_user =${db.escape(userId)}`
       );
 
       if (parseInt(otp) !== checkEmail[0].otp) {
-        return res.status(400).send({ message: "OTP not same" });
+        return res
+          .status(400)
+          .send({ message: "Incorrect OTP", success: false });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -127,7 +125,9 @@ module.exports = {
         )}, is_verified = true, otp = null WHERE id_user = ${db.escape(userId)}`
       );
 
-      return res.status(200).send({ message: "Verification successful." });
+      return res
+        .status(200)
+        .send({ message: "Verification successful", success: true });
     } catch (error) {
       res.status(error.status || 500).send(error);
     }
