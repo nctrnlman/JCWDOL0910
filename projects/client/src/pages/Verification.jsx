@@ -1,16 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Axios from "axios";
 import { toast } from "react-toastify";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomToast from "../components/CustomToast/CustomToast";
 import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import VerificationForm from "../components/Form/VerificationForm";
 
-function Verification() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const Verification = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -23,7 +20,7 @@ function Verification() {
   };
 
   const validationSchema = Yup.object().shape({
-    otp: Yup.string().required("Verification Code "),
+    otp: Yup.string().required("Verification Code is required"),
     password: Yup.string()
       .required("Password is required")
       .min(6, "Password must be at least 6 characters")
@@ -53,7 +50,7 @@ function Verification() {
         CustomToastOptions
       );
 
-      if (response.data.success == true) {
+      if (response.data.success) {
         navigate("/login");
       }
     } catch (error) {
@@ -72,105 +69,18 @@ function Verification() {
             Verify Your Account
           </h1>
         </div>
-        <div className="card flex-shrink-0  w-[300px] lg:w-[400px]  shadow-2xl bg-base-100">
+        <div className="card flex-shrink-0 w-[300px] lg:w-[400px] shadow-2xl bg-base-100">
           <div className="card-body">
-            <Formik
+            <VerificationForm
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-            >
-              <Form>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Verification Code </span>
-                  </label>
-                  <Field
-                    type="text"
-                    name="otp"
-                    placeholder=""
-                    className="input input-bordered"
-                  />
-                  <ErrorMessage
-                    name="otp"
-                    component="div"
-                    className="text-red-500 text-[9px] lg:text-[13px] pt-1"
-                  />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Password</span>
-                  </label>
-                  <div className="relative">
-                    <Field
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      placeholder=""
-                      className="input input-bordered pr-[40px] lg:pr-[138px] "
-                    />
-                    {showPassword ? (
-                      <AiFillEyeInvisible
-                        className="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-500 cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
-                      />
-                    ) : (
-                      <AiFillEye
-                        className="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-500 cursor-pointer"
-                        onClick={() => setShowPassword(!showPassword)}
-                      />
-                    )}
-                  </div>
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-500 text-[9px] lg:text-[13px] pt-1"
-                  />
-                </div>
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Confirm Password</span>
-                  </label>
-                  <div className="relative">
-                    <Field
-                      type={showConfirmPassword ? "text" : "password"}
-                      name="confirmPassword"
-                      placeholder=""
-                      className="input input-bordered pr-[40px] lg:pr-[138px]"
-                    />
-                    {showConfirmPassword ? (
-                      <AiFillEyeInvisible
-                        className="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-500 cursor-pointer"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                      />
-                    ) : (
-                      <AiFillEye
-                        className="absolute top-1/2 transform -translate-y-1/2 right-3 text-gray-500 cursor-pointer"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                      />
-                    )}
-                  </div>
-                  <ErrorMessage
-                    name="confirmPassword"
-                    component="div"
-                    className="text-red-500 text-[9px] lg:text-[13px] lg:text-sm pt-1"
-                  />
-                </div>
-
-                <div className="form-control mt-6">
-                  <button className="btn btn-primary" type="submit">
-                    Submit
-                  </button>
-                </div>
-              </Form>
-            </Formik>
+              handleSubmit={handleSubmit}
+            />
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Verification;

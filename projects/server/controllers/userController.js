@@ -143,19 +143,26 @@ module.exports = {
 
       if (checkEmail.length === 0) {
         return res
-          .status(200)
+          .status(400)
           .send({ message: "Email does not exist", success: false });
       }
 
-      const payload = { id: checkEmail[0].id_user };
-
+      const userId = checkEmail[0].id_user;
+      const payload = { id: userId };
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
 
       await sendResetPasswordEmail(nodemailer, email, token);
 
-      return res
-        .status(200)
-        .send({ message: "Reset password email sent successfully." });
+      await query(
+        `UPDATE users SET reset_token = TRUE WHERE id_user = ${db.escape(
+          userId
+        )}`
+      );
+
+      return res.status(200).send({
+        message: "Reset password email has been sent successfully",
+        success: true,
+      });
     } catch (error) {
       res.status(error.status || 500).send(error);
     }
@@ -163,14 +170,21 @@ module.exports = {
 
   resetPassword: async (req, res) => {
     try {
-      const { newPassword, confirmPassword } = req.body;
+      const { newPassword } = req.body;
 
       const userId = getIdFromToken(req, res);
 
-      if (newPassword !== confirmPassword) {
-        return res
-          .status(200)
-          .send({ message: "Password is not the same", success: false });
+      const user = await query(
+        `SELECT * FROM users WHERE id_user = ${db.escape(
+          userId
+        )} AND reset_token = TRUE`
+      );
+
+      if (user.length === 0) {
+        return res.status(400).send({
+          message: "Password already reset",
+          success: false,
+        });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -179,13 +193,19 @@ module.exports = {
       await query(
         `UPDATE users SET password = ${db.escape(
           hashPassword
-        )} WHERE id_user = ${db.escape(userId)}`
+        )},reset_token = FALSE WHERE id_user = ${db.escape(userId)}`
       );
 
       return res
         .status(200)
-        .send({ message: "Reset password successful.", success: true });
+        .send({ message: "Password reset successful", success: true });
     } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        return res.status(400).send({
+          message: "Please request password reset again",
+          success: false,
+        });
+      }
       res.status(error.status || 500).send(error);
     }
   },
