@@ -7,6 +7,7 @@ import SearchInputList from "../../utils/SearchInputList";
 import SortButtons from "../../utils/SortButtons";
 import RejectOrderModal from "../../modals/RejectOrderModal";
 import ConfirmOrderModal from "../../modals/ConfirmOrderModal";
+import SortStatusButton from "../../utils/SortStatusButton";
 
 function OrderListAdminContent() {
   const dispatch = useDispatch();
@@ -54,8 +55,12 @@ function OrderListAdminContent() {
             setSearchInput={setSearchInput}
           />
         </div>
-        <div className="p-3 ">
+        <div className="p-3 md:flex md:gap-5">
           <SortButtons handleSort={handleSort} />
+          <SortStatusButton
+            setSelectedStatus={setSelectedStatus}
+            selectedStatus={selectedStatus}
+          />
         </div>
       </div>
       <div className="overflow-x-auto rounded-xl lg:flex lg:justify-center lg:items-center">

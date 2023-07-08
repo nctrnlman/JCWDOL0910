@@ -4,9 +4,8 @@ import StockMutationContent from "../components/Admins/Stock Mutation/StockMutat
 function StockMutationAdmin() {
   return (
     <div>
-      <NavbarDashboard>
-        <StockMutationContent />
-      </NavbarDashboard>
+      <NavbarDashboard />
+      <StockMutationContent />
     </div>
   );
 }

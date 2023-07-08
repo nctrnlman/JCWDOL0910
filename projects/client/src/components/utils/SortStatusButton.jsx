@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
 function SortStatusButton({ selectedStatus, setSelectedStatus }) {
   return (
-    <div className="flex space-x-2 pt-2">
-      <label className="flex justify-center items-center">
+    <div className="flex flex-col gap-2 sm:flex-row space-x-2 pt-2">
+      <label className="sm:flex sm:justify-center sm:items-center">
         Status Pesanan :
       </label>
       <select

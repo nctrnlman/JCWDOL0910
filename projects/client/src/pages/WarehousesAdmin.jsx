@@ -5,9 +5,8 @@ import NavbarDashboard from "../components/Admins/Navbar/NavbarDashboard";
 function WarehousesAdmin() {
   return (
     <div>
-      <NavbarDashboard>
-        <WarehousesContent />
-      </NavbarDashboard>
+      <NavbarDashboard />
+      <WarehousesContent />
     </div>
   );
 }

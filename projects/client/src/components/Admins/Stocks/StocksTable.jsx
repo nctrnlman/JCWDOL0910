@@ -26,7 +26,7 @@ function StocksTable({
         openDeleteModal={openDeleteModal}
         openEditModal={openEditModal}
       />
-      <tfoot className="sticky bottom-0 z-10 lg:text-lg">
+      <tfoot className="sticky bottom-0 lg:text-lg">
         <tr className="bg-base-300 text-base-content">
           <th></th>
           <th>Product Name</th>
