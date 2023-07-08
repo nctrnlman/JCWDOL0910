@@ -167,9 +167,7 @@ module.exports = {
       await sendResetPasswordEmail(nodemailer, email, token);
 
       await query(
-        `UPDATE users SET reset_token = TRUE WHERE id_user = ${db.escape(
-          userId
-        )}`
+        `UPDATE users SET is_reset = TRUE WHERE id_user = ${db.escape(userId)}`
       );
 
       return res.status(200).send({
@@ -190,7 +188,7 @@ module.exports = {
       const user = await query(
         `SELECT * FROM users WHERE id_user = ${db.escape(
           userId
-        )} AND reset_token = TRUE`
+        )} AND is_reset = TRUE`
       );
 
       if (user.length === 0) {
@@ -206,7 +204,7 @@ module.exports = {
       await query(
         `UPDATE users SET password = ${db.escape(
           hashPassword
-        )},reset_token = FALSE WHERE id_user = ${db.escape(userId)}`
+        )},is_reset = FALSE WHERE id_user = ${db.escape(userId)}`
       );
 
       return res
