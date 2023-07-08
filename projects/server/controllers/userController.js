@@ -35,7 +35,7 @@ module.exports = {
         email
       )}, ${db.escape(first_name)}, ${db.escape(last_name)}, ${db.escape(
         gender
-      )}, null,null,false, ${otp})`;
+      )}, null,null,false, ${otp},false)`;
       const addUserResult = await query(addUserQuery);
 
       const id = addUserResult.insertId;
@@ -110,10 +110,16 @@ module.exports = {
         `SELECT * FROM users WHERE id_user =${db.escape(userId)}`
       );
 
+      if (checkEmail[0].otp === null) {
+        return res
+          .status(400)
+          .send({ message: "Account already verified", success: false });
+      }
+
       if (parseInt(otp) !== checkEmail[0].otp) {
         return res
           .status(400)
-          .send({ message: "Incorrect OTP", success: false });
+          .send({ message: "Incorrect Verification Code", success: false });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -129,6 +135,13 @@ module.exports = {
         .status(200)
         .send({ message: "Verification successful", success: true });
     } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        return res.status(400).send({
+          message:
+            "Verification has expired. Please request verification again",
+          success: false,
+        });
+      }
       res.status(error.status || 500).send(error);
     }
   },
