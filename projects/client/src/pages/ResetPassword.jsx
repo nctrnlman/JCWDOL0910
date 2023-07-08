@@ -1,54 +1,50 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Axios from "axios";
-import CustomToast from "../components/CustomToast/CustomToast";
 import { toast } from "react-toastify";
+import CustomToast from "../components/CustomToast/CustomToast";
 import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
+import ResetPasswordForm from "../components/Form/ResetPasswordForm";
 
-function ResetPassword() {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const ResetPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values) => {
     try {
-      if (newPassword.length && confirmPassword.length < 6) {
-        toast(
-          <CustomToast
-            type="success"
-            message="Minimum password is 6 characters"
-          />,
-          CustomToastOptions
-        );
-      } else {
-        let response = await Axios.post(
-          "http://localhost:8000/api/users/reset-password",
-          { newPassword, confirmPassword },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      setIsLoading(true);
+      let response = await Axios.post(
+        "http://localhost:8000/api/users/reset-password",
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      setTimeout(() => {
         toast(
           <CustomToast type="success" message={response.data.message} />,
           CustomToastOptions
         );
 
-        if (response.data.success === true) {
-          navigate("/");
+        if (response.data.success) {
+          setIsLoading(false);
+          navigate("/login");
         }
-      }
+      }, 1000);
     } catch (error) {
-      toast(
-        <CustomToast type="success" message="Failed to reset password" />,
-        CustomToastOptions
-      );
+      setTimeout(() => {
+        toast(
+          <CustomToast type="error" message={error.response.data.message} />,
+          CustomToastOptions
+        );
+        setIsLoading(false);
+      }, 1000);
     }
   };
 
@@ -56,47 +52,21 @@ function ResetPassword() {
     <div className="hero min-h-screen bg-slate-100">
       <div className="hero-content flex-col ">
         <div className="text-center lg:text-center">
-          <h1 className="text-6xl p-6 font-bold ">Reset Password</h1>
+          <h1 className="text-4xl lg:text-5xl p-6 font-bold ">
+            Reset Password
+          </h1>
         </div>
-        <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+        <div className="card flex-shrink-0 w-[300px] lg:w-[400px] shadow-2xl bg-base-100">
           <div className="card-body">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">New Password</span>
-              </label>
-              <input
-                type="password"
-                placeholder=""
-                className="input input-bordered"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Confirm Password</span>
-              </label>
-              <input
-                type="password"
-                placeholder=""
-                className="input input-bordered"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            <div className="form-control mt-6">
-              <button
-                className="btn bg-gray-900 text-white "
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            </div>
+            <ResetPasswordForm
+              handleSubmit={handleSubmit}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ResetPassword;
