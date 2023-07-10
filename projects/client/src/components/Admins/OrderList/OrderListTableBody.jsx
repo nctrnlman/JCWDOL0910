@@ -1,8 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import PaymentConfirmationButton from "../../Buttons/PaymentConfirmationButton";
+import SeeReceiptButton from "../../Buttons/SeeReceiptButton";
 
-function OrderListTableBody({ orders, currentPage, setId }) {
+function OrderListTableBody({
+  orders,
+  currentPage,
+  setSelectedId,
+  handleShowReceipt,
+}) {
   const itemsPerPage = useSelector(
     (state) => state.orderListAdmin.itemsPerPage
   );
@@ -25,15 +31,17 @@ function OrderListTableBody({ orders, currentPage, setId }) {
             <td>Order: #{order.id_order}</td>
             <td>{order.email}</td>
             <td>{order.warehouse_name}</td>
-            <td>{order.status}</td>
-            <td>{order.remitter || "N/A"}</td>
-            <td>{order.bank_name || "N/A"}</td>
-            <td>{order.account_number || "N/A"}</td>
+            <td className="font-bold italic">{order.status}</td>
+            <td>
+              <SeeReceiptButton
+                onClick={() => handleShowReceipt(order.id_order, order)}
+              />
+            </td>
             <td>{formatCurrency(order.total_amount)}</td>
             <td className="relative">
               <div className="gap-5 grid grid-cols-1 items-center justify-center">
                 <PaymentConfirmationButton
-                  setId={setId}
+                  setSelectedId={setSelectedId}
                   id_order={order.id_order}
                   status={order.status}
                 />

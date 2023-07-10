@@ -8,6 +8,7 @@ import SortButtons from "../../utils/SortButtons";
 import RejectOrderModal from "../../modals/RejectOrderModal";
 import ConfirmOrderModal from "../../modals/ConfirmOrderModal";
 import SortStatusButton from "../../utils/SortStatusButton";
+import ReceiptModal from "../../modals/ReceiptModal";
 
 function OrderListAdminContent() {
   const dispatch = useDispatch();
@@ -17,7 +18,8 @@ function OrderListAdminContent() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedId, setId] = useState();
+  const [selectedId, setSelectedId] = useState();
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const handlePageChange = (page) => {
     dispatch(
@@ -34,7 +36,10 @@ function OrderListAdminContent() {
       selectedStatus
     );
   };
-
+  const handleShowReceipt = (orderId, selectedOrder) => {
+    setSelectedId(orderId);
+    setSelectedOrder(selectedOrder);
+  };
   useEffect(() => {
     dispatch(
       fetchOrderPaymentList(
@@ -45,6 +50,7 @@ function OrderListAdminContent() {
       )
     );
   }, [currentPage, selectedSort, searchInput, selectedStatus]);
+  console.log(orders);
   return (
     <div className="flex flex-col px-5">
       <div className="lg:flex-col lg:flex lg:justify-center lg:items-center">
@@ -67,7 +73,8 @@ function OrderListAdminContent() {
         <OrderListTable
           orders={orders}
           currentPage={currentPage}
-          setId={setId}
+          setSelectedId={setSelectedId}
+          handleShowReceipt={handleShowReceipt}
         />
       </div>
       <div className="lg:flex lg:justify-center lg:items-center">
@@ -79,6 +86,7 @@ function OrderListAdminContent() {
       </div>
       <RejectOrderModal selectedId={selectedId} />
       <ConfirmOrderModal selectedId={selectedId} />
+      {selectedId && <ReceiptModal order={selectedOrder} />}
     </div>
   );
 }
