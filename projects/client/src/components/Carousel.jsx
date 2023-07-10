@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
 import { RxDotFilled } from "react-icons/rx";
 
@@ -22,6 +23,7 @@ function Carousel() {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
 
   const prevSlide = () => {
     const isFirstSlide = currentIndex === 0;
@@ -61,7 +63,12 @@ function Carousel() {
           <p className="mb-5">
             Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
           </p>
-          <button className="btn btn-primary">Get Started</button>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate("/products")}
+          >
+            Get Started
+          </button>
         </div>
       </div>
       <div className="group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
