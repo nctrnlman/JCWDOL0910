@@ -1,5 +1,5 @@
 const express = require("express");
-const { adminController } = require("../controllers");
+const { adminController, reportTransactionController } = require("../controllers");
 const checkAdminRole = require("../middleware/checkRole");
 
 const router = express.Router();
@@ -16,5 +16,9 @@ router.get("/all-admins", checkAdminRole, adminController.getAllAdmins);
 router.post("/edit-admin/:id", checkAdminRole, adminController.editWarehouseAdmin)
 router.post("/assign-admin/:id", checkAdminRole, adminController.assignWarehouseAdmin)
 router.delete("/delete-admin/:id", checkAdminRole, adminController.deleteWarehouseAdmin)
+router.post("/transaction-on-range", checkAdminRole, reportTransactionController.fetchTransactionOnDateRange);
+router.post("/transaction-monthly", checkAdminRole, reportTransactionController.fetchMonthlyTransaction);
+router.post("/transaction-monthly-cat", checkAdminRole, reportTransactionController.fetchMonthlyCategoryTransaction);
+router.post("/transaction-monthly-product", checkAdminRole, reportTransactionController.fetchMonthlyProductTransaction);
 
 module.exports = router;
