@@ -9,7 +9,7 @@ function ProductCard(props) {
   const location = useLocation();
   const isAdminRoute = location.pathname === "/admin-products";
 
-  const formattedPrice = product.price.toLocaleString("id-ID", {
+  const formattedPrice = product?.price.toLocaleString("id-ID", {
     style: "currency",
     currency: "IDR",
     minimumFractionDigits: 0,
@@ -30,9 +30,7 @@ function ProductCard(props) {
         <div className="title font-semibold text-sm my-1">
           {product.name.charAt(0).toUpperCase() + product.name.slice(1)}
         </div>
-        <div className="category text-xs font-light my-1">
-          {product.description}
-        </div>
+
         <div className="pricing flex items-center">
           <div className="price">{formattedPrice}</div>
         </div>

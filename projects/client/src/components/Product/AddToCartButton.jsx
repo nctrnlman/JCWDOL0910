@@ -23,7 +23,7 @@ const AddToCartButton = ({ product, quantity }) => {
     <button
       onClick={handleButtonClick}
       disabled={!isUserLoggedIn || !isStockAvailable}
-      className="btn btn-primary text-xs"
+      className="btn btn-primary text-[8px] lg:text-xs"
     >
       {isStockAvailable ? "Add To Cart" : "Out of Stock"}
     </button>
