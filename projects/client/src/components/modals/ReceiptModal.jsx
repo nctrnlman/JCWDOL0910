@@ -2,6 +2,7 @@ import React from "react";
 
 function ReceiptModal({ order }) {
   const isDataMissing =
+    !order ||
     !order.remitter ||
     !order.account_number ||
     !order.bank_name ||
