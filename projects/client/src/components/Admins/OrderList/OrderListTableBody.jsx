@@ -13,6 +13,7 @@ function OrderListTableBody({
     (state) => state.orderListAdmin.itemsPerPage
   );
   const startIndex = (currentPage - 1) * itemsPerPage;
+
   function formatCurrency(amount) {
     return amount.toLocaleString("id-ID", {
       style: "currency",
@@ -25,30 +26,38 @@ function OrderListTableBody({
   return (
     <>
       <tbody className="lg:text-lg">
-        {orders.map((order, index) => (
-          <tr key={order.id_order} className="hover">
-            <th className="text-center">{startIndex + index + 1}</th>
-            <td>Order: #{order.id_order}</td>
-            <td>{order.email}</td>
-            <td>{order.warehouse_name}</td>
-            <td className="font-bold italic">{order.status}</td>
-            <td>
-              <SeeReceiptButton
-                onClick={() => handleShowReceipt(order.id_order, order)}
-              />
-            </td>
-            <td>{formatCurrency(order.total_amount)}</td>
-            <td className="relative">
-              <div className="gap-5 grid grid-cols-1 items-center justify-center">
-                <PaymentConfirmationButton
-                  setSelectedId={setSelectedId}
-                  id_order={order.id_order}
-                  status={order.status}
-                />
-              </div>
+        {orders.length === 0 ? (
+          <tr>
+            <td colSpan="8" className="text-center">
+              No data available.
             </td>
           </tr>
-        ))}
+        ) : (
+          orders.map((order, index) => (
+            <tr key={order.id_order} className="hover">
+              <th className="text-center">{startIndex + index + 1}</th>
+              <td>Order: #{order.id_order}</td>
+              <td>{order.email}</td>
+              <td>{order.warehouse_name}</td>
+              <td className="font-bold italic">{order.status}</td>
+              <td>
+                <SeeReceiptButton
+                  onClick={() => handleShowReceipt(order.id_order, order)}
+                />
+              </td>
+              <td>{formatCurrency(order.total_amount)}</td>
+              <td className="relative">
+                <div className="gap-5 grid grid-cols-1 items-center justify-center">
+                  <PaymentConfirmationButton
+                    setSelectedId={setSelectedId}
+                    id_order={order.id_order}
+                    status={order.status}
+                  />
+                </div>
+              </td>
+            </tr>
+          ))
+        )}
       </tbody>
     </>
   );

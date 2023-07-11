@@ -7,16 +7,6 @@ const { getIdFromToken, getRoleFromToken } = require("../helper/jwt-payload");
 const adminOrderQueries = require("../queries/adminOrderQueries");
 
 module.exports = {
-  fetchPaymentConfirmation: async (req, res) => {
-    try {
-      const orderPaymentList = await query(
-        'SELECT * FROM multi_warehouse.orders WHERE status = "Menunggu Konfirmasi Pembayaran";'
-      );
-      return res.status(200).send(orderPaymentList);
-    } catch (error) {
-      return res.status(error.statusCode || 500).send(error);
-    }
-  },
   confirmPayment: async (req, res) => {
     try {
       const { id_order } = req.query;
@@ -158,15 +148,7 @@ module.exports = {
       let warehouseId = null;
       if (role === "warehouse admin") {
         const adminId = getIdFromToken(req, res); // Get the admin ID from the token
-        const warehouseQuery = `
-        SELECT *
-        FROM warehouses
-        WHERE id_admin = '${adminId}'
-      `;
-        const warehouseResult = await query(warehouseQuery);
-        if (warehouseResult.length > 0) {
-          warehouseId = warehouseResult[0].id_warehouse;
-        }
+        warehouseId = await adminOrderQueries.getWarehouseId(adminId);
       }
 
       const orderPaymentList = await query(

@@ -1,4 +1,16 @@
+const { db, query } = require("../database");
+
 module.exports = {
+  getWarehouseId: async (adminId) => {
+    const warehouseQuery = `
+    SELECT *
+    FROM warehouses
+    WHERE id_admin = '${adminId}'
+  `;
+    const warehouseResult = await query(warehouseQuery);
+    return warehouseResult.length > 0 ? warehouseResult[0].id_warehouse : null;
+  },
+
   orderPaymentListQuery: (
     itemsPerPage,
     offset,
