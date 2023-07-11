@@ -3,6 +3,7 @@ require("dotenv").config({
 });
 const { db, query } = require("../database");
 const { getPaginationParams } = require("../helper/getPaginationHelper");
+const { getIdFromToken, getRoleFromToken } = require("../helper/jwt-payload");
 const adminOrderQueries = require("../queries/adminOrderQueries");
 
 module.exports = {
@@ -152,6 +153,21 @@ module.exports = {
       const itemsPerPage = 10;
       const { page, offset } = getPaginationParams(req, itemsPerPage);
       const { sort, search, status } = req.query;
+      const role = getRoleFromToken(req, res); // Get the role from the token
+
+      let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        const warehouseQuery = `
+        SELECT *
+        FROM warehouses
+        WHERE id_admin = '${adminId}'
+      `;
+        const warehouseResult = await query(warehouseQuery);
+        if (warehouseResult.length > 0) {
+          warehouseId = warehouseResult[0].id_warehouse;
+        }
+      }
 
       const orderPaymentList = await query(
         adminOrderQueries.orderPaymentListQuery(
@@ -159,13 +175,17 @@ module.exports = {
           offset,
           sort,
           search,
-          status
+          status,
+          role,
+          warehouseId
         )
       );
 
-      countQuery = adminOrderQueries.getCountQueryWithSearchAndStatus(
+      const countQuery = adminOrderQueries.getCountQueryWithSearchAndStatus(
         search,
-        status
+        status,
+        role,
+        warehouseId
       );
 
       const countResult = await query(countQuery);
