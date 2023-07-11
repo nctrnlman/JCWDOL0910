@@ -59,7 +59,7 @@ function StockMutationContent() {
     <div className="flex flex-col px-5">
       <div className="lg:flex-col lg:flex lg:justify-center lg:items-center pb-4">
         <h1 className="menu-title font-bold text-lg p-2">
-          Stock Warehouse List
+          Mutation Stock List
         </h1>
         <div className="p-2 mb-2">
           <SearchInputList

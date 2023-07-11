@@ -4,9 +4,10 @@ import OrderListAdminContent from "../components/Admins/OrderList/OrderListAdmin
 
 function OrderListAdmin() {
   return (
-    <NavbarDashboard>
+    <div>
+      <NavbarDashboard />
       <OrderListAdminContent />
-    </NavbarDashboard>
+    </div>
   );
 }
 

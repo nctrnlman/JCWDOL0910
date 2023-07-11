@@ -11,9 +11,7 @@ function SortByCategoryButton({
 
   return (
     <div className="flex space-x-2 pt-2">
-      <label className="flex justify-center items-center">
-        Sort By Category:
-      </label>
+      <label className="flex justify-center items-center">Category:</label>
       <select
         className="select select-bordered"
         value={selectedCategory}

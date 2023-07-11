@@ -4,9 +4,10 @@ import StocksContent from "../components/Admins/Stocks/StocksContent";
 
 function StocksAdmin() {
   return (
-    <NavbarDashboard>
+    <div>
+      <NavbarDashboard />
       <StocksContent />
-    </NavbarDashboard>
+    </div>
   );
 }
 

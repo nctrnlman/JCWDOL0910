@@ -24,9 +24,9 @@ function NavbarDashboard({ children }) {
           {/* Navbar menu content here */}
           <NavbarDashboardMenu menuType="horizontal" />
         </div>
-        {children}
+        {/* {children} */}
       </div>
-      <div className="drawer-side">
+      <div className="drawer-side h-screen z-10">
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
         <ul className="menu menu-vertical items-start p-4 w-56 sm:w-64 h-full bg-base-200 justify-between">
           <div>

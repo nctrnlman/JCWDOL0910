@@ -98,7 +98,7 @@ function StocksContent() {
           openEditModal={openEditModal}
         />
       </div>
-      <div className="lg:flex lg:justify-center lg:items-center">
+      <div className="flex justify-center items-center">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

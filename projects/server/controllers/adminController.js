@@ -89,8 +89,11 @@ module.exports = {
     const { email, password } = req.body;
     try {
       const checkAdminQuery = `
-        SELECT * FROM admins WHERE email = ${db.escape(email)}
-      `;
+      SELECT admins.*, roles.name AS role_name
+      FROM admins
+      INNER JOIN roles ON admins.id_role = roles.id_role
+      WHERE email = ${db.escape(email)}
+    `;
       const existingAdmin = await query(checkAdminQuery);
 
       if (existingAdmin.length === 0) {
@@ -109,15 +112,16 @@ module.exports = {
         });
         return;
       }
-      const token = jwt.sign(
-        { id: admin.id_admin, email: admin.email, role: admin.id_role },
-        env.JWT_SECRET,
-        { expiresIn: "1h" }
-      );
 
+      const payload = {
+        id: admin.id_admin,
+        role: admin.role_name.toLowerCase(),
+      };
+      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
+      console.log(payload);
       res.status(200).send({
         token,
-        message: "Admins login successful",
+        message: "Admin login successful",
       });
     } catch (error) {
       console.error("Error during admin login: ", error);
