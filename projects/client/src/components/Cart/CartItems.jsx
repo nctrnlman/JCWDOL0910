@@ -17,10 +17,6 @@ function CartItems({ item }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleIncrease = () => {
-    const { quantity, total_stock } = item;
-    if (quantity >= total_stock) {
-      alert("Cannot increase quantity beyond available stock.");
-    }
     dispatch(increaseCartItemQuantity(item.id_product));
   };
 
