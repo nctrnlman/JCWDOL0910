@@ -5,9 +5,8 @@ import NavbarDashboard from "../components/Admins/Navbar/NavbarDashboard";
 function ReportingAdmin() {
     return (
         <div>
-            <NavbarDashboard>
-                <StockReport />
-            </NavbarDashboard>
+            <NavbarDashboard />
+            <StockReport />
         </div>
     );
 }

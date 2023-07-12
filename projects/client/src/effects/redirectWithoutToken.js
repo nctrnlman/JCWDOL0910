@@ -25,6 +25,9 @@ export const redirectWithoutAdminToken = (adminToken, pathname, navigate) => {
     "/admin-warehouses",
     "/admin-categories",
     "/admin-stocks",
+    "/admin-stock-mutation",
+    "/admin-reporting",
+    "/admin-reporting-stock"
   ];
 
   if (

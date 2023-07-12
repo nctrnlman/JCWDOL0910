@@ -47,6 +47,7 @@ export function loginAdmin(data, callback) {
             if (typeof callback === "function") {
                 callback();
             }
+            // console.log()
             dispatch(setIsLoading(false));
             toast(
                 <CustomToast type="success" message={response.data.message} />,

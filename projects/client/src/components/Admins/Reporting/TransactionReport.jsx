@@ -71,14 +71,13 @@ function TransactionReport() {
 
 
     // useEffect(() => {
-    //     setIsTopProduct(true);
-    //     dispatch(fetchAllTransaction(id));
+    //     // setIsTopProduct(true);
+    //     // dispatch(fetchAllTransaction(id));
     // }, []);
 
     //----------------------------------------------------------------
     return (
         <div className="text-slate-900 min-h-screen flex-row bg-base-100 h-screen w-screen  px-20 lg:">
-
             <div className="flex flex-row max-w-lg ml-6 mt-6">
                 <Datepicker
                     wrapperClassName="relative"
