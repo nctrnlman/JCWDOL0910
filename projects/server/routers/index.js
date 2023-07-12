@@ -22,4 +22,8 @@ module.exports = {
   warehouseRoutes,
   rajaOngkirRoutes,
   adminProductRoutes,
+  stockRoutes,
+  orderRoutes,
+  adminOrderRoutes,
+  stockMutationRoutes
 };

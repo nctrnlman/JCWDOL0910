@@ -19,6 +19,22 @@ import WarehousesAdmin from "./pages/WarehousesAdmin";
 import ReportingAdmin from "./pages/ReportingAdmin";
 import AdminCategory from "./pages/AdminCategory";
 import ReportingAdminStock from "./pages/ReportingAdminStock";
+import LandingPage from "./pages/LandingPage";
+import ProductCategory from "./pages/ProductCategory";
+import ProductDetail from "./pages/ProductDetail";
+import Products from "./pages/Products";
+import Verification from "./pages/Verification";
+import { fetchItemsCart } from "./features/carts/cartActions";
+import OrderListAdmin from "./pages/OrderListAdmin";
+import Cart from "./pages/Cart";
+import OrderList from "./pages/OrderList";
+import CreateOrder from "./pages/CreateOrder";
+import Payment from "./pages/Payment";
+import StocksAdmin from "./pages/StocksAdmin";
+import StockMutationAdmin from "./pages/StockMutationAdmin";
+import ResetPassword from "./pages/ResetPassword";
+import ForgetPassword from "./pages/ForgetPassword";
+import Profiling from "./pages/Profiling";
 
 function App() {
   const location = useLocation();
