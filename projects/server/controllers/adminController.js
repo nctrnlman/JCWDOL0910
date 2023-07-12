@@ -87,11 +87,13 @@ module.exports = {
 
   loginAdmin: async (req, res) => {
     const { email, password } = req.body;
-    console.log("dari loginAdmin", req.body)
     try {
       const checkAdminQuery = `
-        SELECT * FROM admins WHERE email = ${db.escape(email)}
-      `;
+      SELECT admins.*, roles.name AS role_name
+      FROM admins
+      INNER JOIN roles ON admins.id_role = roles.id_role
+      WHERE email = ${db.escape(email)}
+    `;
       const existingAdmin = await query(checkAdminQuery);
 
       if (existingAdmin.length === 0) {
@@ -103,23 +105,23 @@ module.exports = {
 
       const admin = existingAdmin[0];
       const passwordMatch = await bcrypt.compare(password, admin.password);
-      console.log("dari admin controller", admin)
+
       if (!passwordMatch) {
         res.status(401).send({
           error: "Invalid password",
         });
         return;
       }
-      const token = jwt.sign(
-        { id: admin.id_admin, email: admin.email, role: admin.id_role },
-        env.JWT_SECRET,
-        { expiresIn: "1h" }
-      );
 
+      const payload = {
+        id: admin.id_admin,
+        role: admin.role_name.toLowerCase(),
+      };
+      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
+      console.log(payload);
       res.status(200).send({
         token,
-        message: "Admins login successful",
-        data: admin,
+        message: "Admin login successful",
       });
     } catch (error) {
       console.error("Error during admin login: ", error);
@@ -128,15 +130,12 @@ module.exports = {
       });
     }
   },
-
   getAllUserForAdmin: async (req, res) => {
     try {
       // console.log(req.user)
       // const idUser = req.user.id;
       // console.log(idUser);
-      const getAllUser = await query(
-        `SELECT * FROM users`
-      );
+      const getAllUser = await query(`SELECT * FROM users`);
       console.log(getAllUser);
       return res.status(200).send(getAllUser);
     } catch (error) {
@@ -163,28 +162,31 @@ module.exports = {
 
   editWarehouseAdmin: async (req, res) => {
     try {
-      console.log(req.params)
+      console.log(req.params);
       // const idUser = req.user.id;
       // console.log(idUser)
       const id_admin = req.params.id;
-      console.log(id_admin)
-      console.log("req", req.body)
+      console.log(id_admin);
+      console.log("req", req.body);
 
       let adminDataUpdate = [];
       for (let prop in req.body) {
         adminDataUpdate.push(`${prop} = ${db.escape(req.body[prop])}`);
       }
-      console.log(adminDataUpdate)
+      console.log(adminDataUpdate);
       const editAdminQuery = `UPDATE admins SET ${adminDataUpdate} WHERE id_admin=${id_admin}`;
-      console.log(editAdminQuery)
+      console.log(editAdminQuery);
 
       const editAdmin = await query(editAdminQuery);
 
-      const getAdminQuery = `SELECT * FROM admins WHERE id_admin = ${db.escape(id_admin)}`;
+      const getAdminQuery = `SELECT * FROM admins WHERE id_admin = ${db.escape(
+        id_admin
+      )}`;
       const getAdmin = await query(getAdminQuery);
 
-      return res.status(200).send({ message: `Warehouse admin ID ${id_admin} edited successfully` });
-
+      return res.status(200).send({
+        message: `Warehouse admin ID ${id_admin} edited successfully`,
+      });
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
@@ -192,12 +194,12 @@ module.exports = {
 
   assignWarehouseAdmin: async (req, res) => {
     try {
-      console.log(req.params)
+      console.log(req.params);
       // const idUser = req.user.id;
       // console.log(idUser)
       const id_admin = req.params.id;
-      console.log(id_admin)
-      console.log("req", req.body)
+      console.log(id_admin);
+      console.log("req", req.body);
 
       // let adminAssignUpdate= [];
       // for (let prop in req.body) {
@@ -205,15 +207,16 @@ module.exports = {
       // }
       const { warehouse_name } = req.body;
       const assignAdminQuery = `UPDATE warehouses SET id_admin = ${id_admin} WHERE name='${warehouse_name}'`;
-      console.log(assignAdminQuery)
+      console.log(assignAdminQuery);
 
       const assignAdmin = await query(assignAdminQuery);
 
       const getAdminAssignQuery = `SELECT * FROM warehouses WHERE name = '${warehouse_name}'`;
       const getAdminAssign = await query(getAdminAssignQuery);
 
-      return res.status(200).send({ message: `Warehouse admin assigned to ${warehouse_name}` });
-
+      return res
+        .status(200)
+        .send({ message: `Warehouse admin assigned to ${warehouse_name}` });
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
@@ -221,26 +224,28 @@ module.exports = {
 
   deleteWarehouseAdmin: async (req, res) => {
     try {
-      console.log(req.params)
+      console.log(req.params);
       // const idUser = req.user.id;
       // console.log(idUser)
       const id_admin = req.params.id;
-      console.log(id_admin)
-      console.log("req", req.body)
+      console.log(id_admin);
+      console.log("req", req.body);
 
-      const deleteAdminQuery = `DELETE FROM admins WHERE id_admin=${db.escape(id_admin)}`;
-      console.log(deleteAdminQuery)
+      const deleteAdminQuery = `DELETE FROM admins WHERE id_admin=${db.escape(
+        id_admin
+      )}`;
+      console.log(deleteAdminQuery);
 
       const deleteAdmin = await query(deleteAdminQuery);
 
       const getAdminQuery = `SELECT * FROM admins`;
       const getAdmin = await query(getAdminQuery);
 
-      return res.status(200).send({ message: `Admin ID ${id_admin} is now deleted` });
-
+      return res
+        .status(200)
+        .send({ message: `Admin ID ${id_admin} is now deleted` });
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
   },
-
 };
