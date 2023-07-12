@@ -1,5 +1,5 @@
 const express = require("express");
-const { adminController, reportTransactionController } = require("../controllers");
+const { adminController, reportTransactionController, reportStockController } = require("../controllers");
 const checkAdminRole = require("../middleware/checkRole");
 
 const router = express.Router();
@@ -20,5 +20,6 @@ router.post("/transaction-on-range", checkAdminRole, reportTransactionController
 router.post("/transaction-monthly", checkAdminRole, reportTransactionController.fetchMonthlyTransaction);
 router.post("/transaction-monthly-cat", checkAdminRole, reportTransactionController.fetchMonthlyCategoryTransaction);
 router.post("/transaction-monthly-product", checkAdminRole, reportTransactionController.fetchMonthlyProductTransaction);
+router.post("/stock-movement", checkAdminRole, reportStockController.fetchStockMovementHistory);
 
 module.exports = router;

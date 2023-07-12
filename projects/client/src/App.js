@@ -25,6 +25,7 @@ import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
 import ReportingAdmin from "./pages/ReportingAdmin";
 import AdminCategory from "./pages/AdminCategory";
+import ReportingAdminStock from "./pages/ReportingAdminStock"
 
 function App() {
   const location = useLocation();
@@ -101,6 +102,7 @@ function App() {
             <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
             <Route path="/admin-categories" element={<AdminCategory />} />
             <Route path="/admin-reporting" element={<ReportingAdmin />} />
+            <Route path="/admin-reporting-stock" element={<ReportingAdminStock />} />
           </>
         )}
         <Route path="/" element={<LandingPage />} />

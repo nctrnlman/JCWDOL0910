@@ -11,6 +11,8 @@ import adminProductSlice from "../features/products/adminProductSlice";
 import allUsersSlice from "../features/users/usersForAdminSlice";
 import allAdminsSlice from "../features/users/adminsListSlice";
 import reportTransactionSlice from "../features/reportTransactionSlice"
+import reportStockSlice from "../features/reportStockSlice"
+
 
 export default configureStore({
   reducer: {
@@ -25,7 +27,8 @@ export default configureStore({
     admins: adminSlice,
     allusers: allUsersSlice,
     alladmins: allAdminsSlice,
-    reportTransaction: reportTransactionSlice
+    reportTransaction: reportTransactionSlice,
+    reportStock: reportStockSlice
 
   },
 });

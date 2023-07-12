@@ -24,7 +24,13 @@ function NavbarDashboardMenu({ menuType }) {
             </li>
             <li>
               <a href="/admin-reporting" className="text-lg">
-                Reporting
+                Sales Report
+              </a>
+            </li>
+
+            <li>
+              <a href="/admin-reporting-stock" className="text-lg">
+                Stock Report
               </a>
             </li>
             <li className="flex justify-center items-center">
