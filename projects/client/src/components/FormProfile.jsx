@@ -17,12 +17,6 @@ function FormProfile() {
   }, []);
 
   useEffect(() => {
-    console.log("existing", existing_profile);
-    console.log("temp", temp_profile);
-    console.log("changed", changed);
-  });
-
-  useEffect(() => {
     if (existing_profile) {
       setTempProfile(existing_profile);
     }
@@ -38,8 +32,6 @@ function FormProfile() {
   };
 
   const editProfile = async (event) => {
-    // console.log(event.preventDefault());
-    // console.log(event.target.value);
     try {
       event.preventDefault();
       const token = localStorage.user_token;
@@ -53,9 +45,8 @@ function FormProfile() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log(response);
-        // console.log(response.data[0]);
-        // dispatch(setUser(response.data[0]));
+        localStorage.setItem("user_details", JSON.stringify(response.data[0])); // Save user details in local storage
+        dispatch(getProfile());
       }
     } catch (error) {
       console.log(error);

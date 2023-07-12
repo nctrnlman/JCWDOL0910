@@ -133,7 +133,8 @@ function AdminCategory() {
   }, []);
 
   return (
-    <NavbarDashboard>
+    <div className="mb-5">
+      <NavbarDashboard />
       <div className="overflow-x-auto w-full px-3 lg:w-3/4 m-auto">
         <h1 className="text-center p-4 font-bold uppercase">Categories List</h1>
         <div>
@@ -274,7 +275,7 @@ function AdminCategory() {
           </div>
         )}
       </div>
-    </NavbarDashboard>
+    </div>
   );
 }
 

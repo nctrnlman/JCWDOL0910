@@ -8,11 +8,14 @@ import ProfileReducer from "../features/ProfileSlice";
 import AddressesReducer from "../features/UserAddress";
 import warehouseSlice from "../features/warehouses/warehouseSlice";
 import adminProductSlice from "../features/products/adminProductSlice";
+import stockSlice from "../features/stocks/stocksSlice";
+import stockMutationSlice from "../features/stock-mutation/stockMutationSlice";
+import orderSlice from "../features/orders/orderSlice";
+import orderListAdminSlice from "../features/orders/orderListAdminSlice";
 import allUsersSlice from "../features/users/usersForAdminSlice";
 import allAdminsSlice from "../features/users/adminsListSlice";
-import reportTransactionSlice from "../features/reportTransactionSlice"
-import reportStockSlice from "../features/reportStockSlice"
-
+import reportTransactionSlice from "../features/reportTransactionSlice";
+import reportStockSlice from "../features/reportStockSlice";
 
 export default configureStore({
   reducer: {
@@ -23,12 +26,15 @@ export default configureStore({
     profile: ProfileReducer,
     addresses: AddressesReducer,
     warehouses: warehouseSlice,
+    orders: orderSlice,
     adminProducts: adminProductSlice,
+    stockProducts: stockSlice,
+    stockMutations: stockMutationSlice,
+    orderListAdmin: orderListAdminSlice,
     admins: adminSlice,
     allusers: allUsersSlice,
     alladmins: allAdminsSlice,
     reportTransaction: reportTransactionSlice,
-    reportStock: reportStockSlice
-
+    reportStock: reportStockSlice,
   },
 });

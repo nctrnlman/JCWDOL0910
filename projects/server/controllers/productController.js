@@ -17,7 +17,6 @@ module.exports = {
       `;
       const latestProducts = await query(latestProductsQuery);
       parseTotalStock(latestProducts);
-      console.log(latestProducts);
       return res.status(200).send(latestProducts);
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
@@ -50,7 +49,6 @@ module.exports = {
 
       productsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
 
-      console.log(productsQuery, "ini product");
       const products = await query(productsQuery);
       parseTotalStock(products);
       const totalItems = await query(countProductQuery);
@@ -125,6 +123,13 @@ module.exports = {
 
       const productById = await query(productQuery);
       parseTotalStock(productById);
+
+      if (productById < 1 || productById === null) {
+        return res.status(400).send({
+          message: `Product with ID ${idProduct} does not exist`,
+          success: false,
+        });
+      }
 
       return res.status(200).send(productById[0]);
     } catch (error) {

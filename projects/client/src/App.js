@@ -4,28 +4,21 @@ import Login from "./pages/Login";
 import LoginAdmin from "./pages/LoginAdmin";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import Profiling from "./pages/Profiling";
-import Cart from "./pages/Cart";
-import ForgetPassword from "./pages/ForgetPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Verification from "./pages/Verification";
-import LandingPage from "./pages/LandingPage";
-import { fetchItemsCart } from "./features/carts/cartActions";
-import ProductCategory from "./pages/ProductCategory";
-import ProductDetail from "./pages/ProductDetail";
-import Products from "./pages/Products";
-import Navbar from "./components/Navbar/Navbar";
-import DashboardAdmin from "./pages/DashboardAdmin";
 import showToastProtectedRoutes from "./effects/showToastProtectedRoutes";
 import setLastVisitedPage from "./effects/setLastVisitedPage";
 import checkTokenExpiration from "./effects/checkTokenExpiration";
-import redirectWithoutToken from "./effects/redirectWithoutToken";
+import {
+  redirectWithoutUserToken,
+  redirectWithoutAdminToken,
+} from "./effects/redirectWithoutToken";
 import navigateLastVisitedPage from "./effects/navigateLastVisitedPage";
+import Navbar from "./components/Navbar/Navbar";
+import DashboardAdmin from "./pages/DashboardAdmin";
 import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
 import ReportingAdmin from "./pages/ReportingAdmin";
 import AdminCategory from "./pages/AdminCategory";
-import ReportingAdminStock from "./pages/ReportingAdminStock"
+import ReportingAdminStock from "./pages/ReportingAdminStock";
 
 function App() {
   const location = useLocation();
@@ -54,8 +47,14 @@ function App() {
   }, [userToken, location, navigate]);
 
   useEffect(() => {
-    redirectWithoutToken(userToken, location.pathname, navigate, setShowToast);
-  }, [userToken, location.pathname, navigate]);
+    redirectWithoutUserToken(
+      userToken,
+      location.pathname,
+      navigate,
+      setShowToast
+    );
+    redirectWithoutAdminToken(adminToken, location.pathname, navigate);
+  }, [userToken, adminToken, location.pathname, navigate]);
 
   useEffect(() => {
     showToastProtectedRoutes(showToast, setShowToast);
@@ -71,7 +70,13 @@ function App() {
     <div>
       {showNavbar && <Navbar />}
       <Routes>
-        {(userToken === null) ? (
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/products/:category" element={<ProductCategory />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/verification/" element={<Verification />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/products" element={<Products />} />
+        {userToken === null ? (
           <>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
@@ -83,38 +88,31 @@ function App() {
           <>
             <Route path="/profiling" element={<Profiling />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/orders" element={<OrderList />} />
+            <Route path="/create-order" element={<CreateOrder />} />
+            <Route path="/payment/:id" element={<Payment />} />
           </>
         )}
-        {(adminToken === null) ? (
+        {adminToken && (
           <>
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/login-admin" element={<LoginAdmin />} />
-            <Route path="/reset-password/" element={<ResetPassword />} />
-            <Route path="/forget-password" element={<ForgetPassword />} />
-          </>
-        ) : (
-          <>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/profiling" element={<Profiling />} />
             <Route path="/admin-dashboard" element={<DashboardAdmin />} />
             <Route path="/admin-products" element={<ProductsAdmin />} />
             <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
             <Route path="/admin-categories" element={<AdminCategory />} />
+            <Route path="/admin-stocks" element={<StocksAdmin />} />
+            <Route
+              path="/admin-stock-mutation"
+              element={<StockMutationAdmin />}
+            />
+            <Route path="/admin-order-list" element={<OrderListAdmin />} />
             <Route path="/admin-reporting" element={<ReportingAdmin />} />
-            <Route path="/admin-reporting-stock" element={<ReportingAdminStock />} />
+            <Route
+              path="/admin-reporting-stock"
+              element={<ReportingAdminStock />}
+            />
           </>
         )}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/products/:category" element={<ProductCategory />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/verification/" element={<Verification />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/products" element={<Products />} />
-        {/* <Route path="/admin-dashboard" element={<DashboardAdmin />} />
-        <Route path="/admin-products" element={<ProductsAdmin />} />
-        <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
-        <Route path="/admin-categories" element={<AdminCategory />} /> */}
+        <Route path="/login-admin" element={<LoginAdmin />} />
       </Routes>
     </div>
   );

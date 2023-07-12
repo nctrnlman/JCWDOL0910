@@ -59,7 +59,7 @@ const UserDropdown = ({ user }) => {
                     }}
                   >
                     <img
-                      src={item.image_url}
+                      src={`http://localhost:8000/${item.image_url}`}
                       alt={item.name}
                       className="w-12 h-12 mr-2"
                     />
@@ -114,14 +114,19 @@ const UserDropdown = ({ user }) => {
             </a>
           </li>
           <li>
+            <a href="/orders" className="justify-between">
+              Your Order
+            </a>
+          </li>
+          <li>
             <button onClick={handleLogout}>Logout</button>
           </li>
         </ul>
         <div
-          className="text-base-100 justify-center ml-2 mt-3 items-center hidden md:flex md:text-md lg:text-lg"
+          className="text-base-100 justify-center ml-2 my-3 items-center hidden md:flex md:text-md lg:text-lg"
           style={{ textTransform: "capitalize" }}
         >
-          {/* {user.first_name} */}
+          {user.first_name}
         </div>
       </div>
     </div>

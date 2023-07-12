@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { fetchProducts } from "../features/products/productSlice";
 import ProductCard from "../components/Product/ProductCard";
 

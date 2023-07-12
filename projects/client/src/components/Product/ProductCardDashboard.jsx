@@ -35,7 +35,9 @@ function ProductCardDashboard(props) {
         <div className="pricing flex items-center">
           <div className="price">{formattedPrice}</div>
         </div>
-        <div className="text-md">Total Stock: {product.total_stock}</div>
+        {!isAdminRoute && (
+          <div className="text-md">Total Stock: {product.total_stock}</div>
+        )}
         <div className="flex items-center my-2 gap-3">
           {isAdminRoute ? (
             <div className="flex items-center my-2 gap-3">

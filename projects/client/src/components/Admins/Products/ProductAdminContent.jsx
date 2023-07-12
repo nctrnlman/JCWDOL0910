@@ -3,16 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteProducts,
   fetchAdminProducts,
-  setCurrentPage,
 } from "../../../features/products/adminProductSlice";
 import DeleteModal from "../../modals/DeleteModal";
 import EditModalProduct from "../../modals/EditModalProduct";
 import { getAllProductCategories } from "../../../features/categories/ProductCategoriesSlice";
 import CreateModalProduct from "../../modals/CreateModalProduct";
 import ProductCardDashboard from "../../Product/ProductCardDashboard";
-import Pagination from "../../Pagination";
+import Pagination from "../../utils/Pagination";
+import SortSection from "./SortSection";
+import SearchSection from "./SearchSection";
 
-function ProductContent() {
+function ProductAdminContent() {
   const products = useSelector((state) => state.adminProducts.products);
   const totalPages = useSelector((state) => state.adminProducts.totalPages);
   const categories = useSelector(
@@ -24,6 +25,26 @@ function ProductContent() {
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedSort, setSelectedSort] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const handleSort = (option) => {
+    setSelectedSort(option);
+    dispatch(
+      fetchAdminProducts(currentPage, searchInput, option, selectedCategory)
+    );
+  };
+  const handleSearch = () => {
+    dispatch(
+      fetchAdminProducts(
+        currentPage,
+        searchInput,
+        selectedSort,
+        selectedCategory
+      )
+    );
+  };
 
   const openEditModal = (id_product) => {
     setEditItemId(id_product);
@@ -48,13 +69,28 @@ function ProductContent() {
     setDeleteItemName("");
   };
 
+  const handlePageChange = (page) => {
+    dispatch(
+      fetchAdminProducts(page, searchInput, selectedSort, selectedCategory)
+    );
+  };
+
   useEffect(() => {
-    dispatch(fetchAdminProducts());
     dispatch(getAllProductCategories());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(
+      fetchAdminProducts(
+        currentPage,
+        searchInput,
+        selectedSort,
+        selectedCategory
+      )
+    );
+  }, [dispatch, currentPage, searchInput, selectedSort, selectedCategory]);
   return (
-    <div className=" w-full">
+    <div className="w-full p-5">
       <div className="">
         <div className="btn btn-primary mt-4 mx-2">
           <a
@@ -66,6 +102,17 @@ function ProductContent() {
             Add New Product
           </a>
         </div>
+        <SearchSection
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          onSearch={handleSearch}
+        />
+        <SortSection
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          handleSort={handleSort}
+        />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           {products.map((product) => {
             return (
@@ -81,6 +128,7 @@ function ProductContent() {
       </div>
       {deleteItemId && (
         <DeleteModal
+          key={`deleteModal-${deleteItemId}`}
           deleteItemName={deleteItemName}
           handleDelete={() => handleDelete(deleteItemId)}
           closeDeleteModal={closeDeleteModal}
@@ -89,6 +137,7 @@ function ProductContent() {
       )}
       {editItemId && (
         <EditModalProduct
+          key={`editModal-${editItemId}`}
           editItemId={editItemId}
           closeEditModal={closeEditModal}
           categories={categories}
@@ -105,13 +154,10 @@ function ProductContent() {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        handlePageChange={(newPage) => {
-          dispatch(setCurrentPage(newPage));
-          dispatch(fetchAdminProducts(newPage));
-        }}
+        handlePageChange={handlePageChange}
       />
     </div>
   );
 }
 
-export default ProductContent;
+export default ProductAdminContent;

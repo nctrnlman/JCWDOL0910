@@ -53,7 +53,7 @@ function CartItems({ item }) {
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-5">
           <img
-            src={item.image_url}
+            src={`http://localhost:8000/${item.image_url}`}
             alt={item.name}
             className="w-24 h-24 lg:w-36 lg:h-36 object-cover mr-2"
           />

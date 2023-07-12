@@ -5,16 +5,17 @@ import SeeDetailButton from "./SeeDetailButton";
 import AddToCartButton from "./AddToCartButton";
 
 function ProductCard(props) {
-  const { product, openDeleteModal, openEditModal, imageSrc } = props;
+  const { product, openDeleteModal, openEditModal } = props;
   const location = useLocation();
   const isAdminRoute = location.pathname === "/admin-products";
 
-  const formattedPrice = product.price.toLocaleString("id-ID", {
+  const formattedPrice = product?.price.toLocaleString("id-ID", {
     style: "currency",
     currency: "IDR",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
+  const imageSrc = `http://localhost:8000${product.image_url}`;
 
   return (
     <div className="card bg-white w-[200px] lg:w-auto h-auto m-2 rounded-lg shadow-lg">
@@ -29,9 +30,7 @@ function ProductCard(props) {
         <div className="title font-semibold text-sm my-1">
           {product.name.charAt(0).toUpperCase() + product.name.slice(1)}
         </div>
-        <div className="category text-xs font-light my-1">
-          {product.description}
-        </div>
+
         <div className="pricing flex items-center">
           <div className="price">{formattedPrice}</div>
         </div>

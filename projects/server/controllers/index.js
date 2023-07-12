@@ -7,6 +7,11 @@ const adminController = require("./adminController");
 const warehouseController = require("./warehouseController");
 const rajaOngkirController = require("./rajaOngkirController");
 const adminProductController = require("./adminProductController");
+const stockController = require("./stockController");
+const orderController = require("./orderController");
+const adminOrderController = require("./adminOrderController");
+const stockMutationController = require("./stockMutationController");
+
 const reportTransactionController = require("./reportTransactionController");
 const reportStockController = require("./reportStockController");
 
@@ -20,6 +25,10 @@ module.exports = {
   warehouseController,
   rajaOngkirController,
   adminProductController,
+  stockController,
+  orderController,
+  adminOrderController,
+  stockMutationController,
   reportTransactionController,
-  reportStockController
+  reportStockController,
 };
