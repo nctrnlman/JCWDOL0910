@@ -23,17 +23,16 @@ export const { setStockMovHis } = reportStockSlice.actions;
 
 export default reportStockSlice.reducer;
 
-export function fetchStockMovement(id_warehouse) {
+export function fetchStockMovement() {
 
     return async (dispatch) => {
-        console.log("dari fetchstockmovement ", id_warehouse);
+        console.log("dari fetchstockmovement ");
         const token = localStorage.admin_token;
         console.log("token fetchStockMovement", token)
 
         try {
-            const response = await Axios.post(
+            const response = await Axios.get(
                 `http://localhost:8000/api/admins/stock-movement`,
-                id_warehouse,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

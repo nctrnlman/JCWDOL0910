@@ -121,10 +121,12 @@ module.exports = {
                     "yyyy-MM-dd"
                 );
                 // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
-                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.id_product, oi.quantity, p.name product_name, p.price, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product
+                let transactionQuery = `with orderss as (
+                    select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
                     left join orders as o on oi.id_order = o.id_order
-                    left join products as p on oi.id_product = p.id_product
+                    left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, 
@@ -145,10 +147,12 @@ module.exports = {
                     .send({ success: true, message: "Fetching works!", result });
             }
 
-            let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.id_product, oi.quantity, p.name product_name, p.price, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product
+            let transactionQuery = `with orderss as (
+                select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                 from order_items as oi 
                 left join orders as o on oi.id_order = o.id_order
-                left join products as p on oi.id_product = p.id_product
+                left join products as p on oi.product_name = p.name
                 left join categories as c on p.id_category = c.id_category
                 order by 1 asc)
                 select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, 
@@ -162,10 +166,11 @@ module.exports = {
             // res.status(200).send({ message: "fetching works!" });
             console.log(transactionQuery)
             if (startDate === endDate) {
-                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.id_product, oi.quantity, p.name product_name, p.price, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product
+                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
                     left join orders as o on oi.id_order = o.id_order
-                    left join products as p on oi.id_product = p.id_product
+                    left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, 
@@ -208,10 +213,11 @@ module.exports = {
                     "yyyy-MM-dd"
                 );
                 // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
-                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.id_product, oi.quantity, p.name product_name, p.price, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product
+                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
                     left join orders as o on oi.id_order = o.id_order
-                    left join products as p on oi.id_product = p.id_product
+                    left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, 
@@ -232,10 +238,11 @@ module.exports = {
                     .send({ success: true, message: "Fetching works!", result });
             }
 
-            let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.id_product, oi.quantity, p.name product_name, p.price, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product
+            let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                 from order_items as oi 
                 left join orders as o on oi.id_order = o.id_order
-                left join products as p on oi.id_product = p.id_product
+                left join products as p on oi.product_name = p.name
                 left join categories as c on p.id_category = c.id_category
                 order by 1 asc)
                 select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, 
@@ -249,10 +256,11 @@ module.exports = {
             // res.status(200).send({ message: "fetching works!" });
             console.log(transactionQuery)
             if (startDate === endDate) {
-                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.id_product, oi.quantity, p.name product_name, p.price, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product
+                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
                     left join orders as o on oi.id_order = o.id_order
-                    left join products as p on oi.id_product = p.id_product
+                    left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, 

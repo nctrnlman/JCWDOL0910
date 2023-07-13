@@ -52,7 +52,7 @@ router.post(
   checkRole.superAdmin,
   reportTransactionController.fetchMonthlyProductTransaction
 );
-router.post(
+router.get(
   "/stock-movement",
   checkRole.superAdmin,
   reportStockController.fetchStockMovementHistory
