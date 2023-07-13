@@ -32,6 +32,7 @@ import Products from "./pages/Products";
 import Verification from "./pages/Verification";
 import { fetchItemsCart } from "./features/carts/cartActions";
 import OrderListAdmin from "./pages/OrderListAdmin";
+import CategoriesAdmin from "./pages/CategoriesAdmin";
 
 function App() {
   const location = useLocation();
@@ -110,7 +111,7 @@ function App() {
             <Route path="/admin-dashboard" element={<DashboardAdmin />} />
             <Route path="/admin-products" element={<ProductsAdmin />} />
             <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
-            <Route path="/admin-categories" element={<AdminCategory />} />
+            <Route path="/admin-categories" element={<CategoriesAdmin />} />
             <Route path="/admin-stocks" element={<StocksAdmin />} />
             <Route
               path="/admin-stock-mutation"
