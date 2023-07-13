@@ -109,7 +109,6 @@ module.exports = {
         email
       )}`;
       const isEmailExist = await query(getEmailQuery);
-
       if (isEmailExist.length === 0) {
         return res.status(400).send({ message: "Email not found" });
       }
