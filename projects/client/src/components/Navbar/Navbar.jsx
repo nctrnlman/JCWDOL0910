@@ -29,7 +29,7 @@ const Navbar = () => {
           Shopify
         </a>
       </div>
-      <SearchInput />
+      {/* <SearchInput /> */}
       <div className="flex flex-row gap-2">
         {userToken ? (
           <UserDropdown key={user.id_user} user={user} />
