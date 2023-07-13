@@ -1,8 +1,8 @@
 import React from "react";
-import AllUsers from "./AllUsers"
-import AllAdmins from "./AllAdmins"
-import AllAdminList from "./AllAdmins2"
-import TransactionReport from "../Reporting/TransactionReport"
+import AllUsers from "./AllUsers";
+import AllAdmins from "./AllAdmins";
+import AllAdminList from "./AllAdmins2";
+import TransactionReport from "../Reporting/TransactionReport";
 
 const DashboardContent = () => {
   return (
@@ -10,7 +10,7 @@ const DashboardContent = () => {
       <AllUsers />
       {/* <AllAdmins /> */}
       <AllAdminList />
-      <TransactionReport />
+      {/* <TransactionReport /> */}
     </div>
   );
 };
