@@ -48,7 +48,17 @@ function NavbarDashboardMenu({ menuType }) {
                 Categories
               </a>
             </li>
+            <li>
+              <a href="/admin-reporting" className="text-lg">
+                Sales Report
+              </a>
+            </li>
 
+            <li>
+              <a href="/admin-reporting-stock" className="text-lg">
+                Stock Report
+              </a>
+            </li>
             <li className="flex justify-center items-center">
               <a href="/admin-login" className="text-[20px]">
                 <RiLogoutBoxLine />

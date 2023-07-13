@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "../features/users/userSlice";
+import adminSlice from "../features/users/adminSlice";
 import ProductCatReducer from "../features/categories/ProductCategoriesSlice";
 import productSlice from "../features/products/productSlice";
 import cartSlice from "../features/carts/cartSlice";
@@ -11,6 +12,10 @@ import stockSlice from "../features/stocks/stocksSlice";
 import stockMutationSlice from "../features/stock-mutation/stockMutationSlice";
 import orderSlice from "../features/orders/orderSlice";
 import orderListAdminSlice from "../features/orders/orderListAdminSlice";
+import allUsersSlice from "../features/users/usersForAdminSlice";
+import allAdminsSlice from "../features/users/adminsListSlice";
+import reportTransactionSlice from "../features/reportTransactionSlice";
+import reportStockSlice from "../features/reportStockSlice";
 
 export default configureStore({
   reducer: {
@@ -26,5 +31,10 @@ export default configureStore({
     stockProducts: stockSlice,
     stockMutations: stockMutationSlice,
     orderListAdmin: orderListAdminSlice,
+    admins: adminSlice,
+    allusers: allUsersSlice,
+    alladmins: allAdminsSlice,
+    reportTransaction: reportTransactionSlice,
+    reportStock: reportStockSlice,
   },
 });

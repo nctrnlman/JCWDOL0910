@@ -25,5 +25,5 @@ module.exports = {
   stockRoutes,
   orderRoutes,
   adminOrderRoutes,
-  stockMutationRoutes,
+  stockMutationRoutes
 };
