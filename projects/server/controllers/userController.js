@@ -101,6 +101,49 @@ module.exports = {
     }
   },
 
+  resendVerification: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      const getEmailQuery = `SELECT * FROM users WHERE email=${db.escape(
+        email
+      )}`;
+      const isEmailExist = await query(getEmailQuery);
+      console.log(email, "query email");
+      if (isEmailExist.length === 0) {
+        return res.status(400).send({ message: "Email not found" });
+      }
+      if (isEmailExist[0].is_verified) {
+        return res.status(400).send({ message: "Your account is verified" });
+      }
+      const otp = generateOTP();
+
+      const updateUserQuery = `UPDATE users SET otp=${otp} WHERE email=${db.escape(
+        email
+      )}`;
+      await query(updateUserQuery);
+
+      const user = isEmailExist[0];
+      const token = jwt.sign({ id: user.id_user }, env.JWT_SECRET, {
+        expiresIn: "24h",
+      });
+
+      await sendVerificationEmail(
+        nodemailer,
+        email,
+        `${user.first_name} ${user.last_name}`,
+        otp,
+        token
+      );
+
+      return res
+        .status(200)
+        .send({ message: "Verification email and OTP resent" });
+    } catch (error) {
+      res.status(error.status || 500).send(error);
+    }
+  },
+
   verify: async (req, res) => {
     try {
       const { otp, password } = req.body;

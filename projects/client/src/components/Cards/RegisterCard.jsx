@@ -1,6 +1,8 @@
 import React from "react";
 import RegisterForm from "../Form/RegisterForm";
 import TabsLoginRegister from "../TabsLoginRegister";
+import ResendVerificationModal from "../modals/ResendVerificationModal";
+import VerificationButton from "../Buttons/VerificationButton";
 
 function RegisterCard({ isLoading }) {
   return (
@@ -18,30 +20,24 @@ function RegisterCard({ isLoading }) {
             <TabsLoginRegister />
             <RegisterForm isLoading={isLoading} />
           </div>
-          <div className="flex justify-center items-center pb-4">
-            <div
-              target="_blank"
-              className="
-                    inline-flex
-                    items-center
-                    text-gray-700
-                    font-medium
-                    text-xs text-center
-                    "
-            >
-              <span className="ml-2 text-base-content">
-                Already have an account?
-                <a
-                  href="/login"
-                  className="text-xs ml-2 text-primary-focus font-semibold hover:underline"
-                >
-                  Sign In
-                </a>
-              </span>
-            </div>
+          <div className="flex flex-col justify-center items-center pb-4 text-gray-700 font-medium text-xs text-center gap-2">
+            <span className="ml-2 text-base-content">
+              Forget to verifiy your account?
+              <VerificationButton />
+            </span>
+            <span className="ml-2 text-base-content">
+              Already have an account?
+              <a
+                href="/login"
+                className="text-xs ml-2 text-primary-focus font-semibold hover:underline"
+              >
+                Sign In
+              </a>
+            </span>
           </div>
         </div>
       </div>
+      <ResendVerificationModal />
     </div>
   );
 }
