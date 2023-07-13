@@ -117,11 +117,21 @@ module.exports = {
         id: admin.id_admin,
         role: admin.role_name.toLowerCase(),
       };
-      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: "1h" });
+
+      const expiresIn = 60 * 60; // Set the token expiration time to 1 hour
+      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp (in seconds)
+      const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
       console.log(payload);
       res.status(200).send({
         token,
         message: "Admin login successful",
+        data: {
+          id: admin.id_admin,
+          email: admin.email,
+          name: admin.name,
+          role: admin.role_name,
+          expToken: expirationTimestamp,
+        },
       });
     } catch (error) {
       console.error("Error during admin login: ", error);

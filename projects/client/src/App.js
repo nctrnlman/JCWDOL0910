@@ -128,7 +128,7 @@ function App() {
             />
           </>
         )}
-        <Route path="/login-admin" element={<LoginAdmin />} />
+        <Route path="/admin-login" element={<LoginAdmin />} />
       </Routes>
     </div>
   );
