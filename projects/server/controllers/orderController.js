@@ -1,52 +1,23 @@
-require("dotenv").config({
-  path: ".env.local",
-});
 const {
   getCoordinates,
   checkProvinceAndCity,
 } = require("../helper/setAddressHelper");
-const axios = require("axios");
 const { db, query } = require("../database");
 const { getIdFromToken } = require("../helper/jwt-payload");
 const {
   validateImageSize,
   validateImageExtension,
 } = require("../helper/imageValidatorHelper");
-
 const orderQueries = require("../queries/orderQueries");
-
-const env = process.env;
+const { getShippingCost } = require("../helper/getShippingCost");
 
 module.exports = {
   orderList: async (req, res) => {
     try {
       const { status, id_user } = req.query;
-
-      let orderListQuery;
-
-      if (status === "Dibatalkan") {
-        orderListQuery = `
-        SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.created_at,
-        JSON_ARRAYAGG(JSON_OBJECT('quantity', oi.quantity, 'product_name', oi.product_name, 'product_image', oi.product_image, 'product_price', oi.product_price)) AS productList
-        FROM orders o
-        JOIN order_items oi ON o.id_order = oi.id_order
-        WHERE o.id_user = ${id_user} AND o.status = '${status}'
-        GROUP BY o.id_order, o.shipping_method, o.status, o.created_at;
-      `;
-      } else {
-        orderListQuery = `
-        SELECT o.id_order, o.total_amount, o.shipping_method, o.status, o.created_at, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number,
-        JSON_ARRAYAGG(JSON_OBJECT('quantity', oi.quantity, 'product_name', oi.product_name, 'product_image', oi.product_image, 'product_price', oi.product_price)) AS productList
-        FROM orders o
-        JOIN order_items oi ON o.id_order = oi.id_order
-        JOIN payment_details pd ON o.id_order = pd.id_order
-        WHERE o.id_user = ${id_user} AND o.status = '${status}'
-        GROUP BY o.id_order, o.shipping_method, o.status, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number, o.created_at;
-      `;
-      }
-
-      const orderList = await query(orderListQuery);
-
+      const orderList = await query(
+        orderQueries.orderListQuery(id_user, status)
+      );
       return res.status(200).send(orderList);
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
@@ -56,12 +27,7 @@ module.exports = {
   getShippingWarehouse: async (req, res) => {
     try {
       const { id_user, courier } = req.query;
-
-      const fetchAddress = await query(`
-          SELECT * FROM addresses WHERE id_user = ${db.escape(
-            id_user
-          )} AND is_primary = 1
-        `);
+      const fetchAddress = await query(orderQueries.fetchAddressQuery(id_user));
 
       const result = await getCoordinates(
         fetchAddress[0].address,
@@ -73,15 +39,11 @@ module.exports = {
       if (!result) {
         throw new Error("Coordinates not found");
       }
+
       const { latitude, longitude } = result;
-      console.log(result, "long lng");
-      const checkNearestWarehouse = await query(`
-      SELECT *,
-      SQRT(POW((latitude - ${latitude}), 2) + POW((longitude - ${longitude}), 2)) AS distance
-      FROM warehouses
-      ORDER BY distance
-      LIMIT 1;
-      `);
+      const checkNearestWarehouse = await query(
+        orderQueries.checkNearestWarehouseQuery(latitude, longitude)
+      );
 
       const originWarehouse = await checkProvinceAndCity(
         checkNearestWarehouse[0].province,
@@ -92,30 +54,15 @@ module.exports = {
         fetchAddress[0].province,
         fetchAddress[0].city
       );
-      const checkWeight = await query(`SELECT SUM(p.weight) AS total_weight
-      FROM cart_items ci
-      JOIN products p ON ci.id_product = p.id_product
-      JOIN users u ON ci.id_user = u.id_user
-      WHERE u.id_user = ${id_user}`);
 
-      const response = await axios.post(
-        "https://api.rajaongkir.com/starter/cost",
-        {
-          origin: originWarehouse.city.city_id,
-          destination: destinationAddress.city.city_id,
-          weight: checkWeight[0].total_weight,
-          courier: courier.toLowerCase(),
-        },
-        {
-          headers: {
-            key: env.RAJA_ONGKIR_API_KEY,
-          },
-        }
+      const checkWeight = await query(orderQueries.checkWeightQuery(id_user));
+
+      const services = await getShippingCost(
+        originWarehouse.city.city_id,
+        destinationAddress.city.city_id,
+        checkWeight[0].total_weight,
+        courier.toLowerCase()
       );
-
-      const services = response.data.rajaongkir.results[0].costs;
-
-      console.log(services);
 
       return res.status(200).send({
         service: services,
@@ -127,6 +74,7 @@ module.exports = {
       return res.status(error.statusCode || 500).send(error);
     }
   },
+
   createOrder: async (req, res) => {
     try {
       const {
@@ -137,45 +85,33 @@ module.exports = {
         productList,
       } = req.body;
 
-      const insertOrder = await query(`
-      INSERT INTO orders (id_user, id_warehouse, total_amount, shipping_method, status, created_at, payment_proof_expiry)
-      VALUES (${db.escape(id_user)}, ${db.escape(id_warehouse)}, ${db.escape(
-        total_amount
-      )}, ${db.escape(
-        shipping_method
-      )}, "Menunggu Pembayaran", NOW(), NOW() + INTERVAL 1 DAY)
-    `);
+      await query(
+        orderQueries.insertOrderQuery(
+          id_user,
+          id_warehouse,
+          total_amount,
+          shipping_method
+        )
+      );
 
-      const fetchOrder = await query(`
-      SELECT id_order
-      FROM multi_warehouse.orders
-      WHERE id_user = ${db.escape(id_user)}
-      ORDER BY id_order DESC
-      LIMIT 1
-    `);
+      const fetchOrder = await query(orderQueries.fetchOrderQuery(id_user));
 
       for (const product of productList) {
         const { productName, productPrice, productImage, quantity } = product;
-
-        await query(`
-        INSERT INTO order_items (id_user, id_order, product_name, product_price, product_image, quantity)
-        VALUES (${db.escape(id_user)}, ${fetchOrder[0].id_order}, ${db.escape(
-          productName
-        )}, ${db.escape(productPrice)}, ${db.escape(productImage)}, ${db.escape(
-          quantity
-        )})
-      `);
+        await query(
+          orderQueries.insertOrderItemsQuery(
+            id_user,
+            fetchOrder,
+            productName,
+            productPrice,
+            productImage,
+            quantity
+          )
+        );
       }
 
-      const insertPaymentDetails = await query(`
-      INSERT INTO payment_details (id_order, payment_proof, remitter, bank_name, account_number)
-      VALUES (${fetchOrder[0].id_order}, NULL, NULL, NULL, NULL)
-    `);
-
-      const deleteCartItems = await query(`
-      DELETE FROM cart_items
-      WHERE id_user = ${db.escape(id_user)}
-    `);
+      await query(orderQueries.insertPaymentDetailsQuery(fetchOrder));
+      await query(orderQueries.deleteCartItemsQuery(id_user));
 
       return res
         .status(200)

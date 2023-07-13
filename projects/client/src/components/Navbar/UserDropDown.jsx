@@ -3,6 +3,7 @@ import { BsCart3 } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../features/users/userSlice";
 import { useNavigate } from "react-router-dom";
+import CartDropdownCard from "../Cards/CartDropdownCard";
 
 const UserDropdown = ({ user }) => {
   const dispatch = useDispatch();
@@ -23,14 +24,6 @@ const UserDropdown = ({ user }) => {
     }
   };
 
-  const handleClickItem = () => {
-    navigate("/cart");
-  };
-
-  const handleClickButton = () => {
-    navigate("/cart");
-  };
-
   return (
     <div className="flex flex-row md:gap-4 lg:gap-9 lg:px-5">
       {/* cart dropdown */}
@@ -43,51 +36,7 @@ const UserDropdown = ({ user }) => {
             </span>
           </div>
         </label>
-        {isLargeScreen && (
-          <div className="mt-3 card card-compact dropdown-content w-[400px] h-auto bg-base-100 shadow">
-            <div className="card-body">
-              <div
-                className="grid grid-row-1 gap-4 mt-4"
-                style={{ maxHeight: "250px", overflowY: "auto" }}
-              >
-                {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex flex-row  hover:cursor-pointer"
-                    onClick={() => {
-                      handleClickItem();
-                    }}
-                  >
-                    <img
-                      src={`http://localhost:8000/${item.image_url}`}
-                      alt={item.name}
-                      className="w-12 h-12 mr-2"
-                    />
-                    <div>
-                      <p className="text-base font-semibold">{item.name}</p>
-                      <p className="text-sm text-gray-500">
-                        Price: {item.price}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Quantity: {item.quantity}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="card-actions">
-                <button
-                  className="btn btn-primary btn-block"
-                  onClick={() => {
-                    handleClickButton();
-                  }}
-                >
-                  View cart
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {isLargeScreen && <CartDropdownCard cartItems={cartItems} />}
       </div>
       {/* profile dropdown */}
       <div className="dropdown dropdown-bottom dropdown-end dropdown-hover flex">

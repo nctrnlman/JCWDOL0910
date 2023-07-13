@@ -41,7 +41,6 @@ module.exports = {
       const id = addUserResult.insertId;
 
       const token = jwt.sign({ id }, env.JWT_SECRET, { expiresIn: "24h" });
-      console.log(token);
 
       await sendVerificationEmail(nodemailer, email, fullName, otp, token);
 
@@ -80,10 +79,11 @@ module.exports = {
       const payload = {
         id: isEmailExist[0].id_user,
       };
-      console.log(payload, "paylooaddd");
-      const expiresIn = 60 * 60; // Set the token expiration time to 1 hour
-      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp (in seconds)
+
+      const expiresIn = 60 * 60;
+      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn;
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
+
       return res.status(200).send({
         message: "Login Success",
         token,
@@ -96,6 +96,49 @@ module.exports = {
           expToken: expirationTimestamp,
         },
       });
+    } catch (error) {
+      res.status(error.status || 500).send(error);
+    }
+  },
+
+  resendVerification: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      const getEmailQuery = `SELECT * FROM users WHERE email=${db.escape(
+        email
+      )}`;
+      const isEmailExist = await query(getEmailQuery);
+
+      if (isEmailExist.length === 0) {
+        return res.status(400).send({ message: "Email not found" });
+      }
+      if (isEmailExist[0].is_verified) {
+        return res.status(400).send({ message: "Your account is verified" });
+      }
+      const otp = generateOTP();
+
+      const updateUserQuery = `UPDATE users SET otp=${otp} WHERE email=${db.escape(
+        email
+      )}`;
+      await query(updateUserQuery);
+
+      const user = isEmailExist[0];
+      const token = jwt.sign({ id: user.id_user }, env.JWT_SECRET, {
+        expiresIn: "24h",
+      });
+
+      await sendVerificationEmail(
+        nodemailer,
+        email,
+        `${user.first_name} ${user.last_name}`,
+        otp,
+        token
+      );
+
+      return res
+        .status(200)
+        .send({ message: "Verification email and OTP resent" });
     } catch (error) {
       res.status(error.status || 500).send(error);
     }
