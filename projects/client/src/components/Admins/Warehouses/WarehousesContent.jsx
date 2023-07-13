@@ -52,7 +52,8 @@ const WarehousesContent = () => {
 
   return (
     <div className="bg-base-100 h-screen flex flex-col lg:flex-row lg:justify-start justify-center lg:items-center w-screen lg:h-full lg:w-full">
-      <div className="flex flex-col gap-5 lg:gap-3 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md lg:mx-5 xl:mx-10">
+      <div className="flex flex-col gap-5 lg:gap-3 text-black p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md lg:mx-5 xl:mx-10">
+        <h1 className="menu-title font-bold text-lg p-2">Warehouse List</h1>
         <div className="lg:flex lg:justify-start">
           <a
             className="btn md:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2"
