@@ -6,11 +6,12 @@ import {
   deleteProductFromCart,
 } from "../../features/carts/cartActions";
 import { updateCartItemQuantity } from "../../features/carts/helpers/cartHelpers";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import DeleteModal from "../../components/modals/DeleteModal";
+import DeleteModal from "../modals/DeleteModal";
 import QuantityControl from "./QuantityControl";
+import DeleteCartItemButton from "../Buttons/DeleteCartItemButton";
+import CartItemsCard from "../Cards/CartItemsCard";
 
-function CartItems({ item }) {
+function CartItemsContent({ item }) {
   const dispatch = useDispatch();
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
@@ -45,35 +46,16 @@ function CartItems({ item }) {
   };
 
   return (
-    <div className="bg-white p-4 shadow-md mb-2 relative">
+    <div className="bg-base-100 p-4 shadow-xl mb-2 relative">
       <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center gap-5">
-          <img
-            src={`http://localhost:8000/${item.image_url}`}
-            alt={item.name}
-            className="w-24 h-24 lg:w-36 lg:h-36 object-cover mr-2"
-          />
-          <div>
-            <p className="text-sm uppercase lg:text-lg font-semibold">
-              {item.name}
-            </p>
-            <p className="text-sm lg:text-lg text-gray-500">
-              Price: {item.price}
-            </p>
-          </div>
-        </div>
+        <CartItemsCard item={item} />
         <div className="flex flex-row">
-          <a
-            href="#delete_modal"
-            className="px-2 py-1 bg-error text-white rounded"
-            onClick={() => {
-              setShowDeleteModal(true);
-              setDeleteItemId(item.id_product);
-              setDeleteItemName(item.name);
-            }}
-          >
-            <RiDeleteBin5Line />
-          </a>
+          <DeleteCartItemButton
+            setShowDeleteModal={setShowDeleteModal}
+            setDeleteItemName={setDeleteItemName}
+            setDeleteItemId={setDeleteItemId}
+            item={item}
+          />
         </div>
       </div>
       <div className="flex justify-between items-center mt-3">
@@ -98,4 +80,4 @@ function CartItems({ item }) {
   );
 }
 
-export default CartItems;
+export default CartItemsContent;
