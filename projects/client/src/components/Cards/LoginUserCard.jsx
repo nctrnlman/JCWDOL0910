@@ -40,6 +40,28 @@ function LoginUserCard({ isLoading }) {
               </span>
             </div>
           </div>
+          <div className="flex justify-center items-center pb-4">
+            <div
+              target="_blank"
+              className="
+                    inline-flex
+                    items-center
+                    text-gray-700
+                    font-medium
+                    text-xs text-center
+                    "
+            >
+              <span className="ml-2 text-base-content">
+                Are you an admin?
+                <a
+                  href="/admin-login"
+                  className="text-xs ml-2 text-primary-focus font-semibold hover:underline"
+                >
+                  Login here
+                </a>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
