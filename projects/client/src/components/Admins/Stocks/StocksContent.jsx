@@ -72,10 +72,7 @@ function StocksContent() {
       <div className="lg:flex-col lg:flex lg:justify-center lg:items-center">
         <h1 className="menu-title font-bold text-lg p-2">Stocks List</h1>
         <div className="p-2 mb-2">
-          <SearchInputList
-            searchInput={searchInput}
-            setSearchInput={setSearchInput}
-          />
+          <SearchInputList setSearchInput={setSearchInput} />
         </div>
         <div>
           <SortButtons handleSort={handleSort} />

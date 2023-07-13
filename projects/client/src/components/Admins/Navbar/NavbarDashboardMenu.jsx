@@ -1,12 +1,12 @@
 import React from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
-function NavbarDashboardMenu({ menuType }) {
+function NavbarDashboardMenu({ menuType, onClick }) {
   const renderMenuItems = () => {
     if (menuType === "horizontal") {
       return (
         <div className="flex-none hidden lg:block">
-          <ul className="menu menu-horizontal gap-3 flex items-center">
+          <ul className="menu menu-horizontal gap-1 flex items-center">
             <li>
               <a href="/admin-products" className="text-[18px]">
                 Products
@@ -35,9 +35,13 @@ function NavbarDashboardMenu({ menuType }) {
                     Stock Mutations
                   </a>
                 </li>
+                <li>
+                  <a href="/admin-reporting-stock" className="text-md">
+                    Stock Report
+                  </a>
+                </li>
               </ul>
             </li>
-
             <li>
               <a href="/admin-warehouses" className="text-[18px]">
                 Warehouses
@@ -48,11 +52,15 @@ function NavbarDashboardMenu({ menuType }) {
                 Categories
               </a>
             </li>
-
-            <li className="flex justify-center items-center">
-              <a href="/admin-login" className="text-[20px]">
-                <RiLogoutBoxLine />
+            <li>
+              <a href="/admin-reporting" className="text-lg">
+                Sales Report
               </a>
+            </li>
+            <li className="flex justify-center items-center">
+              <button className="text-[20px]" onClick={onClick}>
+                <RiLogoutBoxLine />
+              </button>
             </li>
           </ul>
         </div>
@@ -82,6 +90,11 @@ function NavbarDashboardMenu({ menuType }) {
                 Stock Mutations
               </a>
             </li>
+            <li>
+              <a href="/admin-reporting-stock" className="text-md">
+                Stock Report
+              </a>
+            </li>
           </div>
           <li>
             <a href="/admin-warehouses" className="text-lg">
@@ -91,6 +104,11 @@ function NavbarDashboardMenu({ menuType }) {
           <li>
             <a href="/admin-categories" className="text-lg">
               Categories
+            </a>
+          </li>
+          <li>
+            <a href="/admin-reporting" className="text-lg">
+              Sales Report
             </a>
           </li>
         </>

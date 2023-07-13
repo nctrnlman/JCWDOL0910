@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-function SearchInputList({ setSearchInput, onSearch }) {
+function SearchInputList({ setSearchInput }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = () => {
     setSearchInput(inputValue);
-    onSearch();
   };
 
   const handleKeyPress = (e) => {

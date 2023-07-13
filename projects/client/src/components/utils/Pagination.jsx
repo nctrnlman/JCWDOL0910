@@ -52,14 +52,14 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
       {renderPageButtons()}
       <button
         className="join-item btn btn-outline btn-sm"
-        disabled={currentPage === totalPages}
+        disabled={currentPage === totalPages || totalPages === 0}
         onClick={() => handlePageChange(currentPage + 1)}
       >
         <FiChevronRight />
       </button>
       <button
         className="join-item btn btn-outline btn-sm"
-        disabled={currentPage === totalPages}
+        disabled={currentPage === totalPages || totalPages === 0}
         onClick={() => handlePageChange(totalPages)}
       >
         <FiChevronsRight />

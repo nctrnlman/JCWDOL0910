@@ -1,4 +1,7 @@
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import LoginAdmin from "./pages/LoginAdmin";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import showToastProtectedRoutes from "./effects/showToastProtectedRoutes";
@@ -13,18 +16,8 @@ import Navbar from "./components/Navbar/Navbar";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
-import AdminCategory from "./pages/AdminCategory";
-import StocksAdmin from "./pages/StocksAdmin";
-import StockMutationAdmin from "./pages/StockMutationAdmin";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import ResetPassword from "./pages/ResetPassword";
-import ForgetPassword from "./pages/ForgetPassword";
-import Profiling from "./pages/Profiling";
-import Cart from "./pages/Cart";
-import OrderList from "./pages/OrderList";
-import CreateOrder from "./pages/CreateOrder";
-import Payment from "./pages/Payment";
+import ReportingAdmin from "./pages/ReportingAdmin";
+import ReportingAdminStock from "./pages/ReportingAdminStock";
 import LandingPage from "./pages/LandingPage";
 import ProductCategory from "./pages/ProductCategory";
 import ProductDetail from "./pages/ProductDetail";
@@ -94,6 +87,7 @@ function App() {
           <>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/login-admin" element={<LoginAdmin />} />
             <Route path="/reset-password/" element={<ResetPassword />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
           </>
@@ -118,8 +112,14 @@ function App() {
               element={<StockMutationAdmin />}
             />
             <Route path="/admin-order-list" element={<OrderListAdmin />} />
+            <Route path="/admin-reporting" element={<ReportingAdmin />} />
+            <Route
+              path="/admin-reporting-stock"
+              element={<ReportingAdminStock />}
+            />
           </>
         )}
+        <Route path="/admin-login" element={<LoginAdmin />} />
       </Routes>
     </div>
   );

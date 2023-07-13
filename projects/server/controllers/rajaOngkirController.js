@@ -16,7 +16,7 @@ const makeRequest = async (url) => {
     });
     return response.data.rajaongkir.results;
   } catch (error) {
-    console.error("Error making request to RAJA ONGKIR API: ", error);
+    // console.error("Error making request to RAJA ONGKIR API: ", error);
     throw error;
   }
 };

@@ -12,6 +12,9 @@ const orderController = require("./orderController");
 const adminOrderController = require("./adminOrderController");
 const stockMutationController = require("./stockMutationController");
 
+const reportTransactionController = require("./reportTransactionController");
+const reportStockController = require("./reportStockController");
+
 module.exports = {
   userController,
   categoryController,
@@ -26,4 +29,6 @@ module.exports = {
   orderController,
   adminOrderController,
   stockMutationController,
+  reportTransactionController,
+  reportStockController,
 };
