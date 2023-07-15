@@ -1,4 +1,5 @@
 const { db, query } = require("../database");
+const { getRoleFromToken, getIdFromToken } = require("../helper/jwt-payload");
 const {
   getCoordinates,
   checkProvinceAndCity,
@@ -155,9 +156,20 @@ module.exports = {
   },
   fetchWarehouseList: async (req, res) => {
     try {
-      const fetchWarehouseListQuery = `
+      const role = getRoleFromToken(req, res); // Get the role from the token
+
+      let fetchWarehouseListQuery = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        fetchWarehouseListQuery = `
+        SELECT * FROM warehouses WHERE id_admin=${db.escape(adminId)}
+      `;
+      } else {
+        fetchWarehouseListQuery = `
         SELECT * FROM warehouses
       `;
+      }
+
       const warehouseList = await query(fetchWarehouseListQuery);
 
       res.status(200).send(warehouseList);
