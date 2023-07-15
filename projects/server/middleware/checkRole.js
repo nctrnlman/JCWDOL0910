@@ -6,21 +6,16 @@ const { getIdFromToken } = require("../helper/jwt-payload");
 
 const superAdmin = async (req, res, next) => {
   try {
-    console.log("from check role", req.headers)
     const adminId = getIdFromToken(req, res);
-    console.log(adminId)
     const getAdminRoleQuery = `
         SELECT roles.name
         FROM admins
         INNER JOIN roles ON admins.id_role = roles.id_role
         WHERE admins.id_admin =${db.escape(adminId)}
     `;
-    console.log(adminId, "id admin");
     const result = await query(getAdminRoleQuery);
-    console.log(result, "result");
 
     const adminRole = result[0].name.toLowerCase();
-    console.log(adminRole, "test");
     if (adminRole === "super admin") {
       next();
     } else {
@@ -38,19 +33,15 @@ const superAdmin = async (req, res, next) => {
 const admins = async (req, res, next) => {
   try {
     const adminId = getIdFromToken(req, res);
-    console.log(adminId, "adminId");
     const getAdminRoleQuery = `
     SELECT roles.name
     FROM admins
     INNER JOIN roles ON admins.id_role = roles.id_role
     WHERE admins.id_admin = ${db.escape(adminId)}
   `;
-    console.log(adminId, "id admin");
     const result = await query(getAdminRoleQuery);
-    console.log(result, "result");
 
     const adminRole = result[0].name.toLowerCase();
-    console.log(adminRole, "test");
 
     if (adminRole === "super admin" || adminRole === "warehouse admin") {
       req.adminRole = adminRole; // Store the admin role in the request object

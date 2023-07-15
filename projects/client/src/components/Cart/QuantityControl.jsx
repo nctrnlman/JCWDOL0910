@@ -32,7 +32,7 @@ function QuantityControl({
         value={quantity}
         onChange={handleQuantityChange}
         readOnly
-        className="w-12 text-center"
+        className="w-1/3 text-center border-none"
       />
       <button
         className="px-2 py-1 bg-blue-500 text-white rounded"
