@@ -17,7 +17,7 @@ import DashboardAdmin from "./pages/DashboardAdmin";
 import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
 import ReportingAdmin from "./pages/ReportingAdmin";
-import AdminCategory from "./pages/AdminCategory";
+import CategoriesAdmin from "./pages/CategoriesAdmin";
 import ReportingAdminStock from "./pages/ReportingAdminStock";
 import LandingPage from "./pages/LandingPage";
 import ProductCategory from "./pages/ProductCategory";
@@ -35,6 +35,7 @@ import StockMutationAdmin from "./pages/StockMutationAdmin";
 import ResetPassword from "./pages/ResetPassword";
 import ForgetPassword from "./pages/ForgetPassword";
 import Profiling from "./pages/Profiling";
+import { getAllProductCategories } from "./features/categories/ProductCategoriesSlice";
 
 function App() {
   const location = useLocation();
@@ -82,6 +83,9 @@ function App() {
     }
   }, [userToken, dispatch]);
 
+  useEffect(() => {
+    dispatch(getAllProductCategories());
+  }, [dispatch]);
   return (
     <div>
       {showNavbar && <Navbar />}
@@ -114,7 +118,7 @@ function App() {
             <Route path="/admin-dashboard" element={<DashboardAdmin />} />
             <Route path="/admin-products" element={<ProductsAdmin />} />
             <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
-            <Route path="/admin-categories" element={<AdminCategory />} />
+            <Route path="/admin-categories" element={<CategoriesAdmin />} />
             <Route path="/admin-stocks" element={<StocksAdmin />} />
             <Route
               path="/admin-stock-mutation"

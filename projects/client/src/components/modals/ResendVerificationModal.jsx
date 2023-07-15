@@ -24,6 +24,8 @@ const ResendVerificationModal = () => {
   const handleModalClose = () => {
     formik.resetForm();
   };
+  const isEmailInvalid =
+    !formik.values.email || (formik.touched.email && formik.errors.email);
   return (
     <dialog id="verification" className="modal">
       <form method="dialog" className="modal-box">
@@ -47,8 +49,8 @@ const ResendVerificationModal = () => {
             className="btn btn-primary"
             onClick={() => {
               formik.handleSubmit();
-              handleModalClose();
             }}
+            disabled={isEmailInvalid} // Disable the button when the email is invalid
           >
             Send
           </button>
