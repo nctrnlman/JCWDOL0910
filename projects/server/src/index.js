@@ -40,7 +40,7 @@ app.use(express.static("public"));
 
 app.use("/api/users", userRoutes);
 app.use("/api/user-profile", userProfileRoutes);
-app.use("/api/categories", categoryRoutes);
+app.use("/api/admins/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/admins", adminRoutes);
