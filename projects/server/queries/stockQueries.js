@@ -1,4 +1,7 @@
+const { db, query } = require("../database");
+
 module.exports = {
+  // for fetchStocks in stockController
   fetchStocksQuery: (search, sort, offset, itemsPerPage) => {
     let stocksQuery = `
       SELECT s.*, p.name AS product_name, w.name AS warehouse_name
@@ -52,6 +55,7 @@ module.exports = {
     return countQuery;
   },
 
+  // for fetchStocks in stockController
   selectStockQuery: (id_stock) => {
     return `
       SELECT total_stock
@@ -77,6 +81,7 @@ module.exports = {
     `;
   },
 
+  // for add product in stockController
   checkStockQuery: (id_product, id_warehouse) => {
     return `
       SELECT id_stock, total_stock

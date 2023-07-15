@@ -3,19 +3,10 @@ require("dotenv").config({
 });
 const { db, query } = require("../database");
 const { getPaginationParams } = require("../helper/getPaginationHelper");
+const { getIdFromToken, getRoleFromToken } = require("../helper/jwt-payload");
 const adminOrderQueries = require("../queries/adminOrderQueries");
 
 module.exports = {
-  fetchPaymentConfirmation: async (req, res) => {
-    try {
-      const orderPaymentList = await query(
-        'SELECT * FROM multi_warehouse.orders WHERE status = "Menunggu Konfirmasi Pembayaran";'
-      );
-      return res.status(200).send(orderPaymentList);
-    } catch (error) {
-      return res.status(error.statusCode || 500).send(error);
-    }
-  },
   confirmPayment: async (req, res) => {
     try {
       const { id_order } = req.query;
@@ -149,9 +140,16 @@ module.exports = {
 
   fetchOrderList: async (req, res) => {
     try {
-      const itemsPerPage = 8;
+      const itemsPerPage = 10;
       const { page, offset } = getPaginationParams(req, itemsPerPage);
       const { sort, search, status } = req.query;
+      const role = getRoleFromToken(req, res); // Get the role from the token
+
+      let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        warehouseId = await adminOrderQueries.getWarehouseId(adminId);
+      }
 
       const orderPaymentList = await query(
         adminOrderQueries.orderPaymentListQuery(
@@ -159,13 +157,17 @@ module.exports = {
           offset,
           sort,
           search,
-          status
+          status,
+          role,
+          warehouseId
         )
       );
 
-      countQuery = adminOrderQueries.getCountQueryWithSearchAndStatus(
+      const countQuery = adminOrderQueries.getCountQueryWithSearchAndStatus(
         search,
-        status
+        status,
+        role,
+        warehouseId
       );
 
       const countResult = await query(countQuery);

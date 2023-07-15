@@ -3,9 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import NavbarDashboardDrawer from "./NavbarDashboardDrawer";
 import NavbarDashboardMenu from "./NavbarDashboardMenu";
+import { useDispatch } from "react-redux";
+import { logoutAdmin } from "../../../features/users/adminSlice";
 
-function NavbarDashboard({ children }) {
+function NavbarDashboard() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logoutAdmin());
+    navigate("/admin-login");
+  };
   return (
     <div className="drawer">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
@@ -22,21 +29,20 @@ function NavbarDashboard({ children }) {
             Shopify
           </div>
           {/* Navbar menu content here */}
-          <NavbarDashboardMenu menuType="horizontal" />
+          <NavbarDashboardMenu menuType="horizontal" onClick={handleLogout} />
         </div>
-        {children}
       </div>
-      <div className="drawer-side">
+      <div className="drawer-side h-screen z-10">
         <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
         <ul className="menu menu-vertical items-start p-4 w-56 sm:w-64 h-full bg-base-200 justify-between">
           <div>
-            <NavbarDashboardMenu menuType="vertical" />
+            <NavbarDashboardMenu menuType="vertical" onClick={handleLogout} />
           </div>
           <div className="absolute right-0 bottom-0">
             <li className="btn btn-wide justify-end items-end">
-              <a href="/admin-login" className="text-lg">
+              <button className="text-lg" onClick={handleLogout}>
                 Logout <RiLogoutBoxLine />
-              </a>
+              </button>
             </li>
           </div>
         </ul>

@@ -1,82 +1,33 @@
 import React from "react";
+import {
+  FiChevronsRight,
+  FiChevronsLeft,
+  FiChevronRight,
+  FiChevronLeft,
+} from "react-icons/fi";
+import { GrPrevious, GrNext } from "react-icons/gr";
 
 const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
-  const pageRange = 2; // Number of page buttons to display
+  const pageRange = 3; // Number of page buttons to display
 
   const renderPageButtons = () => {
     const pageButtons = [];
 
-    if (totalPages <= 4) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageButtons.push(
-          <button
-            key={i}
-            className={`join-item btn ${
-              i === currentPage ? "btn-primary" : "btn-outline"
-            } btn-sm`}
-            onClick={() => handlePageChange(i)}
-          >
-            {i}
-          </button>
-        );
-      }
-    } else {
-      let startPage = Math.max(1, currentPage - Math.floor(pageRange / 2));
-      let endPage = Math.min(startPage + pageRange - 1, totalPages);
+    let startPage = Math.max(1, currentPage - 1);
+    let endPage = Math.min(startPage + pageRange - 1, totalPages);
 
-      startPage = Math.max(1, endPage - pageRange + 1);
-
-      for (let i = startPage; i <= endPage; i++) {
-        pageButtons.push(
-          <button
-            key={i}
-            className={`join-item btn ${
-              i === currentPage ? "btn-primary" : "btn-outline"
-            } btn-sm`}
-            onClick={() => handlePageChange(i)}
-          >
-            {i}
-          </button>
-        );
-      }
-
-      if (endPage < totalPages - 1) {
-        pageButtons.push(
-          <button
-            key="ellipsis"
-            className="join-item btn btn-disabled btn-sm"
-            disabled
-          >
-            ...
-          </button>
-        );
-
-        pageButtons.push(
-          <button
-            key={totalPages - 1}
-            className={`join-item btn ${
-              totalPages - 1 === currentPage ? "btn-primary" : "btn-outline"
-            } btn-sm`}
-            onClick={() => handlePageChange(totalPages - 1)}
-          >
-            {totalPages - 1}
-          </button>
-        );
-      }
-
-      if (currentPage !== totalPages) {
-        pageButtons.push(
-          <button
-            key={totalPages}
-            className={`join-item btn ${
-              totalPages === currentPage ? "btn-primary" : "btn-outline"
-            } btn-sm`}
-            onClick={() => handlePageChange(totalPages)}
-          >
-            {totalPages}
-          </button>
-        );
-      }
+    for (let i = startPage; i <= endPage; i++) {
+      pageButtons.push(
+        <button
+          key={i}
+          className={`join-item btn ${
+            i === currentPage ? "btn-primary" : "btn-outline"
+          } btn-sm`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
     }
 
     return pageButtons;
@@ -85,33 +36,33 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
   return (
     <div className="join flex justify-center items-center p-2 mb-3">
       <button
-        className="join-item btn btn-primary btn-outline btn-sm"
+        className="join-item btn btn-outline btn-sm"
         disabled={currentPage === 1}
         onClick={() => handlePageChange(1)}
       >
-        «
+        <FiChevronsLeft />
       </button>
       <button
-        className="join-item btn btn-primary btn-outline btn-sm"
+        className="join-item btn btn-outline btn-sm"
         disabled={currentPage === 1}
         onClick={() => handlePageChange(currentPage - 1)}
       >
-        Previous
+        <FiChevronLeft />
       </button>
       {renderPageButtons()}
       <button
-        className="join-item btn btn-primary btn-outline btn-sm"
-        disabled={currentPage === totalPages}
+        className="join-item btn btn-outline btn-sm"
+        disabled={currentPage === totalPages || totalPages === 0}
         onClick={() => handlePageChange(currentPage + 1)}
       >
-        Next
+        <FiChevronRight />
       </button>
       <button
-        className="join-item btn btn-primary btn-outline btn-sm"
-        disabled={currentPage === totalPages}
+        className="join-item btn btn-outline btn-sm"
+        disabled={currentPage === totalPages || totalPages === 0}
         onClick={() => handlePageChange(totalPages)}
       >
-        »
+        <FiChevronsRight />
       </button>
     </div>
   );

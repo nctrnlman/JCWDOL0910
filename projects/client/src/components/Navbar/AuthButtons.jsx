@@ -1,6 +1,8 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
+import NavUserRegisterButton from "../Buttons/NavUserRegisterButton";
+import NavUserLoginButton from "../Buttons/NavUserLoginButton";
 
 const AuthButtons = ({ isMenuOpen, handleMenuToggle, showButtons }) => {
   const navigate = useNavigate();
@@ -14,38 +16,18 @@ const AuthButtons = ({ isMenuOpen, handleMenuToggle, showButtons }) => {
         {isMenuOpen && (
           <ul className="menu dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box text-neutral gap-3 items-start">
             <li>
-              <Link to="/login" className="btn btn-ghost btn-sm">
-                Login
-              </Link>
+              <NavUserLoginButton navigate={navigate} />
             </li>
             <li>
-              <Link to="/register" className="btn btn-ghost btn-sm">
-                Register
-              </Link>
+              <NavUserRegisterButton navigate={navigate} />
             </li>
           </ul>
         )}
       </div>
       {showButtons && (
         <div className="hidden sm:flex gap-2">
-          <button
-            to="/login"
-            className="btn btn-ghost btn-sm"
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Login
-          </button>
-          <button
-            to="/register"
-            className="btn btn-ghost btn-sm"
-            onClick={() => {
-              navigate("/register");
-            }}
-          >
-            Register
-          </button>
+          <NavUserLoginButton navigate={navigate} />
+          <NavUserRegisterButton navigate={navigate} />
         </div>
       )}
     </div>

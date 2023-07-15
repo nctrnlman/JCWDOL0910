@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
 import { RxDotFilled } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
 
 function Carousel() {
   const slides = [
@@ -24,7 +24,6 @@ function Carousel() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
-
   const prevSlide = () => {
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
@@ -60,12 +59,12 @@ function Carousel() {
       <div className="hero-content text-center text-neutral-content">
         <div className="max-w-md">
           <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
-          <p className="mb-5">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-          </p>
+          <p className="mb-5">Discover our amazing collection of products</p>
           <button
             className="btn btn-primary"
-            onClick={() => navigate("/products")}
+            onClick={() => {
+              navigate("/products");
+            }}
           >
             Get Started
           </button>

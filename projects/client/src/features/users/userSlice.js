@@ -92,6 +92,31 @@ export function loginUser(data, callback) {
   };
 }
 
+export function resendEmail(data) {
+  return async (dispatch) => {
+    dispatch(setIsLoading(true));
+    try {
+      let response = await axios.post(
+        "http://localhost:8000/api/users/resend-verification",
+        data
+      );
+      console.log(response);
+      dispatch(setIsLoading(false));
+      toast(
+        <CustomToast type="success" message={response.data.message} />,
+        CustomToastOptions
+      );
+    } catch (error) {
+      dispatch(setIsLoading(false));
+      console.log(error);
+      toast(
+        <CustomToast type="error" message={error.response.data.message} />,
+        CustomToastOptions
+      );
+    }
+  };
+}
+
 export function logoutUser() {
   return async (dispatch) => {
     try {

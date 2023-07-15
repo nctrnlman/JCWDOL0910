@@ -21,6 +21,7 @@ export function getProfile() {
   return async (dispatch) => {
     try {
       const token = localStorage.user_token;
+      console.log("token dari profile slice", token)
       if (token) {
         let response = await Axios.get(
           `http://localhost:8000/api/user-profile/`,

@@ -1,41 +1,66 @@
 import React from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
-function NavbarDashboardMenu({ menuType }) {
+function NavbarDashboardMenu({ menuType, onClick }) {
   const renderMenuItems = () => {
     if (menuType === "horizontal") {
       return (
         <div className="flex-none hidden lg:block">
-          <ul className="menu menu-horizontal gap-3 flex">
+          <ul className="menu menu-horizontal gap-1 flex items-center">
             <li>
-              <a href="/admin-products" className="text-lg">
+              <a href="/admin-products" className="text-[18px]">
                 Products
               </a>
             </li>
             <li>
-              <a href="/admin-stocks" className="text-lg">
-                Stocks
+              <a href="/admin-order-list" className="text-[18px]">
+                Orders
               </a>
             </li>
+            <li className="dropdown dropdown-end dropdown-hover">
+              <label tabIndex={0} className="text-[18px] m-1">
+                Stocks
+              </label>
+              <ul
+                tabIndex={0}
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li>
+                  <a href="/admin-stocks" className="text-md">
+                    Stock List
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin-stock-mutation" className="text-md">
+                    Stock Mutations
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin-reporting-stock" className="text-md">
+                    Stock Report
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li>
-              <a href="/admin-warehouses" className="text-lg">
+              <a href="/admin-warehouses" className="text-[18px]">
                 Warehouses
               </a>
             </li>
             <li>
-              <a href="/admin-categories" className="text-lg">
+              <a href="/admin-categories" className="text-[18px]">
                 Categories
               </a>
             </li>
             <li>
-              <a href="/admin-stock-mutation" className="text-lg">
-                Stock Mutations
+              <a href="/admin-reporting" className="text-lg">
+                Sales Report
               </a>
             </li>
             <li className="flex justify-center items-center">
-              <a href="/admin-login" className="text-xl">
+              <button className="text-[20px]" onClick={onClick}>
                 <RiLogoutBoxLine />
-              </a>
+              </button>
             </li>
           </ul>
         </div>
@@ -49,6 +74,29 @@ function NavbarDashboardMenu({ menuType }) {
             </a>
           </li>
           <li>
+            <a href="/admin-order-list" className="text-lg">
+              Orders
+            </a>
+          </li>
+          <div className=" px-4 py-2">
+            <span className="text-lg">Stocks</span>
+            <li>
+              <a href="/admin-stocks" className="text-md">
+                Stock List
+              </a>
+            </li>
+            <li>
+              <a href="/admin-stock-mutation" className="text-md">
+                Stock Mutations
+              </a>
+            </li>
+            <li>
+              <a href="/admin-reporting-stock" className="text-md">
+                Stock Report
+              </a>
+            </li>
+          </div>
+          <li>
             <a href="/admin-warehouses" className="text-lg">
               Warehouses
             </a>
@@ -56,6 +104,11 @@ function NavbarDashboardMenu({ menuType }) {
           <li>
             <a href="/admin-categories" className="text-lg">
               Categories
+            </a>
+          </li>
+          <li>
+            <a href="/admin-reporting" className="text-lg">
+              Sales Report
             </a>
           </li>
         </>

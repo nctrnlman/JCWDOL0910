@@ -4,8 +4,8 @@ import * as Yup from "yup";
 import { registerUser } from "../features/users/userSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import RegisterForm from "../components/Form/RegisterForm";
 import { useNavigate } from "react-router-dom";
+import RegisterCard from "../components/Cards/RegisterCard";
 
 function Register() {
   const RegisterSchema = Yup.object().shape({
@@ -16,9 +16,10 @@ function Register() {
     first_name: Yup.string()
       .required("First name is required")
       .matches(/^[a-zA-Z\s]*$/, "Only alphabetic characters are allowed"),
-    last_name: Yup.string()
-      .matches(/^[a-zA-Z\s]*$/, "Only alphabetic characters are allowed"),
-
+    last_name: Yup.string().matches(
+      /^[a-zA-Z\s]*$/,
+      "Only alphabetic characters are allowed"
+    ),
   });
 
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ function Register() {
       validationSchema={RegisterSchema}
       onSubmit={handleRegistration}
     >
-      <RegisterForm isLoading={isLoading} />
+      <RegisterCard isLoading={isLoading} />
     </Formik>
   );
 }

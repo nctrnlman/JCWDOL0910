@@ -6,12 +6,13 @@ const { getIdFromToken } = require("../helper/jwt-payload");
 
 module.exports = {
   getUserProfile: async (req, res) => {
+    // console.log(req)
     try {
       const idUser = req.user.id;
-      console.log(idUser, "userid");
       const getUserProfile = await query(
         `SELECT * FROM users WHERE id_user = ${db.escape(idUser)}`
       );
+      // console.log(getUserProfile);
       return res.status(200).send(getUserProfile);
     } catch (error) {
       return res.status(error.status || 500).send(error);
@@ -119,7 +120,8 @@ module.exports = {
       const execute_delete = await query(deleteAddressQuery);
       return res.status(200).send("Delete Address Succeed");
     } catch (error) {
-      return res.status(error.status || 500).send(error);
+      console.log(error);
+      return res.status(error.status || 500).send("babi");
     }
   },
 

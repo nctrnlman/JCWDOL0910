@@ -3,9 +3,9 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import LoginForm from "../components/Form/LoginForm";
 import { loginUser } from "../features/users/userSlice";
 import { useNavigate } from "react-router-dom";
+import LoginUserCard from "../components/Cards/LoginUserCard";
 
 function Login() {
   const LoginSchema = Yup.object().shape({
@@ -30,27 +30,16 @@ function Login() {
   };
 
   return (
-    <div>
-      <Formik
-        initialValues={{
-          email: "",
-          password: "",
-        }}
-        validationSchema={LoginSchema}
-        onSubmit={handleLogin}
-      >
-        {(props) => {
-          const { touched, errors } = props;
-          return (
-            <LoginForm
-              isLoading={isLoading}
-              touched={touched}
-              errors={errors}
-            />
-          );
-        }}
-      </Formik>
-    </div>
+    <Formik
+      initialValues={{
+        email: "",
+        password: "",
+      }}
+      validationSchema={LoginSchema}
+      onSubmit={handleLogin}
+    >
+      <LoginUserCard isLoading={isLoading} />
+    </Formik>
   );
 }
 

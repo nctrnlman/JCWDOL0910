@@ -15,12 +15,11 @@ const Navbar = () => {
 
   return (
     <div className="navbar bg-gray-900 shadow-md fixed top-0 z-50 w-screen lg:w-full justify-between">
-      <div className="flex">
+      <div className="flex md:hidden">
         <a className="text-white text-3xl md:hidden" href="/">
           <BiHomeAlt2 />
         </a>
       </div>
-
       <div className="hidden md:flex">
         <a
           href="/"
@@ -29,7 +28,7 @@ const Navbar = () => {
           Shopify
         </a>
       </div>
-      <SearchInput />
+      {/* <SearchInput /> */}
       <div className="flex flex-row gap-2">
         {userToken ? (
           <UserDropdown key={user.id_user} user={user} />

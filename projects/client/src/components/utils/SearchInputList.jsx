@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-function SearchInputList({ setSearchInput, onSearch }) {
+function SearchInputList({ setSearchInput }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = () => {
     setSearchInput(inputValue);
-    onSearch();
   };
 
   const handleKeyPress = (e) => {
@@ -20,7 +19,7 @@ function SearchInputList({ setSearchInput, onSearch }) {
         <input
           type="text"
           placeholder="Search"
-          className="input input-bordered w-72 sm:w-96 lg:w-[600px] xl:w-[800px]"
+          className="input input-bordered w-40 sm:w-96 lg:w-[600px] xl:w-[800px]"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyPress}
