@@ -7,5 +7,6 @@ const router = express.Router();
 router.get("/", checkRole.admins, adminOrderController.fetchOrderList);
 router.post("/payment/confirm", adminOrderController.confirmPayment);
 router.post("/payment/reject", adminOrderController.rejectPayment);
+router.post("/send", adminOrderController.sendOrder);
 
 module.exports = router;

@@ -52,7 +52,7 @@ const CreateModalAddress = ({
     const newAddressData = {
       name,
       address,
-      // district,
+      district,
       province: selectedProvince ? selectedProvince.province : "",
       city: selectedCity
         ? `${selectedCity.type} ${selectedCity.city_name}`
@@ -135,7 +135,7 @@ const CreateModalAddress = ({
               ))}
             </select>
           </div>
-          {/* <div className="form-control">
+          <div className="form-control">
             <label className="label">
               <span className="label-text">District:</span>
             </label>
@@ -144,10 +144,10 @@ const CreateModalAddress = ({
               value={district}
               onChange={(e) => setDistrict(e.target.value)}
               className="input input-bordered"
-              placeholder="Enter warehouse district"
+              placeholder="Enter District (Kecamatan)"
               required
             />
-          </div> */}
+          </div>
           <div className="form-control">
             <label className="label">
               <span className="label-text">Postal Code:</span>

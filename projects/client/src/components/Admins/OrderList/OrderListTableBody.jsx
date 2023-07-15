@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import PaymentConfirmationButton from "../../Buttons/PaymentConfirmationButton";
 import SeeReceiptButton from "../../Buttons/SeeReceiptButton";
+import SendOrderButton from "../../Buttons/SendOrderButton";
 
 function OrderListTableBody({
   orders,
@@ -49,6 +50,13 @@ function OrderListTableBody({
               <td className="relative">
                 <div className="gap-5 grid grid-cols-1 items-center justify-center">
                   <PaymentConfirmationButton
+                    setSelectedId={setSelectedId}
+                    id_order={order.id_order}
+                    status={order.status}
+                  />
+                </div>
+                <div className="gap-5 grid grid-cols-1 items-center justify-center">
+                  <SendOrderButton
                     setSelectedId={setSelectedId}
                     id_order={order.id_order}
                     status={order.status}

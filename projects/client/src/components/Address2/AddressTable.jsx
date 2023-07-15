@@ -6,6 +6,7 @@ const AddressTable = ({
   navigate,
   openDeleteModal,
   openEditModal,
+  openSetPrimaryModal
 }) => {
   return (
     <table className="table table-zebra  text-black bg-primary h-3/4 lg:h-full lg:max-h-fit w-full lg:w-screen lg:max-w-screen-xl">
@@ -17,6 +18,7 @@ const AddressTable = ({
           <th>City</th>
           <th>Province</th>
           <th>Postal Code</th>
+          <th>Primary Address</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -26,6 +28,7 @@ const AddressTable = ({
         navigate={navigate}
         openEditModal={openEditModal}
         openDeleteModal={openDeleteModal}
+        openSetPrimaryModal={openSetPrimaryModal}
       />
       <tfoot className="sticky bottom-0 z-10 lg:text-lg">
         <tr className="bg-base-300 text-base-content">
@@ -34,6 +37,7 @@ const AddressTable = ({
           <th>City</th>
           <th>Province</th>
           <th>Postal Code</th>
+          <th>Primary Address</th>
           <th>Actions</th>
         </tr>
       </tfoot>

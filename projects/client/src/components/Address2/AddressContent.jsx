@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddress, addAddress, deleteAddress } from "../../features/UserAddress";
+import { getAddress, addAddress, deleteAddress, editAddress, setPrimaryAddress } from "../../features/UserAddress";
 // import {
 //   deleteAddress,
 //   getAddress,
@@ -8,6 +8,7 @@ import { getAddress, addAddress, deleteAddress } from "../../features/UserAddres
 // } from "../../../features/warehouses/warehouseSlice";
 import DeleteModal from "./DeleteModal";
 import EditModalAddress from "./EditModalAddress";
+import SetPrimaryModal from "./SetPrimaryAddressModal";
 import AddressTable from "./AddressTable";
 import CreateModalAddress from "./CreateModalAddress";
 
@@ -18,11 +19,18 @@ const AddressContent = () => {
   const [deleteItemName, setDeleteItemName] = useState("");
   const [editItemId, setEditItemId] = useState(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [setPrimaryItemId, setSetPrimaryItemId] = useState(null);
 
   const handleDelete = async (id_address) => {
     await dispatch(deleteAddress(id_address));
     console.log("id untuk dihapus", id_address)
     closeDeleteModal();
+  };
+
+  const handleSetPrimary = async (id_address) => {
+    await dispatch(setPrimaryAddress(id_address));
+    console.log("id untuk di-setPrimary", id_address)
+    closeSetPrimaryModal();
   };
 
   const openDeleteModal = (id_address) => {
@@ -41,6 +49,16 @@ const AddressContent = () => {
 
   const closeEditModal = () => {
     setEditItemId(null);
+  };
+
+  const openSetPrimaryModal = (id_address) => {
+    setSetPrimaryItemId(id_address);
+    // setDeleteItemName(name);
+  };
+
+  const closeSetPrimaryModal = () => {
+    setSetPrimaryItemId(null);
+    // setDeleteItemName("");
   };
 
   const handleCreate = async (newAddressData) => {
@@ -70,6 +88,7 @@ const AddressContent = () => {
               addresses={addresses}
               openEditModal={openEditModal}
               openDeleteModal={openDeleteModal}
+              openSetPrimaryModal={openSetPrimaryModal}
             />
           </div>
         </div>
@@ -87,6 +106,13 @@ const AddressContent = () => {
 
           closeEditModal={closeEditModal}
           addresses={addresses}
+        />
+      )}
+      {setPrimaryItemId && (
+        <SetPrimaryModal
+          setPrimaryItemId={setPrimaryItemId}
+          handleSetPrimary={() => handleSetPrimary(setPrimaryItemId)}
+          closeSetPrimaryModal={closeSetPrimaryModal}
         />
       )}
       {createModalOpen && (

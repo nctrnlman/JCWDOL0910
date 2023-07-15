@@ -43,6 +43,7 @@ export function addAddress(addressData) {
   return async (dispatch) => {
     const token = localStorage.getItem("user_token");
     try {
+      console.log("dari User Address Slice", addressData)
       const response = await axios.post(
         "http://localhost:8000/api/user-profile/add-address",
         addressData,
@@ -75,9 +76,37 @@ export function deleteAddress(id_address) {
       );
       dispatch(getAddress());
       console.log("masuk from slice", response)
+      console.log("masuk from slice", response.config)
 
     } catch (error) {
       console.error("Error deleting warehouse:", error);
+    }
+  };
+}
+
+export function setPrimaryAddress(id_address) {
+  return async (dispatch) => {
+    const token = localStorage.getItem("user_token");
+    console.log("from user address setPrimary slice token", token)
+    try {
+      const token = localStorage.getItem("user_token");
+      // const response = await axios.delete(
+      //   `http://localhost:8000/api/user-profile/delete-address/${id_address}`,
+      //   {
+      //     headers: { Authorization: `Bearer ${token}` },
+      //   }
+      // );
+      const response = await axios.get(
+        `http://localhost:8000/api/user-profile/set-primary-address/${id_address}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("user_token")}` },
+        }
+      );
+      dispatch(getAddress());
+      console.log("from user address setPrimary slice response", response)
+
+    } catch (error) {
+      console.error("Error set primary warehouse:", error);
     }
   };
 }

@@ -27,4 +27,10 @@ router.delete(
 );
 router.get("/get-address", verifyToken, userProfileController.getUserAddress);
 
+router.get(
+  "/set-primary-address/:id",
+  verifyToken,
+  userProfileController.setPrimaryAddress
+);
+
 module.exports = router;

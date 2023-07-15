@@ -10,7 +10,7 @@ const EditModalAddress = ({
   const [address, setAddress] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
-  // const [district, setDistrict] = useState("");
+  const [district, setDistrict] = useState("");
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [postalCode, setPostalCode] = useState("");
@@ -52,6 +52,7 @@ const EditModalAddress = ({
       setAddress(address.address);
       setProvince(address.province);
       setCity(`${address.type} ${address.city_name}`);
+      setDistrict(address.district);
       setPostalCode(address.postal_code); // Set the postalCode state
     }
   }, [editItemId, addresses]);
@@ -68,7 +69,7 @@ const EditModalAddress = ({
     const updatedAddressData = {
       id_address: editItemId,
       address,
-      // district,
+      district,
       province: selectedProvince ? selectedProvince.province : "",
       city: selectedCity
         ? `${selectedCity.type} ${selectedCity.city_name}`
@@ -155,7 +156,7 @@ const EditModalAddress = ({
               ))}
             </select>
           </div>
-          {/* <div className="form-control">
+          <div className="form-control">
             <label className="label">
               <span className="label-text">District:</span>
             </label>
@@ -167,7 +168,7 @@ const EditModalAddress = ({
               placeholder="Enter district"
               required
             />
-          </div> */}
+          </div>
           <div className="form-control">
             <label className="label">
               <span className="label-text">Postal Code:</span>
