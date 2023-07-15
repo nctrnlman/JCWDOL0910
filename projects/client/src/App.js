@@ -3,7 +3,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import LoginAdmin from "./pages/LoginAdmin";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import showToastProtectedRoutes from "./effects/showToastProtectedRoutes";
 import setLastVisitedPage from "./effects/setLastVisitedPage";
 import checkTokenExpiration from "./effects/checkTokenExpiration";
@@ -43,6 +43,10 @@ function App() {
   const navigate = useNavigate();
   const userToken = localStorage.getItem("user_token");
   const adminToken = localStorage.getItem("admin_token");
+  const adminRole = useSelector((state) =>
+    state.admins.admin?.role?.toLowerCase()
+  );
+
   const [showToast, setShowToast] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
 
@@ -86,6 +90,7 @@ function App() {
   useEffect(() => {
     dispatch(getAllProductCategories());
   }, [dispatch]);
+
   return (
     <div>
       {showNavbar && <Navbar />}
@@ -117,7 +122,9 @@ function App() {
           <>
             <Route path="/admin-dashboard" element={<DashboardAdmin />} />
             <Route path="/admin-products" element={<ProductsAdmin />} />
-            <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
+            {adminRole === "super admin" && (
+              <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
+            )}
             <Route path="/admin-categories" element={<CategoriesAdmin />} />
             <Route path="/admin-stocks" element={<StocksAdmin />} />
             <Route

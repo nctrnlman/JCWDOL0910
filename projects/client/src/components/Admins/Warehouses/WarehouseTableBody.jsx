@@ -1,11 +1,19 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
-const WarehouseTableBody = ({ warehouses, openEditModal, openDeleteModal }) => {
+const WarehouseTableBody = ({
+  warehouses,
+  openEditModal,
+  openDeleteModal,
+  currentPage,
+}) => {
+  const itemsPerPage = useSelector((state) => state.warehouses.itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
   return (
     <tbody className="lg:text-lg">
       {warehouses.map((warehouse, index) => (
         <tr key={warehouse.id_warehouse} className="hover">
-          <th className="text-center">{index + 1}</th>
+          <td>{startIndex + index + 1}</td>
           <td>{warehouse.name}</td>
           <td>{warehouse.address}</td>
           <td>{warehouse.district}</td>
