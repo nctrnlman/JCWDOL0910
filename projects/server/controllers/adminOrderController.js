@@ -24,8 +24,8 @@ module.exports = {
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product
     WHERE o.id_order = ${db.escape(
-        id_order
-      )}  AND s.id_warehouse = o.id_warehouse;
+      id_order
+    )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
       if (fetchOrder.length > 0) {
@@ -184,7 +184,7 @@ module.exports = {
   sendOrder: async (req, res) => {
     try {
       const { id_order } = req.query;
-      console.log(id_order)
+      console.log(id_order);
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
@@ -193,16 +193,19 @@ module.exports = {
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product
     WHERE o.id_order = ${db.escape(
-        id_order
-      )}  AND s.id_warehouse = o.id_warehouse;
+      id_order
+    )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
-      console.log(fetchOrder)
-      console.log(fetchOrder.length)
+      console.log(fetchOrder);
+      console.log(fetchOrder.length);
 
       if (fetchOrder.length > 0) {
         const isAllProductsAlreadyAvailableInWarehouse = [];
-        console.log("isAllProductsAlreadyAvailableInWarehouse", isAllProductsAlreadyAvailableInWarehouse)
+        console.log(
+          "isAllProductsAlreadyAvailableInWarehouse",
+          isAllProductsAlreadyAvailableInWarehouse
+        );
         for (const item of fetchOrder) {
           const {
             id_order,
@@ -216,32 +219,44 @@ module.exports = {
 
           if (total_stock < quantity) {
             const stockShortage = quantity - total_stock;
-            console.log(`${id_product}, stockShortage, ${stockShortage}`)
-            isAllProductsAlreadyAvailableInWarehouse.push(`Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(quantity)}, saat ini hanya tersedia ${db.escape(total_stock)}`)
+            console.log(`${id_product}, stockShortage, ${stockShortage}`);
+            isAllProductsAlreadyAvailableInWarehouse.push(
+              `Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(
+                quantity
+              )}, saat ini hanya tersedia ${db.escape(total_stock)}`
+            );
             // return res.status(400).send({
             //   message: `Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(quantity)}, saat ini hanya tersedia ${db.escape(total_stock)} `,
             // });
           }
         }
-        console.log("isAllProductsAlreadyAvailableInWarehouse 2", isAllProductsAlreadyAvailableInWarehouse)
-        console.log("isAllProductsAlreadyAvailableInWarehouse 2", isAllProductsAlreadyAvailableInWarehouse.length)
-
+        console.log(
+          "isAllProductsAlreadyAvailableInWarehouse 2",
+          isAllProductsAlreadyAvailableInWarehouse
+        );
+        console.log(
+          "isAllProductsAlreadyAvailableInWarehouse 2",
+          isAllProductsAlreadyAvailableInWarehouse.length
+        );
 
         if (isAllProductsAlreadyAvailableInWarehouse.length > 0) {
           return res.status(400).send({
-            message: `Stok Masih Kurang`, isAllProductsAlreadyAvailableInWarehouse,
+            message: `Stok Masih Kurang`,
+            isAllProductsAlreadyAvailableInWarehouse,
           });
         }
         if (isAllProductsAlreadyAvailableInWarehouse.length == 0) {
-          console.log("udah ada stocknya semua")
+          console.log("udah ada stocknya semua");
           const updateStatus = await query(`
             UPDATE orders
             SET status = "Dikirim"
             WHERE id_order = ${db.escape(id_order)}
           `);
-          const getorderstatus = await query(`select * from orders WHERE id_order = ${db.escape(id_order)}`)
+          const getorderstatus = await query(
+            `select * from orders WHERE id_order = ${db.escape(id_order)}`
+          );
 
-          console.log(getorderstatus)
+          console.log(getorderstatus);
 
           const kumpulanStockHistory = [];
 
@@ -255,7 +270,7 @@ module.exports = {
               id_stock,
             } = item;
 
-            // Ketika send order, stock perlu dikurangi!! 
+            // Ketika send order, stock perlu dikurangi!!
             const updateStock = await query(
               `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
             );
@@ -267,17 +282,16 @@ module.exports = {
 
             const getStockHistory = await query(
               `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
-            )
-            console.log(getStockHistory)
+            );
+            console.log(getStockHistory);
           }
 
-          return res.status(400).send({
+          return res.status(200).send({
             message: `Stok untuk semua produk tersedia. Siap dikirim. Stok tiap produk sudah berkurang untuk memenuhi order.`,
             // result: getStockHistory
           });
         }
       }
-
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
@@ -286,26 +300,24 @@ module.exports = {
   cancelOrder: async (req, res) => {
     try {
       const { id_order } = req.query;
-      console.log(id_order)
+      console.log(id_order);
 
       const updateStatus = await query(`
             UPDATE orders
             SET status = "Dibatalkan"
             WHERE id_order = ${db.escape(id_order)}
           `);
-      const getorderstatus = await query(`select * from orders WHERE id_order = ${db.escape(id_order)}`)
-      return res.status(400).send({
+      const getorderstatus = await query(
+        `select * from orders WHERE id_order = ${db.escape(id_order)}`
+      );
+      return res.status(200).send({
         message: `Pesanan Dibatalkan`,
-        result: getorderstatus
+        result: getorderstatus,
       });
 
-
-
-
-      // Ketika cancel order, stock akan kembali !! 
-      // Tapi karena saat order, 1) pengurangan stock terjadi cuma saat pesanan dikirim, 
+      // Ketika cancel order, stock akan kembali !!
+      // Tapi karena saat order, 1) pengurangan stock terjadi cuma saat pesanan dikirim,
       // dan 2) cancel cuma bisa terjadi sebelum status dikirim, sptnya stocknya tidak perlu berubah ya?
-
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
@@ -313,13 +325,11 @@ module.exports = {
     INNER JOIN order_items oi ON o.id_order = oi.id_order
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product and o.id_warehouse = s.id_warehouse
-    WHERE o.id_order = ${db.escape(
-        id_order
-      )} 
+    WHERE o.id_order = ${db.escape(id_order)} 
     `);
 
-      console.log(fetchOrder)
-      console.log(fetchOrder.length)
+      console.log(fetchOrder);
+      console.log(fetchOrder.length);
 
       // if (fetchOrder.length > 0) {
       //   for (const item of fetchOrder) {
@@ -331,7 +341,6 @@ module.exports = {
       //       total_stock,
       //       id_stock,
       //     } = item;
-
 
       //     const updateStock = await query(
       //       `UPDATE stocks SET total_stock = total_stock + ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
@@ -354,7 +363,6 @@ module.exports = {
       //     });
       //   }
       // }
-
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
