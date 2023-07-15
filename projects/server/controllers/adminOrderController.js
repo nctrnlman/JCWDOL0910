@@ -223,19 +223,27 @@ module.exports = {
             // });
           }
         }
+        console.log("isAllProductsAlreadyAvailableInWarehouse 2", isAllProductsAlreadyAvailableInWarehouse)
+        console.log("isAllProductsAlreadyAvailableInWarehouse 2", isAllProductsAlreadyAvailableInWarehouse.length)
+
 
         if (isAllProductsAlreadyAvailableInWarehouse.length > 0) {
           return res.status(400).send({
-            message: `Stok Masih Kurang : ${isAllProductsAlreadyAvailableInWarehouse}`,
+            message: `Stok Masih Kurang`, isAllProductsAlreadyAvailableInWarehouse,
           });
         }
-
-        else if (isAllProductsAlreadyAvailableInWarehouse.length = 0) {
+        if (isAllProductsAlreadyAvailableInWarehouse.length == 0) {
+          console.log("udah ada stocknya semua")
           const updateStatus = await query(`
             UPDATE orders
             SET status = "Dikirim"
             WHERE id_order = ${db.escape(id_order)}
           `);
+          const getorderstatus = await query(`select * from orders WHERE id_order = ${db.escape(id_order)}`)
+
+          console.log(getorderstatus)
+
+          const kumpulanStockHistory = [];
 
           for (const item of fetchOrder) {
             const {
@@ -258,13 +266,14 @@ module.exports = {
             `);
 
             const getStockHistory = await query(
-              `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
+              `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
             )
+            console.log(getStockHistory)
           }
 
           return res.status(400).send({
             message: `Stok untuk semua produk tersedia. Siap dikirim. Stok tiap produk sudah berkurang untuk memenuhi order.`,
-            result: getStockHistory
+            // result: getStockHistory
           });
         }
       }
@@ -278,6 +287,25 @@ module.exports = {
     try {
       const { id_order } = req.query;
       console.log(id_order)
+
+      const updateStatus = await query(`
+            UPDATE orders
+            SET status = "Dibatalkan"
+            WHERE id_order = ${db.escape(id_order)}
+          `);
+      const getorderstatus = await query(`select * from orders WHERE id_order = ${db.escape(id_order)}`)
+      return res.status(400).send({
+        message: `Pesanan Dibatalkan`,
+        result: getorderstatus
+      });
+
+
+
+
+      // Ketika cancel order, stock akan kembali !! 
+      // Tapi karena saat order, 1) pengurangan stock terjadi cuma saat pesanan dikirim, 
+      // dan 2) cancel cuma bisa terjadi sebelum status dikirim, sptnya stocknya tidak perlu berubah ya?
+
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
@@ -293,39 +321,39 @@ module.exports = {
       console.log(fetchOrder)
       console.log(fetchOrder.length)
 
-      if (fetchOrder.length > 0) {
-        for (const item of fetchOrder) {
-          const {
-            id_order,
-            id_product,
-            quantity,
-            id_warehouse,
-            total_stock,
-            id_stock,
-          } = item;
+      // if (fetchOrder.length > 0) {
+      //   for (const item of fetchOrder) {
+      //     const {
+      //       id_order,
+      //       id_product,
+      //       quantity,
+      //       id_warehouse,
+      //       total_stock,
+      //       id_stock,
+      //     } = item;
 
-          // Ketika cancel order, stock akan bertambah !! 
-          const updateStock = await query(
-            `UPDATE stocks SET total_stock = total_stock + ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-          );
 
-          const createHistory = await query(`
-          INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-          VALUES (${id_stock}, ${quantity}, "incoming - order cancel", CURRENT_TIMESTAMP);
-          `);
+      //     const updateStock = await query(
+      //       `UPDATE stocks SET total_stock = total_stock + ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
+      //     );
 
-          const getStockHistory = await query(
-            `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
-          )
+      //     const createHistory = await query(`
+      //     INSERT INTO stock_history (id_stock, stock_change, status, created_at)
+      //     VALUES (${id_stock}, ${quantity}, "incoming - order cancel", CURRENT_TIMESTAMP);
+      //     `);
 
-          // console.log(item)
+      //     const getStockHistory = await query(
+      //       `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
+      //     )
 
-          return res.status(400).send({
-            message: `Order sudah tercancel. Stok tiap produk sudah ditambahkan kembali.`,
-            result: getStockHistory
-          });
-        }
-      }
+      //     // console.log(item)
+
+      //     return res.status(400).send({
+      //       message: `Order sudah tercancel. Stok tiap produk sudah ditambahkan kembali.`,
+      //       result: getStockHistory
+      //     });
+      //   }
+      // }
 
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
