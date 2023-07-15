@@ -59,6 +59,12 @@ const SortButtons = ({ handleSort }) => {
             <option value="lowest">Lowest Price</option>
           </>
         )}
+        {path === "/admin-categories" && (
+          <>
+            <option value="a-z">Product A-Z</option>
+            <option value="z-a">Product Z-A</option>
+          </>
+        )}
       </select>
     </div>
   );

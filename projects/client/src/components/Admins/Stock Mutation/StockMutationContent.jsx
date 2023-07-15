@@ -21,7 +21,7 @@ function StockMutationContent() {
   const handleSort = (option) => {
     setSelectedSort(option);
     dispatch(setSort(option));
-    dispatch(fetchStockMutation(currentPage, searchInput, option)); // Fetch data for the current page
+    dispatch(fetchStockMutation(currentPage, searchInput, option));
   };
 
   const handlePageChange = (page) => {
@@ -74,7 +74,6 @@ function StockMutationContent() {
 
       <div className="overflow-x-auto rounded-xl lg:flex lg:justify-center lg:items-center">
         <table className="table table-zebra  text-black bg-primary h-3/4 lg:h-full lg:max-h-fit w-full lg:w-screen lg:max-w-screen-xl">
-          {/* head */}
           <thead className="sticky top-0">
             <tr className="bg-base-300 text-base-content lg:text-lg">
               <th></th>
