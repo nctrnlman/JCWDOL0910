@@ -8,7 +8,7 @@ const WarehouseTable = ({
   openEditModal,
 }) => {
   return (
-    <table className="table table-zebra  text-black bg-primary h-3/4 lg:h-full lg:max-h-fit w-full lg:w-screen lg:max-w-screen-xl">
+    <table className="table table-zebra  text-black bg-primary h-3/4 lg:h-auto lg:max-h-fit w-full lg:w-screen lg:max-w-screen-xl">
       {/* head */}
       <thead className="sticky top-0">
         <tr className="bg-base-300 text-base-content lg:text-lg">

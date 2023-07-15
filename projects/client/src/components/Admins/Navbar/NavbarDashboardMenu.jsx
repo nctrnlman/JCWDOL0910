@@ -1,7 +1,12 @@
 import React from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import { useSelector } from "react-redux";
 
 function NavbarDashboardMenu({ menuType, onClick }) {
+  const adminRole = useSelector((state) =>
+    state.admins.admin?.role.toLowerCase()
+  );
+
   const renderMenuItems = () => {
     if (menuType === "horizontal") {
       return (
@@ -17,6 +22,7 @@ function NavbarDashboardMenu({ menuType, onClick }) {
                 Orders
               </a>
             </li>
+            {/* Render "Stocks" dropdown */}
             <li className="dropdown dropdown-end dropdown-hover">
               <label tabIndex={0} className="text-[18px] m-1">
                 Stocks
@@ -42,11 +48,14 @@ function NavbarDashboardMenu({ menuType, onClick }) {
                 </li>
               </ul>
             </li>
-            <li>
-              <a href="/admin-warehouses" className="text-[18px]">
-                Warehouses
-              </a>
-            </li>
+            {/* Conditionally render "Warehouses" menu item */}
+            {adminRole === "super admin" && (
+              <li>
+                <a href="/admin-warehouses" className="text-[18px]">
+                  Warehouses
+                </a>
+              </li>
+            )}
             <li>
               <a href="/admin-categories" className="text-[18px]">
                 Categories
@@ -96,11 +105,14 @@ function NavbarDashboardMenu({ menuType, onClick }) {
               </a>
             </li>
           </div>
-          <li>
-            <a href="/admin-warehouses" className="text-lg">
-              Warehouses
-            </a>
-          </li>
+          {/* Conditionally render "Warehouses" menu item */}
+          {adminRole === "super admin" && (
+            <li>
+              <a href="/admin-warehouses" className="text-lg">
+                Warehouses
+              </a>
+            </li>
+          )}
           <li>
             <a href="/admin-categories" className="text-lg">
               Categories
