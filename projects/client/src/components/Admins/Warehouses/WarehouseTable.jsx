@@ -3,7 +3,7 @@ import WarehouseTableBody from "./WarehouseTableBody";
 
 const WarehouseTable = ({
   warehouses,
-  navigate,
+  currentPage,
   openDeleteModal,
   openEditModal,
 }) => {
@@ -12,7 +12,7 @@ const WarehouseTable = ({
       {/* head */}
       <thead className="sticky top-0">
         <tr className="bg-base-300 text-base-content lg:text-lg">
-          <th></th>
+          <th>No</th>
           <th>Name</th>
           <th>Address</th>
           <th>District</th>
@@ -25,13 +25,13 @@ const WarehouseTable = ({
       {/* body */}
       <WarehouseTableBody
         warehouses={warehouses}
-        navigate={navigate}
+        currentPage={currentPage}
         openEditModal={openEditModal}
         openDeleteModal={openDeleteModal}
       />
       <tfoot className="sticky bottom-0 lg:text-lg">
         <tr className="bg-base-300 text-base-content">
-          <th></th>
+          <th>No</th>
           <th>Name</th>
           <th>Address</th>
           <th>District</th>

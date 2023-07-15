@@ -44,8 +44,9 @@ function App() {
   const userToken = localStorage.getItem("user_token");
   const adminToken = localStorage.getItem("admin_token");
   const adminRole = useSelector((state) =>
-    state.admins.admin?.role.toLowerCase()
+    state.admins.admin?.role?.toLowerCase()
   );
+
   const [showToast, setShowToast] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
 

@@ -3,10 +3,9 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { useSelector } from "react-redux";
 
 function NavbarDashboardMenu({ menuType, onClick }) {
-  const adminRole = useSelector((state) =>
-    state.admins.admin?.role.toLowerCase()
-  );
-
+  const adminDetailsJSON = localStorage.getItem("admin_details");
+  const adminDetails = JSON.parse(adminDetailsJSON);
+  const adminRole = adminDetails?.role?.toLowerCase();
   const renderMenuItems = () => {
     if (menuType === "horizontal") {
       return (

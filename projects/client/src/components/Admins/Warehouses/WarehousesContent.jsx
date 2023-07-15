@@ -9,14 +9,22 @@ import DeleteModal from "../../modals/DeleteModal";
 import EditModalWarehouse from "../../modals/EditModalWarehouse";
 import WarehouseTable from "./WarehouseTable";
 import CreateModalWarehouse from "../../modals/CreateModalWarehouse";
+import Pagination from "../../utils/Pagination";
 
 const WarehousesContent = () => {
   const warehouses = useSelector((state) => state.warehouses.warehouse);
+  const currentPage = useSelector((state) => state.warehouses.currentPage);
+  const totalPages = useSelector((state) => state.warehouses.totalPages);
   const dispatch = useDispatch();
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
   const [editItemId, setEditItemId] = useState(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+
+  const handlePageChange = (page) => {
+    dispatch(fetchWarehouses(page, searchInput));
+  };
 
   const handleDelete = async (id_warehouse) => {
     await dispatch(deleteWarehouse(id_warehouse));
@@ -47,31 +55,39 @@ const WarehousesContent = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchWarehouses());
-  }, [dispatch]);
+    dispatch(fetchWarehouses(currentPage, searchInput));
+  }, [dispatch, currentPage, searchInput]);
 
   return (
-    <div className="bg-base-100 h-auto flex flex-col lg:flex-row lg:justify-start justify-center lg:items-center w-screen lg:w-full">
-      <div className="flex flex-col gap-5 lg:gap-3 text-black p-4 h-auto lg:h-auto lg:w-screen lg:max-w-screen-md lg:mx-5 xl:mx-10">
+    <div className="flex flex-col px-5 bg-base-200 h-screen">
+      <div className="flex flex-col justify-center items-center lg:flex lg:justify-center lg:items-center  gap-5 lg:gap-0">
         <h1 className="menu-title font-bold text-lg p-2">Warehouse List</h1>
         <div className="lg:flex lg:justify-start">
           <a
-            className="btn md:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2"
+            className="btn md:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-3"
             href="#create_modal"
             onClick={() => setCreateModalOpen(true)}
           >
             Add New Warehouse
           </a>
         </div>
-        <div className="h-auto w-full lg:max-w-screen-xl lg:max-h-fit lg:h-screen lg:w-auto xl:w-screen flex justify-center lg:justify-start">
+        <div className="h-auto w-full lg:max-w-screen-xl mb-5 lg:w-auto xl:w-screen flex justify-center lg:justify-start">
           <div className="overflow-x-auto rounded-xl">
             <WarehouseTable
               warehouses={warehouses}
+              currentPage={currentPage}
               openEditModal={openEditModal}
               openDeleteModal={openDeleteModal}
             />
           </div>
         </div>
+      </div>
+      <div className="flex justify-center items-center">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
       </div>
       {deleteItemId && (
         <DeleteModal
