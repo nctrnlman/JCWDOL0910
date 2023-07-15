@@ -9,7 +9,10 @@ function SeeDetailButton({ productId }) {
   };
 
   return (
-    <button className="btn btn-outline text-xs" onClick={handleSeeDetail}>
+    <button
+      className="btn btn-outline text-[8px] lg:text-xs"
+      onClick={handleSeeDetail}
+    >
       See Detail
     </button>
   );

@@ -35,6 +35,7 @@ import StockMutationAdmin from "./pages/StockMutationAdmin";
 import ResetPassword from "./pages/ResetPassword";
 import ForgetPassword from "./pages/ForgetPassword";
 import Profiling from "./pages/Profiling";
+import { getAllProductCategories } from "./features/categories/ProductCategoriesSlice";
 
 function App() {
   const location = useLocation();
@@ -82,6 +83,9 @@ function App() {
     }
   }, [userToken, dispatch]);
 
+  useEffect(() => {
+    dispatch(getAllProductCategories());
+  }, [dispatch]);
   return (
     <div>
       {showNavbar && <Navbar />}
