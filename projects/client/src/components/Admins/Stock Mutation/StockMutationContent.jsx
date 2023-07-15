@@ -9,7 +9,7 @@ function StockMutationContent() {
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
-  const stockMutation = useSelector(
+  const stockMutations = useSelector(
     (state) => state.stockMutations.stockMutation
   );
   const currentPage = useSelector((state) => state.stockMutations.currentPage);
@@ -29,21 +29,19 @@ function StockMutationContent() {
   };
 
   const renderStockMutation = () => {
-    return stockMutation?.map((sm, index) => {
-      const date = sm.created_at.substring(0, 10);
-      // Memisahkan tanggal, bulan, dan tahun
+    return stockMutations?.map((stockMutation, index) => {
+      const date = stockMutation.created_at.substring(0, 10);
       const [year, month, day] = date.split("-");
-      // Menggabungkan tanggal, bulan, dan tahun dalam format "DD-MM-YYYY"
       const formattedDate = `${day}-${month}-${year}`;
-      const time = sm.created_at.substring(11, 16);
+      const time = stockMutation.created_at.substring(11, 16);
       const startIndex = (currentPage - 1) * itemsPerPage;
       return (
         <tr>
           <td>{startIndex + index + 1}</td>
-          <td>{sm.product_name}</td>
-          <td>{sm.request_warehouse}</td>
-          <td>{sm.send_warehouse}</td>
-          <td>{sm.quantity}</td>
+          <td>{stockMutation.product_name}</td>
+          <td>{stockMutation.request_warehouse}</td>
+          <td>{stockMutation.send_warehouse}</td>
+          <td>{stockMutation.quantity}</td>
           <td>{formattedDate}</td>
           <td>{time}</td>
         </tr>
@@ -72,8 +70,8 @@ function StockMutationContent() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl lg:flex lg:justify-center lg:items-center">
-        <table className="table table-zebra  text-black bg-primary h-3/4 lg:h-full lg:max-h-fit w-full lg:w-screen lg:max-w-screen-xl">
+      <div className="overflow-x-auto rounded-xl lg:flex lg:justify-center lg:items-center ">
+        <table className="table table-zebra  text-black  h-3/4 lg:h-full lg:max-h-fit w-full lg:w-screen lg:max-w-screen-xl overflow-hidden overflow-x-scroll table-responsive">
           <thead className="sticky top-0">
             <tr className="bg-base-300 text-base-content lg:text-lg">
               <th></th>

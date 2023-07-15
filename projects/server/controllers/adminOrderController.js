@@ -11,105 +11,100 @@ module.exports = {
     try {
       const { id_order } = req.query;
 
-      const updateStatus = await query(`
-        UPDATE orders
-        SET status = "Diproses"
-        WHERE id_order = ${db.escape(id_order)}
-      `);
-
       const fetchOrder = await query(`
-    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
-    FROM orders o
-    INNER JOIN order_items oi ON o.id_order = oi.id_order
-    INNER JOIN products p ON oi.product_name = p.name
-    INNER JOIN stocks s ON p.id_product = s.id_product
-    WHERE o.id_order = ${db.escape(
+    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock FROM orders o INNER JOIN order_items oi ON o.id_order = oi.id_order INNER JOIN products p ON oi.product_name = p.name INNER JOIN stocks s ON p.id_product = s.id_product WHERE o.id_order = ${db.escape(
       id_order
     )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
-      if (fetchOrder.length > 0) {
-        for (const item of fetchOrder) {
-          const {
-            id_order,
-            id_product,
-            quantity,
-            id_warehouse,
-            total_stock,
-            id_stock,
-          } = item;
+      for (const item of fetchOrder) {
+        const { id_product, quantity } = item;
 
-          if (total_stock < quantity) {
-            const stockShortage = quantity - total_stock;
+        const checkStock = await query(`
+                SELECT SUM(total_stock) AS total_stock
+                FROM stocks
+                WHERE id_product = ${id_product}
+              `);
 
-            // Lakukan mutasi stok karena stok tidak mencukupi
-            const warehouseNearnest = await query(`  SELECT *,
+        if (checkStock[0].total_stock < quantity) {
+          return res.status(400).send({
+            message: `Insufficient stock available for product with ID ${id_product} across all warehouses`,
+          });
+        }
+      }
+
+      for (const item of fetchOrder) {
+        const {
+          id_order,
+          id_product,
+          quantity,
+          id_warehouse,
+          total_stock,
+          id_stock,
+        } = item;
+
+        if (total_stock < quantity) {
+          const stockShortage = quantity - total_stock;
+
+          const warehouseNearnest = await query(`  SELECT *,
                   SQRT(POW((latitude - (SELECT latitude FROM warehouses WHERE id_warehouse = 30)), 2) + POW((longitude - (SELECT longitude FROM warehouses WHERE id_warehouse = 30)), 2)) AS distance
                   FROM warehouses
                   WHERE id_warehouse <> ${id_warehouse}
                   ORDER BY distance;`);
 
-            let isProductAvailable = false;
-
-            for (const nearestWarehouse of warehouseNearnest) {
-              const checkStock = await query(`
+          for (const nearestWarehouse of warehouseNearnest) {
+            const checkStock = await query(`
                     SELECT id_stock,total_stock
                     FROM stocks
                     WHERE id_warehouse = ${nearestWarehouse.id_warehouse}
                     AND id_product = ${id_product}
                   `);
 
-              if (checkStock[0].total_stock >= stockShortage) {
-                // Warehouse terdekat memiliki stok yang cukup
-
-                // Lakukan proses mutasi stok atau update stok di sini
-                const createMutation =
-                  await query(`INSERT INTO stock_mutations (id_product, id_request_warehouse, id_send_warehouse, quantity, created_at)
+            if (checkStock[0].total_stock >= stockShortage) {
+              const createMutation =
+                await query(`INSERT INTO stock_mutations (id_product, id_request_warehouse, id_send_warehouse, quantity, created_at)
                 VALUES (${id_product}, ${id_warehouse}, ${nearestWarehouse.id_warehouse}, ${stockShortage}, CURRENT_TIMESTAMP);`);
 
-                const updateStockSendWarehouse = await query(
-                  `UPDATE stocks SET total_stock = total_stock - ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${nearestWarehouse.id_warehouse};`
-                );
+              const updateStockSendWarehouse = await query(
+                `UPDATE stocks SET total_stock = total_stock - ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${nearestWarehouse.id_warehouse};`
+              );
 
-                const updateStockRequetWarehouse = await query(
-                  `UPDATE stocks SET total_stock = total_stock + ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-                );
+              const updateStockRequestWarehouse = await query(
+                `UPDATE stocks SET total_stock = total_stock + ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
+              );
 
-                const createHistorySendWarehouse = await query(`
+              const createHistorySendWarehouse = await query(`
                 INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-                VALUES (${checkStock[0].id_stock}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
+                VALUES (${checkStock[0].id_stock}, ${Math.abs(
+                stockShortage
+              )}, "outgoing", CURRENT_TIMESTAMP);
                `);
 
-                const createHistoryRequetWarehouse = await query(`
+              const createHistoryRequestWarehouse = await query(`
                 INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-                VALUES (${id_stock}, ${quantity}, "incoming", CURRENT_TIMESTAMP);
+                VALUES (${id_stock}, ${Math.abs(
+                stockShortage
+              )}, "incoming", CURRENT_TIMESTAMP);
                `);
-
-                // Set flag foundWarehouse menjadi true untuk keluar dari perulangan
-                isProductAvailable = true; // Setel menjadi true jika produk tersedia di setidaknya satu gudang
-                break;
-              }
-            }
-
-            if (!isProductAvailable) {
-              return res.status(400).send({
-                message: `Stok tidak tersedia untuk produk dengan ID ${id_product} di seluruh gudang`,
-              });
-              isAnyProductUnavailable = true; // Setel menjadi true jika setidaknya satu produk tidak tersedia di semua gudang
             }
           }
+        }
 
-          // Update total_stock dengan pengurangan quantity
-          const updateStock = await query(
-            `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-          );
+        const updateStock = await query(
+          `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
+        );
 
-          const createHistory = await query(`
+        const createHistory = await query(`
             INSERT INTO stock_history (id_stock, stock_change, status, created_at)
             VALUES (${id_stock}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
             `);
-        }
       }
+
+      const updateStatus = await query(`
+        UPDATE orders
+        SET status = "Diproses"
+        WHERE id_order = ${db.escape(id_order)}
+      `);
 
       return res
         .status(200)
