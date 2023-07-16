@@ -5,6 +5,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import CustomToast from "../components/CustomToast/CustomToast";
 import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
+import AddressSelect from "../components/Order/AddressSelect";
+import CartItem from "../components/Order/CartItem";
+import ShippingMethodSelect from "../components/Order/ShippingMethodSelect";
 
 const CreateOrder = () => {
   const navigate = useNavigate();
@@ -12,45 +15,26 @@ const CreateOrder = () => {
   const cartItems = useSelector((state) => state.carts.cartItems);
   const totalPrice = useSelector((state) => state.carts.totalPrice);
   const [shipping, setShipping] = useState(0);
-  const [address, setAddress] = useState("");
   const [warehouse, setWarehouse] = useState("");
   const [shippingMethod, setShippingMethod] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shippingOptions, setShippingOptions] = useState([]);
-
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [addresses, setAddresses] = useState([]);
 
   const id_user = user.id;
-  const total_amount = totalPrice + parseInt(shipping);
+  let total_amount = totalPrice + parseInt(shipping);
 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const token = localStorage.user_token;
-        console.log("token dari fetchAddress", token)
-        if (token) {
-          console.log("token dari fetchAddress 2", token)
-          let response = await axios.get(
-            `http://localhost:8000/api/user-profile/get-address`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          console.log(response.data)
-          setAddresses(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchAddresses();
-  }, []);
+  const formattedPrice = (price) => {
+    return price.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setIsLoading(true);
       const orderData = {
@@ -78,8 +62,10 @@ const CreateOrder = () => {
         navigate("/orders");
       }
     } catch (error) {
-      toast.error(error.response.data.message);
-      console.log(error);
+      toast(
+        <CustomToast type="error" message={error.response.data.message} />,
+        CustomToastOptions
+      );
     }
   };
 
@@ -87,16 +73,24 @@ const CreateOrder = () => {
     try {
       setShipping(0);
       let response = await axios.get(
-        `http://localhost:8000/api/orders/shipping-warehouse?id_user=${id_user}&courier=${courier}`
+        `http://localhost:8000/api/orders/shipping-warehouse?id_user=${id_user}&courier=${courier}&id_address=${selectedAddress}`
       );
-
-      const { service, address, warehouse } = response.data;
-
+      const { service, warehouse } = response.data;
       setShippingOptions(service);
-      setAddress(address.address);
       setWarehouse(warehouse.id_warehouse);
     } catch (error) {
-      console.log(error);
+      toast(
+        <CustomToast type="error" message={error.response.data.message} />,
+        CustomToastOptions
+      );
+    }
+  };
+
+  const handleAddressChange = (e) => {
+    const addressId = e.target.value;
+    setSelectedAddress(addressId);
+    if (shippingMethod !== "") {
+      fetchShipping(shippingMethod, addressId);
     }
   };
 
@@ -108,7 +102,15 @@ const CreateOrder = () => {
       setShippingOptions([]);
     } else {
       setShippingMethod(method);
+      if (selectedAddress !== "") {
+        fetchShipping(method, selectedAddress);
+      }
     }
+  };
+
+  const handleShippingChange = (e) => {
+    const shippingValue = e.target.value;
+    setShipping(shippingValue);
   };
 
   useEffect(() => {
@@ -117,111 +119,62 @@ const CreateOrder = () => {
     }
   }, [shippingMethod]);
 
+  const navigateToProfile = () => {
+    navigate("/profiling");
+  };
+
   return (
-    <div className="w-screen h-screen">
+    <div className="h-screen">
       <div className="flex flex-col pt-20 p-10 gap-3">
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h1 className="text-xl font-bold mb-2">Address</h1>
-          <p>{address}</p>
-        </div>
+        <AddressSelect
+          selectedAddress={selectedAddress}
+          handleAddressChange={handleAddressChange}
+          navigateToProfile={navigateToProfile}
+        />
+
         {cartItems.map((item, index) => (
-          <div key={index} className="min-h-[50px] flex flex-col">
-            <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
-              <div className="hero-content justify-start lg:w-[400px]">
-                <img
-                  src={`http://localhost:8000/${item.image_url}`}
-                  alt="item cart"
-                  className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
-                />
-                <div>
-                  <h1 className="text-base uppercase lg:text-3xl font-bold">
-                    {item.name}
-                  </h1>
-                  <p className="py-2">Desc: {item.description}</p>
-                  <p>Quantity: {item.quantity}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CartItem key={index} item={item} />
         ))}
 
-        {/* tambah select address. address yang sudah dipilih jadi selectedAddress */}
-        <div className="form-control">
-          <select
-            value={selectedAddress}
-            onChange={(e) => { setSelectedAddress(e.target.value) }}
-            className="select select-bordered"
-            required
-          >
-            <option value="">Select Address</option>
-            {addresses.map((a) => (
-              <option key={a.id_address} value={a.id_address}>
-                {`[${a.is_primary2}] ${a.address} , ${a.district}, ${a.city}, ${a.province}, ${a.postal_code}`}
-              </option>
-            ))}
-          </select>
+        <div className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between gap-2 ">
+          <h1 className="text-xl font-bold mb-2">Shipping Method</h1>
+          <ShippingMethodSelect
+            shippingMethod={shippingMethod}
+            shippingOptions={shippingOptions}
+            handleShippingMethodChange={handleShippingMethodChange}
+            shipping={shipping}
+            handleShippingChange={handleShippingChange}
+          />
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold mb-2">Shipping Method</h1>
-          <div className="flex gap-4">
-            <div>
-              <h1 className="py-2">Courier :</h1>
-              <select
-                className="select select-bordered w-full max-w-xs"
-                value={shippingMethod}
-                onChange={handleShippingMethodChange}
-              >
-                <option value="">None</option>
-                <option value="JNE">JNE</option>
-                <option value="POS">POS</option>
-                <option value="TIKI">TIKI</option>
-              </select>
-            </div>
-            <div>
-              <h1 className="py-2">Service :</h1>
-              <select
-                className="select select-bordered w-[350px] max-w-xs "
-                value={shipping}
-                onChange={(e) => setShipping(e.target.value)}
-                disabled={shippingMethod === ""}
-              >
-                <option value="">None</option>
-                {shippingOptions.map((option) => (
-                  <option key={option.service} value={option.cost[0].value}>
-                    {option.service} - Harga: {option.cost[0].value} - Estimasi
-                    waktu: {option.cost[0].etd}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-        <div className="border border-gray-300 p-4">
+        <div className="bg-white rounded-lg shadow-md p-4">
           {cartItems.map((item) => (
             <div className="flex gap-2 justify-between pb-2 ">
               <div className="flex gap-2">
                 <h3 className="font-bold">{item.name}</h3>
-                <h3 className="font-bold">x</h3>
-                <h3 className="font-bold">{item.quantity}</h3>
+                <h3 className="">x</h3>
+                <h3 className="">{item.quantity}</h3>
               </div>
-              <p>{item.price * item.quantity}</p>
+              <p>{formattedPrice(item.price * item.quantity)}</p>
             </div>
           ))}
           <div className="flex justify-between pb-2">
             <h1 className="font-bold">Shipping</h1>
-            <p>{shipping}</p>
+            <p>{formattedPrice(parseInt(shipping))}</p>
           </div>
           <div className="border-t border-gray-300 pt-4 mb-4 flex justify-between">
             <h1 className="font-bold text-xl">Total Price</h1>
-            <p>{total_amount}</p>
+            <p>{formattedPrice(total_amount)}</p>
           </div>
         </div>
+
         <div>
           <button
             className="btn btn-primary w-full"
             onClick={handleSubmit}
-            disabled={isLoading || shippingMethod === ""}
+            disabled={
+              isLoading || shippingMethod === "" || selectedAddress === ""
+            }
           >
             {isLoading ? "Processing" : "Create Order"}
           </button>

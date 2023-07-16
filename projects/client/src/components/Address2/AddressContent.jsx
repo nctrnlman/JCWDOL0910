@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddress, addAddress, deleteAddress, editAddress, setPrimaryAddress } from "../../features/UserAddress";
+import {
+  getAddress,
+  addAddress,
+  deleteAddress,
+  editAddress,
+  setPrimaryAddress,
+} from "../../features/UserAddress";
 // import {
 //   deleteAddress,
 //   getAddress,
@@ -23,13 +29,13 @@ const AddressContent = () => {
 
   const handleDelete = async (id_address) => {
     await dispatch(deleteAddress(id_address));
-    console.log("id untuk dihapus", id_address)
+    console.log("id untuk dihapus", id_address);
     closeDeleteModal();
   };
 
   const handleSetPrimary = async (id_address) => {
     await dispatch(setPrimaryAddress(id_address));
-    console.log("id untuk di-setPrimary", id_address)
+    console.log("id untuk di-setPrimary", id_address);
     closeSetPrimaryModal();
   };
 
@@ -103,7 +109,6 @@ const AddressContent = () => {
       {editItemId && (
         <EditModalAddress
           editItemId={editItemId}
-
           closeEditModal={closeEditModal}
           addresses={addresses}
         />
@@ -118,8 +123,8 @@ const AddressContent = () => {
       {createModalOpen && (
         <CreateModalAddress
           closeCreateModal={() => setCreateModalOpen(false)}
-          handleCreate={handleCreate}
-          addresses={addresses}
+          handlCreate={handleCreate}
+          addreesses={addresses}
         />
       )}
     </div>
