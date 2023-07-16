@@ -27,11 +27,15 @@ module.exports = {
   getShippingWarehouse: async (req, res) => {
     try {
       const { id_user, id_address, courier } = req.query;
+      if (id_address === null || id_address === "") {
+        return res
+          .status(400)
+          .send({ message: "Please check the address first." });
+      }
+
       const fetchAddress = await query(
         orderQueries.fetchAddressQuery(id_address)
       );
-
-      console.log(fetchAddress, "ini addres nya");
 
       const result = await getCoordinates(
         fetchAddress[0].address,
@@ -71,10 +75,8 @@ module.exports = {
       return res.status(200).send({
         service: services,
         warehouse: checkNearestWarehouse[0],
-        // address: fetchAddress[0],
       });
     } catch (error) {
-      console.log(error);
       return res.status(error.statusCode || 500).send(error);
     }
   },
@@ -88,6 +90,12 @@ module.exports = {
         shipping_method,
         productList,
       } = req.body;
+
+      if (id_warehouse === null || id_warehouse === "") {
+        return res
+          .status(400)
+          .send({ message: "Please check the address first." });
+      }
 
       await query(
         orderQueries.insertOrderQuery(
