@@ -26,12 +26,10 @@ module.exports = {
     return orderListQuery;
   },
 
-  fetchAddressQuery: (id_user) => {
-    return `
-          SELECT * FROM addresses WHERE id_user = ${db.escape(
-            id_user
-          )} AND is_primary = 1
-        `;
+  fetchAddressQuery: (id_address) => {
+    return `SELECT * FROM addresses WHERE id_address = ${db.escape(
+      id_address
+    )} `;
   },
 
   checkNearestWarehouseQuery: (latitude, longitude) => {
