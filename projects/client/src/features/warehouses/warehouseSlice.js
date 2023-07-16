@@ -5,6 +5,7 @@ import CustomToast from "../../components/CustomToast/CustomToast";
 import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 import {
   showErrorToast,
+  showInfoToast,
   showSuccessToast,
 } from "../../components/CustomToast/CustomNotification";
 
@@ -111,11 +112,8 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
       );
 
       dispatch(updateWarehouse({ id_warehouse, updatedWarehouse }));
-      console.log(response.data.message);
-      toast(
-        <CustomToast type="success" message={response.data.message} />,
-        CustomToastOptions
-      );
+      console.log(response);
+      showInfoToast(response.data.message);
     } catch (error) {
       console.error("Error editing warehouse:", error);
       console.log(error);
@@ -137,10 +135,7 @@ export function createWarehouse(warehouseData) {
       );
       console.log(response.data.message);
       dispatch(fetchWarehouses());
-      toast(
-        <CustomToast type="success" message={response.data.message} />,
-        CustomToastOptions
-      );
+      showSuccessToast(response.data.message);
     } catch (error) {
       console.error("Error creating warehouse:", error);
     }

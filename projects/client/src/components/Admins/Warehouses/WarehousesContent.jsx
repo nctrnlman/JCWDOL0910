@@ -67,7 +67,7 @@ const WarehousesContent = () => {
   }, [dispatch, currentPage, searchInput, selectedSort]);
 
   return (
-    <div className="flex flex-col px-5 bg-base-200 h-screen">
+    <div className="flex flex-col  bg-base-200 h-screen overflow-auto">
       <div className="flex flex-col justify-center items-center lg:flex lg:justify-center lg:items-center  gap-5 lg:gap-0">
         <h1 className="menu-title font-bold text-lg p-2">Warehouse List</h1>
         <div className="p-2 mb-2">
@@ -86,7 +86,7 @@ const WarehousesContent = () => {
           </a>
         </div>
         <div className="h-auto w-full lg:max-w-screen-xl mb-5 lg:w-auto xl:w-screen flex justify-center lg:justify-start">
-          <div className="overflow-x-auto rounded-xl">
+          <div className="overflow-x-auto rounded-xl mx-3 lg:mx-0">
             <WarehouseTable
               warehouses={warehouses}
               currentPage={currentPage}

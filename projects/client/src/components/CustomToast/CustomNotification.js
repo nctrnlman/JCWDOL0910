@@ -13,3 +13,6 @@ export function showErrorToast(message) {
 export function showWarningToast(message) {
   toast(<CustomToast type="warning" message={message} />, CustomToastOptions);
 }
+export function showInfoToast(message) {
+  toast(<CustomToast type="info" message={message} />, CustomToastOptions);
+}
