@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import EmptyTableData from "../../Cards/EmptyTableData";
 
 function StocksTableBody({
   stockProducts,
@@ -11,13 +12,9 @@ function StocksTableBody({
   const startIndex = (currentPage - 1) * itemsPerPage;
 
   return (
-    <tbody>
+    <tbody className="lg:text-lg">
       {stockProducts.length === 0 ? (
-        <tr className="bg-base-100">
-          <td colSpan="8" className="text-center">
-            No data available.
-          </td>
-        </tr>
+        <EmptyTableData />
       ) : (
         <>
           {stockProducts.map((stock, index) => (

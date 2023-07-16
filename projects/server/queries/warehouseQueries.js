@@ -9,13 +9,16 @@ module.exports = {
     return existingWarehouse;
   },
 
-  fetchWarehouseQuery: (search, itemsPerPage, offset) => {
+  fetchWarehouseQuery: (search, itemsPerPage, offset, sortBy = "ASC") => {
     let fetchWarehouseListQuery = `SELECT * FROM warehouses`;
 
     if (search) {
       search = db.escape(`%${search}%`);
       fetchWarehouseListQuery += ` WHERE name LIKE ${search}`;
     }
+    fetchWarehouseListQuery += ` ORDER BY name ${
+      sortBy === "DESC" ? "DESC" : "ASC"
+    } `;
 
     fetchWarehouseListQuery += ` LIMIT ${itemsPerPage} OFFSET ${offset}`;
 

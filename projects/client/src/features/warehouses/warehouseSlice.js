@@ -57,12 +57,12 @@ export const {
 
 export default warehouseSlice.reducer;
 
-export function fetchWarehouses(page = 1, search = "") {
+export function fetchWarehouses(page = 1, search = "", sort = "") {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/warehouses?page=${page}&search=${search}`,
+        `http://localhost:8000/api/warehouses?page=${page}&search=${search}&sort=${sort}`,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
         }

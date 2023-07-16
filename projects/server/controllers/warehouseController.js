@@ -149,14 +149,21 @@ module.exports = {
 
   fetchWarehouseList: async (req, res) => {
     try {
-      let { search } = req.query;
+      let { search, sort } = req.query;
       const itemsPerPage = 3;
       const { offset } = getPaginationParams(req, itemsPerPage);
+
+      let sortOption = "ASC";
+
+      if (sort === "desc") {
+        sortOption = "DESC";
+      }
 
       const fetchWarehouseListQuery = warehouseQueries.fetchWarehouseQuery(
         search,
         itemsPerPage,
-        offset
+        offset,
+        sortOption
       );
 
       const countQuery = warehouseQueries.countWarehouseQuery(search);
