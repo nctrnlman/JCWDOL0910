@@ -49,7 +49,17 @@ function OrderList() {
   };
 
   const renderOrder = () => {
-    return orderList?.map((order) => (
+    if (orderList.length === 0) {
+      return (
+        <div className="min-h-[50px] flex flex-col">
+          <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
+            <h1 className="text-2xl">Order with the status does not exist</h1>
+          </div>
+        </div>
+      );
+    }
+
+    return orderList.map((order) => (
       <OrderItem
         key={order.id_order}
         order={order}

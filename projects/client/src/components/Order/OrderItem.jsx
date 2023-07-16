@@ -24,7 +24,7 @@ const OrderItem = ({
 
   return (
     <div className="min-h-[50px] flex flex-col" key={order.id_order}>
-      <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4 ">
+      <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
         <div className="flex justify-between">
           <h1 className="font-bold text-2xl">Order #{order.id_order}</h1>
           <h1>{formattedDate}</h1>
@@ -32,14 +32,14 @@ const OrderItem = ({
         {order.productList.map((product) => (
           <div
             key={product.product_name}
-            className="hero-content justify-start lg:w-[1250px] flex items-center "
+            className="hero-content justify-start lg:w-[1250px] flex items-center"
           >
             <img
               src={`http://localhost:8000/${product.product_image}`}
               alt={product.product_name}
               className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
             />
-            <div className="flex flex-col ml-4 w-[600px]  lg:w-[1250px]">
+            <div className="flex flex-col ml-4 w-[600px] lg:w-[1250px]">
               <div className="flex flex-row justify-between items-center gap-4">
                 <div>
                   <h1 className="text-base uppercase lg:text-3xl font-bold">
@@ -58,7 +58,6 @@ const OrderItem = ({
           <p className="text-[17px] lg:text-xl">
             Total Amount: {formattedPrice(order.total_amount)}
           </p>
-
           <div className="flex gap-2">
             {isWaitingPayment && <PaymentButton orderId={order.id_order} />}
             {isWaitingPayment && (
