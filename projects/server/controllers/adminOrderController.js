@@ -33,71 +33,80 @@ module.exports = {
         }
       }
 
-      for (const item of fetchOrder) {
-        const {
-          id_order,
-          id_product,
-          quantity,
-          id_warehouse,
-          total_stock,
-          id_stock,
-        } = item;
+      if (fetchOrder.length > 0) {
+        for (const item of fetchOrder) {
+          const {
+            id_order,
+            id_product,
+            quantity,
+            id_warehouse,
+            total_stock,
+            id_stock,
+          } = item;
 
-        if (total_stock < quantity) {
-          const stockShortage = quantity - total_stock;
-
-          const warehouseNearnest = await query(`  SELECT *,
+          if (total_stock < quantity) {
+            const stockShortage = quantity - total_stock;
+            const warehouseNearnest = await query(`  SELECT *,
                   SQRT(POW((latitude - (SELECT latitude FROM warehouses WHERE id_warehouse = 30)), 2) + POW((longitude - (SELECT longitude FROM warehouses WHERE id_warehouse = 30)), 2)) AS distance
                   FROM warehouses
                   WHERE id_warehouse <> ${id_warehouse}
                   ORDER BY distance;`);
 
-          for (const nearestWarehouse of warehouseNearnest) {
-            const checkStock = await query(`
+            let isProductAvailable = false;
+
+            for (const nearestWarehouse of warehouseNearnest) {
+              const checkStock = await query(`
                     SELECT id_stock,total_stock
                     FROM stocks
                     WHERE id_warehouse = ${nearestWarehouse.id_warehouse}
                     AND id_product = ${id_product}
                   `);
 
-            if (checkStock[0].total_stock >= stockShortage) {
-              const createMutation =
-                await query(`INSERT INTO stock_mutations (id_product, id_request_warehouse, id_send_warehouse, quantity, created_at)
+              if (checkStock[0].total_stock >= stockShortage) {
+                const createMutation =
+                  await query(`INSERT INTO stock_mutations (id_product, id_request_warehouse, id_send_warehouse, quantity, created_at)
                 VALUES (${id_product}, ${id_warehouse}, ${nearestWarehouse.id_warehouse}, ${stockShortage}, CURRENT_TIMESTAMP);`);
 
-              const updateStockSendWarehouse = await query(
-                `UPDATE stocks SET total_stock = total_stock - ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${nearestWarehouse.id_warehouse};`
-              );
+                const updateStockSendWarehouse = await query(
+                  `UPDATE stocks SET total_stock = total_stock - ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${nearestWarehouse.id_warehouse};`
+                );
 
-              const updateStockRequestWarehouse = await query(
-                `UPDATE stocks SET total_stock = total_stock + ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-              );
+                const updateStockRequetWarehouse = await query(
+                  `UPDATE stocks SET total_stock = total_stock + ${stockShortage} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
+                );
 
-              const createHistorySendWarehouse = await query(`
+                const createHistorySendWarehouse = await query(`
                 INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-                VALUES (${checkStock[0].id_stock}, ${Math.abs(
-                stockShortage
-              )}, "outgoing", CURRENT_TIMESTAMP);
+                VALUES (${checkStock[0].id_stock}, ${stockShortage}, "outgoing", CURRENT_TIMESTAMP);
                `);
 
-              const createHistoryRequestWarehouse = await query(`
+                const createHistoryRequetWarehouse = await query(`
                 INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-                VALUES (${id_stock}, ${Math.abs(
-                stockShortage
-              )}, "incoming", CURRENT_TIMESTAMP);
+                VALUES (${id_stock}, ${stockShortage}, "incoming", CURRENT_TIMESTAMP);
                `);
+
+                isProductAvailable = true;
+                break;
+              }
+            }
+
+            if (!isProductAvailable) {
+              return res.status(400).send({
+                message: `Stok tidak tersedia untuk produk dengan ID ${id_product} di seluruh gudang`,
+              });
+              isAnyProductUnavailable = true;
             }
           }
-        }
 
-        const updateStock = await query(
-          `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-        );
+          const updateStock = await query(
+            `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
+          );
 
-        const createHistory = await query(`
+          const createHistory = await query(`
             INSERT INTO stock_history (id_stock, stock_change, status, created_at)
             VALUES (${id_stock}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
             `);
+        }
       }
 
       const updateStatus = await query(`

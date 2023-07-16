@@ -160,7 +160,7 @@ const CreateOrder = () => {
           ))}
           <div className="flex justify-between pb-2">
             <h1 className="font-bold">Shipping</h1>
-            <p>{formattedPrice(shipping)}</p>
+            <p>{formattedPrice(parseInt(shipping))}</p>
           </div>
           <div className="border-t border-gray-300 pt-4 mb-4 flex justify-between">
             <h1 className="font-bold text-xl">Total Price</h1>
