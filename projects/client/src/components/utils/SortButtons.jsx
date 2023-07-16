@@ -65,6 +65,12 @@ const SortButtons = ({ handleSort }) => {
             <option value="z-a">Product Z-A</option>
           </>
         )}
+        {path === "/admin-warehouses" && (
+          <>
+            <option value="asc">Name A-Z</option>
+            <option value="desc">Name Z-A</option>
+          </>
+        )}
       </select>
     </div>
   );

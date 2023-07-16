@@ -10,6 +10,8 @@ import EditModalWarehouse from "../../modals/EditModalWarehouse";
 import WarehouseTable from "./WarehouseTable";
 import CreateModalWarehouse from "../../modals/CreateModalWarehouse";
 import Pagination from "../../utils/Pagination";
+import SearchInputList from "../../utils/SearchInputList";
+import SortButtons from "../../utils/SortButtons";
 
 const WarehousesContent = () => {
   const warehouses = useSelector((state) => state.warehouses.warehouse);
@@ -21,9 +23,15 @@ const WarehousesContent = () => {
   const [editItemId, setEditItemId] = useState(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [selectedSort, setSelectedSort] = useState("");
+
+  const handleSort = (option) => {
+    setSelectedSort(option);
+    dispatch(fetchWarehouses(currentPage, searchInput, selectedSort)); // Fetch data for the current page
+  };
 
   const handlePageChange = (page) => {
-    dispatch(fetchWarehouses(page, searchInput));
+    dispatch(fetchWarehouses(page, searchInput, selectedSort));
   };
 
   const handleDelete = async (id_warehouse) => {
@@ -55,13 +63,19 @@ const WarehousesContent = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchWarehouses(currentPage, searchInput));
-  }, [dispatch, currentPage, searchInput]);
+    dispatch(fetchWarehouses(currentPage, searchInput, selectedSort));
+  }, [dispatch, currentPage, searchInput, selectedSort]);
 
   return (
     <div className="flex flex-col px-5 bg-base-200 h-screen">
       <div className="flex flex-col justify-center items-center lg:flex lg:justify-center lg:items-center  gap-5 lg:gap-0">
         <h1 className="menu-title font-bold text-lg p-2">Warehouse List</h1>
+        <div className="p-2 mb-2">
+          <SearchInputList setSearchInput={setSearchInput} />
+        </div>
+        <div>
+          <SortButtons handleSort={handleSort} />
+        </div>
         <div className="lg:flex lg:justify-start">
           <a
             className="btn md:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-3"
