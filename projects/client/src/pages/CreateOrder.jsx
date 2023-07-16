@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import CustomToast from "../components/CustomToast/CustomToast";
 import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
+import CreateModalAddress from "../components/Address2/CreateModalAddress";
+import { getAddress, addAddress } from "../features/UserAddress";
 
 const CreateOrder = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.users.user);
   const cartItems = useSelector((state) => state.carts.cartItems);
   const totalPrice = useSelector((state) => state.carts.totalPrice);
   const [shipping, setShipping] = useState(0);
-  const [address, setAddress] = useState("");
   const [warehouse, setWarehouse] = useState("");
   const [shippingMethod, setShippingMethod] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shippingOptions, setShippingOptions] = useState([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   const [selectedAddress, setSelectedAddress] = useState("");
   const [addresses, setAddresses] = useState([]);
@@ -28,17 +31,23 @@ const CreateOrder = () => {
     const fetchAddresses = async () => {
       try {
         const token = localStorage.user_token;
-        console.log("token dari fetchAddress", token)
+        console.log("token dari fetchAddress", token);
         if (token) {
-          console.log("token dari fetchAddress 2", token)
+          console.log("token dari fetchAddress 2", token);
           let response = await axios.get(
             `http://localhost:8000/api/user-profile/get-address`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          console.log(response.data)
+          console.log(response.data);
           setAddresses(response.data);
+
+          if (response.data.length > 0) {
+            const firstAddressId = response.data[0].id_address;
+            setSelectedAddress(firstAddressId);
+            fetchShipping(shippingMethod, firstAddressId);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -47,6 +56,11 @@ const CreateOrder = () => {
 
     fetchAddresses();
   }, []);
+
+  const handleCreate = async (newAddressData) => {
+    await dispatch(addAddress(newAddressData));
+    setCreateModalOpen(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,19 +101,19 @@ const CreateOrder = () => {
     try {
       setShipping(0);
       let response = await axios.get(
-        `http://localhost:8000/api/orders/shipping-warehouse?id_user=${id_user}&courier=${courier}`
+        `http://localhost:8000/api/orders/shipping-warehouse?id_user=${id_user}&courier=${courier}&id_address=${selectedAddress}`
       );
 
-      const { service, address, warehouse } = response.data;
+      const { service, warehouse } = response.data;
 
       setShippingOptions(service);
-      setAddress(address.address);
       setWarehouse(warehouse.id_warehouse);
     } catch (error) {
       console.log(error);
     }
   };
 
+  console.log(selectedAddress);
   const handleShippingMethodChange = (e) => {
     const method = e.target.value;
     if (method === "") {
@@ -108,6 +122,9 @@ const CreateOrder = () => {
       setShippingOptions([]);
     } else {
       setShippingMethod(method);
+      if (selectedAddress !== "") {
+        fetchShipping(method, selectedAddress);
+      }
     }
   };
 
@@ -122,8 +139,51 @@ const CreateOrder = () => {
       <div className="flex flex-col pt-20 p-10 gap-3">
         <div className="bg-white rounded-lg shadow-md p-4">
           <h1 className="text-xl font-bold mb-2">Address</h1>
-          <p>{address}</p>
+          {addresses.length > 0 ? (
+            <div className="form-control">
+              <select
+                value={selectedAddress}
+                onChange={(e) => {
+                  setSelectedAddress(e.target.value);
+                  if (shippingMethod !== "") {
+                    fetchShipping(shippingMethod, e.target.value);
+                  }
+                }}
+                className="select select-bordered"
+                required
+              >
+                {addresses.map((a) => (
+                  <option key={a.id_address} value={a.id_address}>
+                    {`[${a.is_primary2}] ${a.address}, ${a.city}, ${a.province}, ${a.postal_code}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="flex items-center">
+              <p>You don't have any addresses yet.</p>
+              <button
+                className="btn mt-2"
+                onClick={() => navigate("/profilling")}
+              >
+                Create Address
+              </button>
+              <a
+                className="btn md:btn-wide btn-primary lg:relative lg:right-auto lg:top-auto lg:my-2"
+                href="#create_modal"
+                onClick={() => setCreateModalOpen(true)}
+              >
+                Add New Address
+              </a>
+              <CreateModalAddress
+                closeCreateModal={() => setCreateModalOpen(false)}
+                handlCreate={() => handleCreate}
+                addreesses={addresses}
+              />
+            </div>
+          )}
         </div>
+
         {cartItems.map((item, index) => (
           <div key={index} className="min-h-[50px] flex flex-col">
             <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
@@ -134,33 +194,15 @@ const CreateOrder = () => {
                   className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
                 />
                 <div>
-                  <h1 className="text-base uppercase lg:text-3xl font-bold">
+                  <h1 className="text-base uppercase lg:text-3xl font-bold pb-3">
                     {item.name}
                   </h1>
-                  <p className="py-2">Desc: {item.description}</p>
                   <p>Quantity: {item.quantity}</p>
                 </div>
               </div>
             </div>
           </div>
         ))}
-
-        {/* tambah select address. address yang sudah dipilih jadi selectedAddress */}
-        <div className="form-control">
-          <select
-            value={selectedAddress}
-            onChange={(e) => { setSelectedAddress(e.target.value) }}
-            className="select select-bordered"
-            required
-          >
-            <option value="">Select Address</option>
-            {addresses.map((a) => (
-              <option key={a.id_address} value={a.id_address}>
-                {`[${a.is_primary2}] ${a.address} , ${a.district}, ${a.city}, ${a.province}, ${a.postal_code}`}
-              </option>
-            ))}
-          </select>
-        </div>
 
         <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
           <h1 className="text-xl font-bold mb-2">Shipping Method</h1>

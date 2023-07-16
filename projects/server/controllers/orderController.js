@@ -26,8 +26,12 @@ module.exports = {
 
   getShippingWarehouse: async (req, res) => {
     try {
-      const { id_user, courier } = req.query;
-      const fetchAddress = await query(orderQueries.fetchAddressQuery(id_user));
+      const { id_user, id_address, courier } = req.query;
+      const fetchAddress = await query(
+        orderQueries.fetchAddressQuery(id_address)
+      );
+
+      console.log(fetchAddress, "ini addres nya");
 
       const result = await getCoordinates(
         fetchAddress[0].address,
@@ -67,7 +71,7 @@ module.exports = {
       return res.status(200).send({
         service: services,
         warehouse: checkNearestWarehouse[0],
-        address: fetchAddress[0],
+        // address: fetchAddress[0],
       });
     } catch (error) {
       console.log(error);

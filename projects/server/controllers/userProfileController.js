@@ -66,12 +66,10 @@ module.exports = {
     }
   },
 
-
-
   addAddress: async (req, res) => {
     try {
       const idUser = req.user.id;
-      console.log("iduser", idUser)
+      console.log("iduser", idUser);
       let { address, district, city, province, postal_code } = req.body;
       // console.log("reqbody", req.body)
       // console.log("dari controller address 1", address.split(" | ")[1], address.split(" | ")[0])
@@ -80,7 +78,7 @@ module.exports = {
       // console.log("dari controller address 2", district, address)
       const result = await getCoordinates(
         address,
-        district,
+        // district,
         city,
         province,
         postal_code
@@ -92,21 +90,23 @@ module.exports = {
       console.log(latitude, longitude);
 
       const addAddressQuery = `
-      INSERT INTO addresses (id_user,address, city, province, postal_code, is_primary, district, latitude, longitude)
-      VALUES (${db.escape(idUser)},${db.escape(address)}, ${db.escape(city)}, ${db.escape(province)}, 
-      ${db.escape(postal_code)}, null, ${db.escape(district)}, ${db.escape(latitude)}, ${db.escape(longitude)})`;
+      INSERT INTO addresses (id_user,address, city, province, postal_code, is_primary)
+      VALUES (${db.escape(idUser)},${db.escape(address)}, ${db.escape(
+        city
+      )}, ${db.escape(province)}, 
+      ${db.escape(postal_code)}, false)`;
       let addAddressResult = await query(addAddressQuery);
 
       res.status(201).send({
-        data: addAddressResult, message: "Add Address Success"
+        data: addAddressResult,
+        message: "Add Address Success",
       });
 
-
-      // let addAddressQuery = `INSERT INTO addresses VALUES (null, 
-      //   ${db.escape(idUser)}, 
-      //   ${db.escape(address)}, 
-      //   ${db.escape(city)}, 
-      //   ${db.escape(province)}, 
+      // let addAddressQuery = `INSERT INTO addresses VALUES (null,
+      //   ${db.escape(idUser)},
+      //   ${db.escape(address)},
+      //   ${db.escape(city)},
+      //   ${db.escape(province)},
       //   ${db.escape(postal_code)},
       // )`;
       // console.log(addAddressQuery);
@@ -189,7 +189,9 @@ module.exports = {
         `SELECT * , 
         case when is_primary = 1 then "Primary"
         else "Non-Primary" end as is_primary2
-        FROM addresses WHERE id_user = ${db.escape(idUser)} order by is_primary desc`
+        FROM addresses WHERE id_user = ${db.escape(
+          idUser
+        )} order by is_primary desc`
       );
       return res.status(200).send(getUserAddresses);
     } catch (error) {
@@ -211,7 +213,9 @@ module.exports = {
 
       const setPrimary = await query(setPrimaryQuery);
 
-      const getAddressQuery = `SELECT * FROM addresses WHERE id_address = ${db.escape(id_address)} order by is_primary desc`;
+      const getAddressQuery = `SELECT * FROM addresses WHERE id_address = ${db.escape(
+        id_address
+      )} order by is_primary desc`;
       const getAddress = await query(getAddressQuery);
 
       return res.status(200).send(getAddress);
@@ -219,6 +223,4 @@ module.exports = {
       return res.status(error.status || 500).send(error);
     }
   },
-
-
 };
