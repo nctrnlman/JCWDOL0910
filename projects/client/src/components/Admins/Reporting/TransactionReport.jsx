@@ -223,6 +223,7 @@ function TransactionReport() {
                 />
             </div> */}
             <p className="font-bold text-3xl px-8 pt-4 m-3"> Sales Report</p>
+            <p className="font-bold text-lg px-8 pt-4 m-3"> Note : Only orders with the status of "Pesanan Dikonfirmasi" are deemed eligible for inclusion in the Sales Report.</p>
 
             {admin.role === "Super Admin" && (
                 <div className="form-control m-5">

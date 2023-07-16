@@ -21,7 +21,7 @@ module.exports = {
                 count(distinct id_order) total_orders 
                 from orders o
                 left join warehouses w on o.id_warehouse = w.id_warehouse
-                where o.id_warehouse = ${warehouseId} 
+                where o.id_warehouse = ${warehouseId} and lower(status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
                 console.log(transactionQueryWHAdmin)
                 let result = await query(transactionQueryWHAdmin);
@@ -37,6 +37,7 @@ module.exports = {
                 count(distinct id_order) total_orders 
                 from orders o
                 left join warehouses w on o.id_warehouse = w.id_warehouse
+                where lower(o.status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
                 let result = await query(transactionQuerySuperAdmin);
                 return res
@@ -65,7 +66,7 @@ module.exports = {
                 count(distinct id_order) total_orders 
                 from orders o
                 left join warehouses w on o.id_warehouse = w.id_warehouse
-                where o.id_warehouse = ${warehouseId} 
+                where o.id_warehouse = ${warehouseId} and lower(o.status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
                 console.log(transactionQueryWHAdmin)
                 let result = await query(transactionQueryWHAdmin);
@@ -81,6 +82,7 @@ module.exports = {
                 count(distinct id_order) total_orders 
                 from orders o
                 left join warehouses w on o.id_warehouse = w.id_warehouse
+                where lower(status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
                 let result = await query(transactionQuerySuperAdmin);
                 return res
@@ -111,6 +113,7 @@ module.exports = {
                     left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
 					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
                     product_category, 
@@ -135,6 +138,7 @@ module.exports = {
                     left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
 					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
                     product_category, 
@@ -172,6 +176,7 @@ module.exports = {
                     left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
 					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
                     product_name, 
@@ -196,6 +201,7 @@ module.exports = {
                     left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
 					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
                     product_name, 
@@ -228,7 +234,7 @@ module.exports = {
                 count(distinct id_order) total_orders 
                 from orders o
                 left join warehouses w on o.id_warehouse = w.id_warehouse
-                where o.id_warehouse = ${id_warehouse}
+                where o.id_warehouse = ${id_warehouse} and lower(status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
                 let result = await query(transactionQuerySuperAdmin);
                 console.log(result)
@@ -257,6 +263,7 @@ module.exports = {
                     left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
 					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(status) like "%pesanan dikonfirmasi%"
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
                     product_category, 
@@ -291,6 +298,7 @@ module.exports = {
                     left join products as p on oi.product_name = p.name
                     left join categories as c on p.id_category = c.id_category
 					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(status) like "%pesanan dikonfirmasi%"
                     order by 1 asc)
                     select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
                     product_name, 
