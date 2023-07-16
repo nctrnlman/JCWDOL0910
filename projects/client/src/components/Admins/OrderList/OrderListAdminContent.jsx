@@ -7,8 +7,10 @@ import SearchInputList from "../../utils/SearchInputList";
 import SortButtons from "../../utils/SortButtons";
 import RejectOrderModal from "../../modals/RejectOrderModal";
 import ConfirmOrderModal from "../../modals/ConfirmOrderModal";
+import SendOrderModal from "../../modals/SendOrderModal";
 import SortStatusButton from "../../utils/SortStatusButton";
 import ReceiptModal from "../../modals/ReceiptModal";
+import CancelOrderModalAdmin from "../../modals/CancelOrderModalAdmin";
 
 function OrderListAdminContent() {
   const dispatch = useDispatch();
@@ -86,7 +88,9 @@ function OrderListAdminContent() {
       </div>
       <RejectOrderModal selectedId={selectedId} />
       <ConfirmOrderModal selectedId={selectedId} />
+      <SendOrderModal selectedId={selectedId} />
       {selectedId && <ReceiptModal order={selectedOrder} />}
+      <CancelOrderModalAdmin selectedId={selectedId} />
     </div>
   );
 }

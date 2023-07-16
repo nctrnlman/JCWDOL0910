@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 // 
 const verifyToken = (req, res, next) => {
-    // console.log(req)
+    console.log("req headers dari verifytoken", req.headers)
     let token = req.headers.authorization;
-    console.log(token)
+    console.log("verify token", token)
 
     if (!token) {
         return res.status(400).send({ message: "Access Denied" });
@@ -15,7 +15,7 @@ const verifyToken = (req, res, next) => {
     }
 
     let verifiedUser = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(verifiedUser)
+    console.log("verifiedUser", verifiedUser)
     if (!verifiedUser) {
         return res.status(400).send({ message: "Access Denied" });
     }

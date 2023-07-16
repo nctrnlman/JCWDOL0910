@@ -18,8 +18,35 @@ const CreateOrder = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [shippingOptions, setShippingOptions] = useState([]);
 
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [addresses, setAddresses] = useState([]);
+
   const id_user = user.id;
   const total_amount = totalPrice + parseInt(shipping);
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const token = localStorage.user_token;
+        console.log("token dari fetchAddress", token)
+        if (token) {
+          console.log("token dari fetchAddress 2", token)
+          let response = await axios.get(
+            `http://localhost:8000/api/user-profile/get-address`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          console.log(response.data)
+          setAddresses(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchAddresses();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,6 +144,24 @@ const CreateOrder = () => {
             </div>
           </div>
         ))}
+
+        {/* tambah select address. address yang sudah dipilih jadi selectedAddress */}
+        <div className="form-control">
+          <select
+            value={selectedAddress}
+            onChange={(e) => { setSelectedAddress(e.target.value) }}
+            className="select select-bordered"
+            required
+          >
+            <option value="">Select Address</option>
+            {addresses.map((a) => (
+              <option key={a.id_address} value={a.id_address}>
+                {`[${a.is_primary2}] ${a.address} , ${a.district}, ${a.city}, ${a.province}, ${a.postal_code}`}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
           <h1 className="text-xl font-bold mb-2">Shipping Method</h1>
           <div className="flex gap-4">
