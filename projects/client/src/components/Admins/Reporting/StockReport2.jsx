@@ -19,89 +19,67 @@ import axios from "axios";
 // } from "@chakra-ui/react";
 import {
     // fetchAllTransaction,
-    fetchTransactionOnDateRange, fetchMonthlyTransactionOnDateRange, fetchMonthlyCatTransactionOnDateRange, fetchMonthlyProductTransactionOnDateRange, fetchAllMonthlyTransaction, fetchAllMonthlyCatTransaction, fetchAllMonthlyProductTransaction
-} from "../../../features/reportTransactionSlice";
+    fetchStockMovementDetail, fetchStockMovementRecap
+} from "../../../features/reportStockSlice";
 import Datepicker from "react-tailwindcss-datepicker";
 // import "react-tailwindcss-datepicker/dist/index.css";
 // import TransactionTable from "../components/TransactionTable";
-import { PureComponent } from 'react';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
-
-
-function TransactionReport() {
-    const dailyTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.dailyTransaction.result
+function StockReport() {
+    const stockMovementHistoryRecap = useSelector(
+        (state) => state.reportStock.stock.stockMovementHistoryRecap.result
     );
-    const monthlyTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.monthlyTransaction.result
-    );
-    const monthlyCatTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.monthlyCatTransaction.result
-    );
-    const monthlyProductTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.monthlyProductTransaction.result
-    );
-    const allMonthlyTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.allMonthlyTransactions.result
-    );
-    const allMonthlyCatTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.allMonthlyCatTransactions.result
-    );
-    const allMonthlyProductTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.allMonthlyProductTransactions.result
+    const stockMovementDetail = useSelector(
+        (state) => state.reportStock.stock.stockMovementDetail.result
     );
 
     const [selectedWarehouse, setSelectedWarehouse] = useState("");
     const [warehouses, setWarehouses] = useState([]);
-    const [allMonthlyTransactionfilt, setallMonthlyTransactionfilt] = useState([])
-    const [allMonthlyCatTransactionfilt, setallMonthlyCatTransactionfilt] = useState([])
-    const [allMonthlyProductTransactionfilt, setallMonthlyProductTransactionfilt] = useState([])
+    const [stockMovementHistoryRecap2, setstockMovementHistoryRecap2] = useState([])
+    const [stockMovementDetail2, setstockMovementDetail2] = useState([])
 
     const admin = useSelector(
         (state) => state.admins.admin
     );
     console.log(admin)
 
-    const [value, setValue] = useState({
-        startDate: null,
-        endDate: null,
-    });
+    // const [value, setValue] = useState({
+    //     startDate: null,
+    //     endDate: null,
+    // });
 
     const dispatch = useDispatch();
     // const userGlobal = useSelector((state) => state.user.user);
     // // const { id } = userGlobal;
     // const { id } = useParams();
 
-    const handleValueChange = async (newValue) => {
+    // const handleValueChange = async (newValue) => {
 
-        console.log("newValue:", newValue);
-        const status = await dispatch(fetchTransactionOnDateRange(newValue));
-        const status2 = await dispatch(fetchMonthlyTransactionOnDateRange(newValue));
-        const status3 = await dispatch(fetchMonthlyCatTransactionOnDateRange(newValue));
-        const status4 = await dispatch(fetchMonthlyProductTransactionOnDateRange(newValue));
-        // dispatch(fetchAllTransaction(id));
-        if (status === false) {
-            const now = format(Date.now(), "yyyy-MM-dd");
-            const sevenDaysAgo = format(add(Date.now(), { days: -7 }), "yyyy-MM-dd");
-            // dispatch(fetchAllTransaction(id));
-            let curval = { startDate: sevenDaysAgo, endDate: now };
-            setValue({ ...value, ...curval });
-        } else if (status === true) {
-            // console.log(newValue);
-            setValue(newValue);
-        }
-    };
+    //     console.log("newValue:", newValue);
+    //     const status = await dispatch(fetchTransactionOnDateRange(newValue));
+    //     const status2 = await dispatch(fetchMonthlyTransactionOnDateRange(newValue));
+    //     const status3 = await dispatch(fetchMonthlyCatTransactionOnDateRange(newValue));
+    //     const status4 = await dispatch(fetchMonthlyProductTransactionOnDateRange(newValue));
+    //     // dispatch(fetchAllTransaction(id));
+    //     if (status === false) {
+    //         const now = format(Date.now(), "yyyy-MM-dd");
+    //         const sevenDaysAgo = format(add(Date.now(), { days: -7 }), "yyyy-MM-dd");
+    //         // dispatch(fetchAllTransaction(id));
+    //         let curval = { startDate: sevenDaysAgo, endDate: now };
+    //         setValue({ ...value, ...curval });
+    //     } else if (status === true) {
+    //         // console.log(newValue);
+    //         setValue(newValue);
+    //     }
+    // };
     // console.log(dailyTransaction)
 
     useEffect(() => {
-        dispatch(fetchAllMonthlyTransaction());
-        dispatch(fetchAllMonthlyCatTransaction());
-        dispatch(fetchAllMonthlyProductTransaction());
-        setallMonthlyTransactionfilt([null])
-        setallMonthlyCatTransactionfilt([null])
-        setallMonthlyProductTransactionfilt([null])
+        dispatch(fetchStockMovementDetail());
+        dispatch(fetchStockMovementRecap());
+        setstockMovementHistoryRecap2([null])
+        setstockMovementDetail2([null])
     }, []);
 
     useEffect(() => {
@@ -131,37 +109,29 @@ function TransactionReport() {
 
 
 
-    const selectTransactionFromWarehouse = async () => {
+    const selectStockFromWarehouse = async () => {
         try {
             const token = localStorage.admin_token;
             if (selectedWarehouse) {
                 const token = localStorage.admin_token;
-                console.log("selectTransactionFromWarehouse", token)
+                console.log("selectStockFromWarehouse", token)
                 if (token) {
-                    let responseMonthly = await axios.get(
-                        `http://localhost:8000/api/admins/all-transactions-monthly/${selectedWarehouse}`,
+                    let responseRecap = await axios.get(
+                        `http://localhost:8000/api/admins/stock-movement-recap/${selectedWarehouse}`,
                         {
                             headers: { Authorization: `Bearer ${token}` },
                         }
                     );
 
-                    let responseMonthlyCat = await axios.get(
-                        `http://localhost:8000/api/admins/all-transactions-category-monthly/${selectedWarehouse}`,
+                    let responseDetail = await axios.get(
+                        `http://localhost:8000/api/admins/stock-movement-detail/${selectedWarehouse}`,
                         {
                             headers: { Authorization: `Bearer ${token}` },
                         }
                     );
 
-                    let responseMonthlyProduct = await axios.get(
-                        `http://localhost:8000/api/admins/all-transactions-product-monthly/${selectedWarehouse}`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                        }
-                    );
-
-                    setallMonthlyTransactionfilt(responseMonthly.data.result)
-                    setallMonthlyCatTransactionfilt(responseMonthlyCat.data.result)
-                    setallMonthlyProductTransactionfilt(responseMonthlyProduct.data.result)
+                    setstockMovementHistoryRecap2(responseRecap.data.result)
+                    setstockMovementDetail2(responseDetail.data.result)
                     // console.log(responseMonthly.data)
                     // console.log(responseMonthlyCat.data)
                     // console.log(responseMonthlyProduct.data)
@@ -176,13 +146,12 @@ function TransactionReport() {
     };
 
     useEffect(() => {
-        selectTransactionFromWarehouse();
+        selectStockFromWarehouse();
     }, [selectedWarehouse]);
 
     console.log("selectedWarehouse", selectedWarehouse)
-    console.log("allMonthlyTransactionfilt", allMonthlyTransactionfilt)
-    console.log("allMonthlyCatTransactionfilt", allMonthlyCatTransactionfilt)
-    console.log("allMonthlyProductTransactionfilt", allMonthlyProductTransactionfilt)
+    console.log("stockMovementHistoryRecap2", stockMovementHistoryRecap2)
+    console.log("stockMovementDetail2", stockMovementDetail2)
 
     // const findMaxTamount = (arr) => {
     //     let maxValue = 0;
@@ -222,7 +191,8 @@ function TransactionReport() {
                     showShortcuts={true}
                 />
             </div> */}
-            <p className="font-bold text-3xl px-8 pt-4 m-3"> Sales Report</p>
+
+            <p className="font-bold text-3xl px-8 pt-4 m-3"> Stock Movement Report</p>
 
             {admin.role === "Super Admin" && (
                 <div className="form-control m-5">
@@ -242,8 +212,8 @@ function TransactionReport() {
                 </div>
             )}
 
-            <p className="font-bold text-2xl px-8 pt-4 m-3">All Monthly Transaction</p>
-            {allMonthlyTransactionfilt[0] == null ? (
+            <p className="font-bold text-2xl px-8 pt-4 m-3">Stock Movement Recap</p>
+            {stockMovementHistoryRecap2[0] == null ? (
                 <div class="overflow-y-hidden rounded-lg border">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -251,12 +221,15 @@ function TransactionReport() {
                                 <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
                                     <th class="px-5 py-3">Months</th>
                                     <th class="px-5 py-3">Warehouse Name</th>
-                                    <th class="px-5 py-3">Total Amount</th>
-                                    <th class="px-5 py-3">Total Orders</th>
+                                    <th class="px-5 py-3">Product Name</th>
+                                    <th class="px-5 py-3">Stock Awal</th>
+                                    <th class="px-5 py-3">Total Penambahan</th>
+                                    <th class="px-5 py-3">Total Pengurangan</th>
+                                    <th class="px-5 py-3">Stock Akhir</th>
                                 </tr>
                             </thead>
                             <tbody class="text-gray-500">
-                                {allMonthlyTransaction?.map((dt) => {
+                                {stockMovementHistoryRecap?.map((dt) => {
                                     return (
                                         <tr>
                                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -266,10 +239,19 @@ function TransactionReport() {
                                                 <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
                                             </td>
                                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_amount}</p>
+                                                <p class="whitespace-no-wrap">{dt.product_name}</p>
                                             </td>
                                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_orders}</p>
+                                                <p class="whitespace-no-wrap">{dt.stock_awal_bulan}</p>
+                                            </td>
+                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                <p class="whitespace-no-wrap">{dt.total_penambahan}</p>
+                                            </td>
+                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                <p class="whitespace-no-wrap">{dt.total_pengurangan}</p>
+                                            </td>
+                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                <p class="whitespace-no-wrap">{dt.stock_akhir_bulan}</p>
                                             </td>
                                         </tr>
                                     )
@@ -279,20 +261,22 @@ function TransactionReport() {
                     </div>
                 </div>
             ) : (
-                // If allMonthlyTransactionfilt is not true then show this instead : 
                 < div class="overflow-y-hidden rounded-lg border">
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
                                 <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                    <th class="px-5 py-3">Months</th>
+                                    <th class="px-5 py-3">Bulan</th>
                                     <th class="px-5 py-3">Warehouse Name</th>
-                                    <th class="px-5 py-3">Total Amount</th>
-                                    <th class="px-5 py-3">Total Orders</th>
+                                    <th class="px-5 py-3">Product Name</th>
+                                    <th class="px-5 py-3">Stock Awal</th>
+                                    <th class="px-5 py-3">Total Penambahan</th>
+                                    <th class="px-5 py-3">Total Pengurangan</th>
+                                    <th class="px-5 py-3">Stock Akhir</th>
                                 </tr>
                             </thead>
                             <tbody class="text-gray-500">
-                                {allMonthlyTransactionfilt?.map((dt) => {
+                                {stockMovementHistoryRecap2?.map((dt) => {
                                     return (
                                         <tr>
                                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -302,10 +286,19 @@ function TransactionReport() {
                                                 <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
                                             </td>
                                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_amount}</p>
+                                                <p class="whitespace-no-wrap">{dt.product_name}</p>
                                             </td>
                                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_orders}</p>
+                                                <p class="whitespace-no-wrap">{dt.stock_awal_bulan}</p>
+                                            </td>
+                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                <p class="whitespace-no-wrap">{dt.total_penambahan}</p>
+                                            </td>
+                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                <p class="whitespace-no-wrap">{dt.total_pengurangan}</p>
+                                            </td>
+                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                                <p class="whitespace-no-wrap">{dt.stock_akhir_bulan}</p>
                                             </td>
                                         </tr>
                                     )
@@ -317,38 +310,38 @@ function TransactionReport() {
             )}
 
 
-            <p className="font-bold text-2xl px-8 pt-4 m-3">All Monthly Category Transaction</p>
+            <p className="font-bold text-2xl px-8 pt-4 m-3">Stock Movement Detail</p>
 
-            {allMonthlyCatTransactionfilt[0] == null ? (<div class="overflow-y-hidden rounded-lg border">
+            {stockMovementDetail2[0] == null ? (<div class="overflow-y-hidden rounded-lg border">
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
                             <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
                                 <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Category</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
+                                <th class="px-5 py-3">Product Name</th>
+                                <th class="px-5 py-3">Status</th>
+                                <th class="px-5 py-3">Perubahan Stock Qty</th>
+                                <th class="px-5 py-3">Waktu Perubahan Stock</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-500">
-                            {allMonthlyCatTransaction?.map((dt) => {
+                            {stockMovementDetail?.map((dt) => {
                                 return (
                                     <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_category}</p>
+                                            <p class="whitespace-no-wrap">{dt.product_name}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
+                                            <p class="whitespace-no-wrap">{dt.status}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
+                                            <p class="whitespace-no-wrap">{dt.stock_change}</p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <p class="whitespace-no-wrap">{dt.created_at}</p>
                                         </td>
                                     </tr>
                                 )
@@ -361,31 +354,31 @@ function TransactionReport() {
                     <table class="w-full">
                         <thead>
                             <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
                                 <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Category</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
+                                <th class="px-5 py-3">Product Name</th>
+                                <th class="px-5 py-3">Status</th>
+                                <th class="px-5 py-3">Perubahan Stock Qty</th>
+                                <th class="px-5 py-3">Waktu Perubahan Stock</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-500">
-                            {allMonthlyCatTransactionfilt?.map((dt) => {
+                            {stockMovementDetail2?.map((dt) => {
                                 return (
                                     <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_category}</p>
+                                            <p class="whitespace-no-wrap">{dt.product_name}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
+                                            <p class="whitespace-no-wrap">{dt.status}</p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
+                                            <p class="whitespace-no-wrap">{dt.stock_change}</p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                            <p class="whitespace-no-wrap">{dt.created_at}</p>
                                         </td>
                                     </tr>
                                 )
@@ -395,89 +388,8 @@ function TransactionReport() {
                 </div>
             </div>)}
 
-
-            <p className="font-bold text-2xl px-8 pt-4 m-3">All Monthly Product Transaction</p>
-
-            {allMonthlyProductTransactionfilt[0] == null ? (<div class="overflow-y-hidden rounded-lg border">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
-                                <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Name</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-500">
-                            {allMonthlyProductTransaction?.map((dt) => {
-                                return (
-                                    <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            ) : (<div class="overflow-y-hidden rounded-lg border">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
-                                <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Name</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-500">
-                            {allMonthlyProductTransactionfilt?.map((dt) => {
-                                return (
-                                    <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            )}
-
         </div >
     );
 }
 
-export default TransactionReport;
+export default StockReport;

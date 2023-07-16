@@ -5,6 +5,9 @@ export const reportTransactionSlice = createSlice({
     name: "reportTransaction",
     initialState: {
         transaction: {
+            allMonthlyTransactions: [],
+            allMonthlyCatTransactions: [],
+            allMonthlyProductTransactions: [],
             dailyTransaction: [],
             monthlyTransaction: [],
             monthlyCatTransaction: [],
@@ -28,10 +31,19 @@ export const reportTransactionSlice = createSlice({
         setMonthlyProductTransaction: (state, action) => {
             state.transaction.monthlyProductTransaction = action.payload;
         },
+        setAllMonthlyTransactions: (state, action) => {
+            state.transaction.allMonthlyTransactions = action.payload;
+        },
+        setAllMonthlyCatTransactions: (state, action) => {
+            state.transaction.allMonthlyCatTransactions = action.payload;
+        },
+        setAllMonthlyProductTransactions: (state, action) => {
+            state.transaction.allMonthlyProductTransactions = action.payload;
+        },
     }
 });
 
-export const { setDailyTransaction, setMonthlyTransaction, setMonthlyCatTransaction, setMonthlyProductTransaction } = reportTransactionSlice.actions;
+export const { setDailyTransaction, setMonthlyTransaction, setMonthlyCatTransaction, setMonthlyProductTransaction, setAllMonthlyTransactions, setAllMonthlyCatTransactions, setAllMonthlyProductTransactions } = reportTransactionSlice.actions;
 
 export default reportTransactionSlice.reducer;
 
@@ -136,3 +148,65 @@ export const fetchMonthlyProductTransactionOnDateRange = (dateRange) => {
     };
 };
 
+export const fetchAllMonthlyTransaction = () => {
+    return async (dispatch) => {
+        // console.log(localStorage.user_token)
+        try {
+            const token = localStorage.admin_token;
+            if (token) {
+                console.log("token dari fetchmonthlyTransactionOnDateRange 2", token)
+                let response = await Axios.get(
+                    `http://localhost:8000/api/admins/all-transactions-monthly`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                dispatch(setAllMonthlyTransactions(response.data));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+};
+
+export const fetchAllMonthlyCatTransaction = () => {
+    return async (dispatch) => {
+        // console.log(localStorage.user_token)
+        try {
+            const token = localStorage.admin_token;
+            if (token) {
+                console.log("token dari fetchmonthlyTransactionOnDateRange 2", token)
+                let response = await Axios.get(
+                    `http://localhost:8000/api/admins/all-transactions-category-monthly`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                dispatch(setAllMonthlyCatTransactions(response.data));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+};
+
+export const fetchAllMonthlyProductTransaction = () => {
+    return async (dispatch) => {
+        // console.log(localStorage.user_token)
+        try {
+            const token = localStorage.admin_token;
+            if (token) {
+                console.log("token dari fetchmonthlyTransactionOnDateRange 2", token)
+                let response = await Axios.get(
+                    `http://localhost:8000/api/admins/all-transactions-product-monthly`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                dispatch(setAllMonthlyProductTransactions(response.data));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+};
