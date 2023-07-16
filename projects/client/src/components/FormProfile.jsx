@@ -3,6 +3,11 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { getProfile } from "../features/ProfileSlice";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import CustomToast from "./CustomToast/CustomToast";
+import CustomToastOptions from "./CustomToast/CustomToast";
+
+
 
 function FormProfile() {
   //   const navigate = useNavigate();
@@ -45,7 +50,12 @@ function FormProfile() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        localStorage.setItem("user_details", JSON.stringify(response.data[0])); // Save user details in local storage
+        // console.log("response.data.getUser[0]", response.data.getUser[0])
+        localStorage.setItem("user_details", JSON.stringify(response.data.getUser[0])); // Save user details in local storage
+        toast(
+          <CustomToast type="success" message={response.data.message} />,
+          CustomToastOptions
+        );
         dispatch(getProfile());
       }
     } catch (error) {
@@ -105,7 +115,7 @@ function FormProfile() {
                 />
               </div>
 
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+              {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">
                   Gender
                 </dt>
@@ -116,7 +126,7 @@ function FormProfile() {
                   value={temp_profile.gender}
                   onChange={handleInputChange}
                 />
-              </div>
+              </div> */}
             </form>
 
             {changed ? (

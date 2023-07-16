@@ -216,6 +216,21 @@ module.exports = {
       //   adminAssignUpdate.push(`${prop} = ${db.escape(req.body[prop])}`);
       // }
       const { warehouse_name } = req.body;
+      const isAdminAssigned = await query(`select id_warehouse, w.name warehouse_name from warehouses w WHERE id_admin=${id_admin}`);
+      console.log("isAdminAssigned", isAdminAssigned)
+      if (isAdminAssigned.length > 0) {
+        const deleteAssignmentQuery = `UPDATE warehouses SET id_admin = null WHERE id_admin=${id_admin}`;
+        const deleteAssignment = await query(deleteAssignmentQuery);
+        const assignAdminQuery = `UPDATE warehouses SET id_admin = ${id_admin} WHERE name='${warehouse_name}'`;
+        console.log(assignAdminQuery);
+        const assignAdmin = await query(assignAdminQuery);
+        const getAdminAssignQuery = `SELECT * FROM warehouses WHERE name = '${warehouse_name}'`;
+        const getAdminAssign = await query(getAdminAssignQuery);
+        return res
+          .status(200)
+          .send({ message: `WH admin is unassigned to its previous warehouse. Now assigned to ${warehouse_name}` });
+
+      }
       const assignAdminQuery = `UPDATE warehouses SET id_admin = ${id_admin} WHERE name='${warehouse_name}'`;
       console.log(assignAdminQuery);
 

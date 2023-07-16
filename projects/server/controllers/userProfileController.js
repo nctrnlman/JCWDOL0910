@@ -7,6 +7,10 @@ const {
   getCoordinates,
   // checkProvinceAndCity,
 } = require("../helper/setAddressHelper");
+const {
+  validateImageSize,
+  validateImageExtension,
+} = require("../helper/imageValidatorHelper");
 
 module.exports = {
   getUserProfile: async (req, res) => {
@@ -44,7 +48,7 @@ module.exports = {
       )}`;
       const getUser = await query(getUserQuery);
 
-      return res.status(200).send(getUser);
+      return res.status(200).send({ message: "User Profile Edited", getUser });
     } catch (error) {
       return res.status(error.status || 500).send(error);
     }
@@ -63,6 +67,42 @@ module.exports = {
       res.status(200).send({ filepath });
     } catch (error) {
       return res.status(error.status || 500).send(error);
+    }
+  },
+
+  addProfilePic: async (req, res) => {
+    try {
+      const idUser = req.user.id;
+      const { file } = req;
+      console.log(file)
+      if (!req.file) {
+        return res.status(400).send("No image file provided");
+      }
+      let image_url = "";
+      image_url = file ? "/" + file.filename : null;
+      if (!file) {
+        return res.status(400).send("No image file provided");
+      }
+      if (!validateImageSize(file)) {
+        return res.status(400).send("File size exceeds the limit");
+      }
+      if (!validateImageExtension(file)) {
+        return res.status(400).send("Invalid file extension");
+      }
+
+      let response = await query(
+        `UPDATE users SET image_path=${db.escape(
+          image_url
+        )} WHERE id_user=${db.escape(idUser)}`
+      );
+
+      let getUpdate = await query(`select * from users where id_user=${db.escape(idUser)}`)
+
+      return res.status(200).send({
+        getUpdate,
+      });
+    } catch (error) {
+      return res.status(error.statusCode || 500).send(error);
     }
   },
 
