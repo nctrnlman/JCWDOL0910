@@ -1,484 +1,413 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { format } from "date-fns";
-// import { Select } from "@chakra-ui/react";
-import { parseISO } from "date-fns";
-import { differenceInDays, add } from "date-fns";
 import axios from "axios";
-// import {
-//     Table,
-//     Thead,
-//     Tbody,
-//     Tr,
-//     Th,
-//     Td,
-//     TableContainer,
-//     Button,
-//     Text,
-// } from "@chakra-ui/react";
 import {
-    // fetchAllTransaction,
-    fetchTransactionOnDateRange, fetchMonthlyTransactionOnDateRange, fetchMonthlyCatTransactionOnDateRange, fetchMonthlyProductTransactionOnDateRange, fetchAllMonthlyTransaction, fetchAllMonthlyCatTransaction, fetchAllMonthlyProductTransaction
+  fetchAllMonthlyTransaction,
+  fetchAllMonthlyCatTransaction,
+  fetchAllMonthlyProductTransaction,
 } from "../../../features/reportTransactionSlice";
-import Datepicker from "react-tailwindcss-datepicker";
-// import "react-tailwindcss-datepicker/dist/index.css";
-// import TransactionTable from "../components/TransactionTable";
-import { PureComponent } from 'react';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-
-
 
 function TransactionReport() {
-    const dailyTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.dailyTransaction.result
-    );
-    const monthlyTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.monthlyTransaction.result
-    );
-    const monthlyCatTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.monthlyCatTransaction.result
-    );
-    const monthlyProductTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.monthlyProductTransaction.result
-    );
-    const allMonthlyTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.allMonthlyTransactions.result
-    );
-    const allMonthlyCatTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.allMonthlyCatTransactions.result
-    );
-    const allMonthlyProductTransaction = useSelector(
-        (state) => state.reportTransaction.transaction.allMonthlyProductTransactions.result
-    );
+  const dailyTransaction = useSelector(
+    (state) => state.reportTransaction.transaction.dailyTransaction.result
+  );
+  const monthlyTransaction = useSelector(
+    (state) => state.reportTransaction.transaction.monthlyTransaction.result
+  );
+  const monthlyCatTransaction = useSelector(
+    (state) => state.reportTransaction.transaction.monthlyCatTransaction.result
+  );
+  const monthlyProductTransaction = useSelector(
+    (state) =>
+      state.reportTransaction.transaction.monthlyProductTransaction.result
+  );
+  const allMonthlyTransaction = useSelector(
+    (state) => state.reportTransaction.transaction.allMonthlyTransactions.result
+  );
+  const allMonthlyCatTransaction = useSelector(
+    (state) =>
+      state.reportTransaction.transaction.allMonthlyCatTransactions.result
+  );
+  const allMonthlyProductTransaction = useSelector(
+    (state) =>
+      state.reportTransaction.transaction.allMonthlyProductTransactions.result
+  );
 
-    const [selectedWarehouse, setSelectedWarehouse] = useState("");
-    const [warehouses, setWarehouses] = useState([]);
-    const [allMonthlyTransactionfilt, setallMonthlyTransactionfilt] = useState([])
-    const [allMonthlyCatTransactionfilt, setallMonthlyCatTransactionfilt] = useState([])
-    const [allMonthlyProductTransactionfilt, setallMonthlyProductTransactionfilt] = useState([])
+  const [selectedWarehouse, setSelectedWarehouse] = useState("");
+  const [warehouses, setWarehouses] = useState([]);
+  const [allMonthlyTransactionfilt, setallMonthlyTransactionfilt] = useState(
+    []
+  );
+  const [allMonthlyCatTransactionfilt, setallMonthlyCatTransactionfilt] =
+    useState([]);
+  const [
+    allMonthlyProductTransactionfilt,
+    setallMonthlyProductTransactionfilt,
+  ] = useState([]);
 
-    const admin = useSelector(
-        (state) => state.admins.admin
-    );
-    console.log(admin)
+  const admin = useSelector((state) => state.admins.admin);
 
-    const [value, setValue] = useState({
-        startDate: null,
-        endDate: null,
-    });
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
-    // const userGlobal = useSelector((state) => state.user.user);
-    // // const { id } = userGlobal;
-    // const { id } = useParams();
+  useEffect(() => {
+    dispatch(fetchAllMonthlyTransaction());
+    dispatch(fetchAllMonthlyCatTransaction());
+    dispatch(fetchAllMonthlyProductTransaction());
+    setallMonthlyTransactionfilt([null]);
+    setallMonthlyCatTransactionfilt([null]);
+    setallMonthlyProductTransactionfilt([null]);
+  }, []);
 
-    const handleValueChange = async (newValue) => {
-
-        console.log("newValue:", newValue);
-        const status = await dispatch(fetchTransactionOnDateRange(newValue));
-        const status2 = await dispatch(fetchMonthlyTransactionOnDateRange(newValue));
-        const status3 = await dispatch(fetchMonthlyCatTransactionOnDateRange(newValue));
-        const status4 = await dispatch(fetchMonthlyProductTransactionOnDateRange(newValue));
-        // dispatch(fetchAllTransaction(id));
-        if (status === false) {
-            const now = format(Date.now(), "yyyy-MM-dd");
-            const sevenDaysAgo = format(add(Date.now(), { days: -7 }), "yyyy-MM-dd");
-            // dispatch(fetchAllTransaction(id));
-            let curval = { startDate: sevenDaysAgo, endDate: now };
-            setValue({ ...value, ...curval });
-        } else if (status === true) {
-            // console.log(newValue);
-            setValue(newValue);
-        }
-    };
-    // console.log(dailyTransaction)
-
-    useEffect(() => {
-        dispatch(fetchAllMonthlyTransaction());
-        dispatch(fetchAllMonthlyCatTransaction());
-        dispatch(fetchAllMonthlyProductTransaction());
-        setallMonthlyTransactionfilt([null])
-        setallMonthlyCatTransactionfilt([null])
-        setallMonthlyProductTransactionfilt([null])
-    }, []);
-
-    useEffect(() => {
-        const fetchWarehouses = async () => {
-            try {
-                const token = localStorage.admin_token;
-                console.log("token dari fetchwarehouse", token)
-                if (token) {
-                    console.log("token dari fetchwarehouse 2", token)
-                    let response = await axios.get(
-                        `http://localhost:8000/api/warehouses/`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                        }
-                    );
-                    console.log(response.data)
-                    setWarehouses(response.data);
-                }
-            } catch (error) {
-                console.log(error);
+  useEffect(() => {
+    const fetchWarehouses = async () => {
+      try {
+        const token = localStorage.admin_token;
+        if (token) {
+          let response = await axios.get(
+            `http://localhost:8000/api/warehouses/`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
             }
-        };
-
-        fetchWarehouses();
-    }, []);
-
-
-
-
-    const selectTransactionFromWarehouse = async () => {
-        try {
-            const token = localStorage.admin_token;
-            if (selectedWarehouse) {
-                const token = localStorage.admin_token;
-                console.log("selectTransactionFromWarehouse", token)
-                if (token) {
-                    let responseMonthly = await axios.get(
-                        `http://localhost:8000/api/admins/all-transactions-monthly/${selectedWarehouse}`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                        }
-                    );
-
-                    let responseMonthlyCat = await axios.get(
-                        `http://localhost:8000/api/admins/all-transactions-category-monthly/${selectedWarehouse}`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                        }
-                    );
-
-                    let responseMonthlyProduct = await axios.get(
-                        `http://localhost:8000/api/admins/all-transactions-product-monthly/${selectedWarehouse}`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                        }
-                    );
-
-                    setallMonthlyTransactionfilt(responseMonthly.data.result)
-                    setallMonthlyCatTransactionfilt(responseMonthlyCat.data.result)
-                    setallMonthlyProductTransactionfilt(responseMonthlyProduct.data.result)
-                    // console.log(responseMonthly.data)
-                    // console.log(responseMonthlyCat.data)
-                    // console.log(responseMonthlyProduct.data)
-                    // dispatch(fetchAllMonthlyTransaction(responseMonthly.data));
-                    // dispatch(fetchAllMonthlyCatTransaction(responseMonthlyCat.data));
-                    // dispatch(fetchAllMonthlyProductTransaction(responseMonthlyProduct.data));
-                }
-            }
-        } catch (error) {
-            console.log(error);
+          );
+          setWarehouses(response.data.warehouses);
         }
+      } catch (error) {
+        console.log(error);
+      }
     };
 
-    useEffect(() => {
-        selectTransactionFromWarehouse();
-    }, [selectedWarehouse]);
+    fetchWarehouses();
+  }, []);
 
-    console.log("selectedWarehouse", selectedWarehouse)
-    console.log("allMonthlyTransactionfilt", allMonthlyTransactionfilt)
-    console.log("allMonthlyCatTransactionfilt", allMonthlyCatTransactionfilt)
-    console.log("allMonthlyProductTransactionfilt", allMonthlyProductTransactionfilt)
+  const selectTransactionFromWarehouse = async () => {
+    try {
+      const token = localStorage.admin_token;
+      if (selectedWarehouse) {
+        if (token) {
+          let responseMonthly = await axios.get(
+            `http://localhost:8000/api/admins/all-transactions-monthly/${selectedWarehouse}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-    // const findMaxTamount = (arr) => {
-    //     let maxValue = 0;
-    //     for (let i = 0; i < arr.length; i++) {
-    //         if (parseInt(arr[i].total_amount) > maxValue) {
-    //             maxValue = arr[i].total_amount;
-    //         }
-    //     }
-    //     return maxValue;
-    // };
-    // if (allMonthlyTransaction) {
-    //     console.log("findMaxTamount", findMaxTamount(allMonthlyTransaction))
-    // }
+          let responseMonthlyCat = await axios.get(
+            `http://localhost:8000/api/admins/all-transactions-category-monthly/${selectedWarehouse}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
+          let responseMonthlyProduct = await axios.get(
+            `http://localhost:8000/api/admins/all-transactions-product-monthly/${selectedWarehouse}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
-    //----------------------------------------------------------------
-    return (
-        <div className="text-slate-900 min-h-screen flex-row bg-base-100 h-screen w-screen  px-20 lg:">
-            {/* <div className="flex flex-row max-w-lg ml-6 mt-6">
-                <Datepicker
-                    wrapperClassName="relative"
-                    inputClassName="w-full px-3 py-2 text-neutral-800 rounded-md border border-neutral-300 focus:outline-none focus:border-primary-400"
-                    calendarWrapperClassName="absolute top-full left-0 mt-2 w-full bg-white rounded-md shadow-lg"
-                    calendarHeaderClassName="flex items-center justify-between px-4 py-2 bg-primary-400 text-white rounded-t-md"
-                    calendarNavButtonClassName="flex items-center justify-center w-6 h-6 text-white rounded-full bg-primary-500 hover:bg-primary-600 focus:outline-none"
-                    calendarNavIconClassName="w-4 h-4"
-                    calendarTitleClassName="font-medium"
-                    calendarWeekdayClassName="flex items-center justify-center w-8 h-8 text-neutral-700"
-                    calendarDayClassName="flex items-center justify-center w-8 h-8 text-neutral-800 rounded-full hover:bg-primary-400 focus:bg-primary-400"
-                    calendarDayDisabledClassName="text-neutral-400 cursor-not-allowed"
-                    shortcutsWrapperClassName="mt-2"
-                    shortcutClassName="inline-flex items-center justify-center px-3 py-1 text-xs font-medium text-neutral-800 bg-neutral-300 rounded-md cursor-pointer hover:bg-neutral-400 focus:outline-none focus:bg-neutral-400"
-                    selectedShortcutsClassName="bg-primary-400"
-                    primaryColor="rose"
-                    value={value}
-                    onChange={handleValueChange}
-                    showShortcuts={true}
-                />
-            </div> */}
-            <p className="font-bold text-3xl px-8 pt-4 m-3"> Sales Report</p>
-            <p className="font-bold text-lg px-8 pt-4 m-3"> Note : Only orders with the status of "Pesanan Dikonfirmasi" are deemed eligible for inclusion in the Sales Report.</p>
+          setallMonthlyTransactionfilt(responseMonthly.data.result);
+          setallMonthlyCatTransactionfilt(responseMonthlyCat.data.result);
+          setallMonthlyProductTransactionfilt(
+            responseMonthlyProduct.data.result
+          );
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-            {admin.role === "Super Admin" && (
-                <div className="form-control m-5">
-                    <select
-                        value={selectedWarehouse}
-                        onChange={(e) => { setSelectedWarehouse(e.target.value) }}
-                        className="select select-bordered"
-                        required
-                    >
-                        <option value="">Select warehouse</option>
-                        {warehouses.map((w) => (
-                            <option key={w.id_warehouse} value={w.id_warehouse}>
-                                {w.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
+  useEffect(() => {
+    selectTransactionFromWarehouse();
+  }, [selectedWarehouse]);
+  return (
+    <div className="text-slate-900 min-h-screen flex-row bg-base-100 h-screen w-screen  px-20 lg:">
+      <p className="font-bold text-3xl px-8 pt-4 m-3"> Sales Report</p>
+      <p className="font-bold text-lg px-8 pt-4 m-3">
+        Note : Only orders with the status of "Pesanan Dikonfirmasi" are deemed
+        eligible for inclusion in the Sales Report.
+      </p>
 
-            <p className="font-bold text-2xl px-8 pt-4 m-3">All Monthly Transaction</p>
-            {allMonthlyTransactionfilt[0] == null ? (
-                <div class="overflow-y-hidden rounded-lg border">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                    <th class="px-5 py-3">Months</th>
-                                    <th class="px-5 py-3">Warehouse Name</th>
-                                    <th class="px-5 py-3">Total Amount</th>
-                                    <th class="px-5 py-3">Total Orders</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-gray-500">
-                                {allMonthlyTransaction?.map((dt) => {
-                                    return (
-                                        <tr>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.months}</p>
-                                            </td>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                            </td>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                            </td>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            ) : (
-                // If allMonthlyTransactionfilt is not true then show this instead : 
-                < div class="overflow-y-hidden rounded-lg border">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                    <th class="px-5 py-3">Months</th>
-                                    <th class="px-5 py-3">Warehouse Name</th>
-                                    <th class="px-5 py-3">Total Amount</th>
-                                    <th class="px-5 py-3">Total Orders</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-gray-500">
-                                {allMonthlyTransactionfilt?.map((dt) => {
-                                    return (
-                                        <tr>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.months}</p>
-                                            </td>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                            </td>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                            </td>
-                                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            )}
+      {admin.role === "Super Admin" && (
+        <div className="form-control m-5">
+          <select
+            value={selectedWarehouse}
+            onChange={(e) => {
+              setSelectedWarehouse(e.target.value);
+            }}
+            className="select select-bordered"
+            required
+          >
+            <option value="">Select warehouse</option>
+            {warehouses.map((w) => (
+              <option key={w.id_warehouse} value={w.id_warehouse}>
+                {w.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
+      <p className="font-bold text-2xl px-8 pt-4 m-3">
+        All Monthly Transaction
+      </p>
+      {allMonthlyTransactionfilt[0] == null ? (
+        <div className="overflow-y-hidden rounded-lg border">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
+                  <th className="px-5 py-3">Months</th>
+                  <th className="px-5 py-3">Warehouse Name</th>
+                  <th className="px-5 py-3">Total Amount</th>
+                  <th className="px-5 py-3">Total Orders</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-500">
+                {allMonthlyTransaction?.map((dt) => {
+                  return (
+                    <tr>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.months}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.warehouse_name}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_amount}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_orders}</p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div className="overflow-y-hidden rounded-lg border">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
+                  <th className="px-5 py-3">Months</th>
+                  <th className="px-5 py-3">Warehouse Name</th>
+                  <th className="px-5 py-3">Total Amount</th>
+                  <th className="px-5 py-3">Total Orders</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-500">
+                {allMonthlyTransactionfilt?.map((dt) => {
+                  return (
+                    <tr>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.months}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.warehouse_name}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_amount}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_orders}</p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
-            <p className="font-bold text-2xl px-8 pt-4 m-3">All Monthly Category Transaction</p>
+      <p className="font-bold text-2xl px-8 pt-4 m-3">
+        All Monthly Category Transaction
+      </p>
 
-            {allMonthlyCatTransactionfilt[0] == null ? (<div class="overflow-y-hidden rounded-lg border">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
-                                <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Category</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-500">
-                            {allMonthlyCatTransaction?.map((dt) => {
-                                return (
-                                    <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_category}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>) : (<div class="overflow-y-hidden rounded-lg border">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
-                                <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Category</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-500">
-                            {allMonthlyCatTransactionfilt?.map((dt) => {
-                                return (
-                                    <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_category}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>)}
+      {allMonthlyCatTransactionfilt[0] == null ? (
+        <div className="overflow-y-hidden rounded-lg border">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
+                  <th className="px-5 py-3">Months</th>
+                  <th className="px-5 py-3">Warehouse Name</th>
+                  <th className="px-5 py-3">Product Category</th>
+                  <th className="px-5 py-3">Total Amount</th>
+                  <th className="px-5 py-3">Total Orders</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-500">
+                {allMonthlyCatTransaction?.map((dt) => {
+                  return (
+                    <tr>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.months}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.warehouse_name}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.product_category}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_amount}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_orders}</p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div className="overflow-y-hidden rounded-lg border">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
+                  <th className="px-5 py-3">Months</th>
+                  <th className="px-5 py-3">Warehouse Name</th>
+                  <th className="px-5 py-3">Product Category</th>
+                  <th className="px-5 py-3">Total Amount</th>
+                  <th className="px-5 py-3">Total Orders</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-500">
+                {allMonthlyCatTransactionfilt?.map((dt) => {
+                  return (
+                    <tr>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.months}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.warehouse_name}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.product_category}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_amount}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_orders}</p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
+      <p className="font-bold text-2xl px-8 pt-4 m-3">
+        All Monthly Product Transaction
+      </p>
 
-            <p className="font-bold text-2xl px-8 pt-4 m-3">All Monthly Product Transaction</p>
-
-            {allMonthlyProductTransactionfilt[0] == null ? (<div class="overflow-y-hidden rounded-lg border">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
-                                <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Name</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-500">
-                            {allMonthlyProductTransaction?.map((dt) => {
-                                return (
-                                    <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            ) : (<div class="overflow-y-hidden rounded-lg border">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
-                                <th class="px-5 py-3">Months</th>
-                                <th class="px-5 py-3">Warehouse Name</th>
-                                <th class="px-5 py-3">Product Name</th>
-                                <th class="px-5 py-3">Total Amount</th>
-                                <th class="px-5 py-3">Total Orders</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-500">
-                            {allMonthlyProductTransactionfilt?.map((dt) => {
-                                return (
-                                    <tr>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.months}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.warehouse_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.product_name}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_amount}</p>
-                                        </td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                            <p class="whitespace-no-wrap">{dt.total_orders}</p>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            )}
-
-        </div >
-    );
+      {allMonthlyProductTransactionfilt[0] == null ? (
+        <div className="overflow-y-hidden rounded-lg border">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
+                  <th className="px-5 py-3">Months</th>
+                  <th className="px-5 py-3">Warehouse Name</th>
+                  <th className="px-5 py-3">Product Name</th>
+                  <th className="px-5 py-3">Total Amount</th>
+                  <th className="px-5 py-3">Total Orders</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-500">
+                {allMonthlyProductTransaction?.map((dt) => {
+                  return (
+                    <tr>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.months}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.warehouse_name}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.product_name}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_amount}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_orders}</p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div className="overflow-y-hidden rounded-lg border">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className=" bg-slate-900 text-left text-xs font-semibold uppercase tracking-widest text-white">
+                  <th className="px-5 py-3">Months</th>
+                  <th className="px-5 py-3">Warehouse Name</th>
+                  <th className="px-5 py-3">Product Name</th>
+                  <th className="px-5 py-3">Total Amount</th>
+                  <th className="px-5 py-3">Total Orders</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-500">
+                {allMonthlyProductTransactionfilt?.map((dt) => {
+                  return (
+                    <tr>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.months}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">
+                          {dt.warehouse_name}
+                        </p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.product_name}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_amount}</p>
+                      </td>
+                      <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <p className="whitespace-no-wrap">{dt.total_orders}</p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default TransactionReport;
