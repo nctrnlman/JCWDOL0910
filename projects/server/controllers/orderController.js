@@ -10,15 +10,35 @@ const {
 } = require("../helper/imageValidatorHelper");
 const orderQueries = require("../queries/orderQueries");
 const { getShippingCost } = require("../helper/getShippingCost");
+const { getPaginationParams } = require("../helper/getPaginationHelper");
 
 module.exports = {
   orderList: async (req, res) => {
     try {
       const { status, id_user } = req.query;
-      const orderList = await query(
-        orderQueries.orderListQuery(id_user, status)
+      const itemsPerPage = 3;
+
+      console.log(status);
+
+      const { offset } = getPaginationParams(req, itemsPerPage);
+
+      const orderListQuery = orderQueries.orderListQuery(
+        id_user,
+        status,
+        offset,
+        itemsPerPage
       );
-      return res.status(200).send(orderList);
+      const countQuery = orderQueries.countQuery(id_user, status);
+
+      const [orderItems, countResult] = await Promise.all([
+        query(orderListQuery),
+        query(countQuery),
+      ]);
+
+      const totalItems = countResult[0].total;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      return res.status(200).send({ orderItems, totalPages, itemsPerPage });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
@@ -27,6 +47,7 @@ module.exports = {
   getShippingWarehouse: async (req, res) => {
     try {
       const { id_user, id_address, courier } = req.query;
+
       if (id_address === null || id_address === "") {
         return res
           .status(400)
@@ -57,6 +78,7 @@ module.exports = {
 
       const checkWeight = await query(orderQueries.checkWeightQuery(id_user));
 
+      console.log(checkWeight, "ini weight");
       const services = await getShippingCost(
         originWarehouse.city.city_id,
         destinationAddress.city.city_id,

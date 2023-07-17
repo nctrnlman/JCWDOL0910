@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { cancelOrder, fetchOrder } from "../features/orders/orderSlice";
-import PaymentButton from "../components/Buttons/PaymentButton";
-import SeeReceiptButton from "../components/Buttons/SeeReceiptButton";
-import ReceiptModal from "../components/modals/ReceiptModal";
-import CancelOrderButton from "../components/Buttons/CancelOrderButton";
-import CancelOrderModal from "../components/modals/CancelOrderModal";
+import OrderItem from "../components/Order/OrderItem";
+import Pagination from "../components/utils/Pagination";
 
 function OrderList() {
   const dispatch = useDispatch();
@@ -14,83 +11,77 @@ function OrderList() {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const user = useSelector((state) => state.users.user);
+  const currentPage = useSelector((state) => state.orders.currentPage);
+  const totalPages = useSelector((state) => state.orders.totalPages);
+  const itemsPerPage = useSelector((state) => state.orders.itemsPerPage);
   const id_user = user.id;
 
-  const renderOrder = () => {
-    return orderList?.map((order) => {
-      const isWaitingPayment = order.status === "Menunggu Pembayaran";
-      const handleShowReceipt = (orderId, selectedOrder) => {
-        setSelectedOrderId(orderId);
-        setSelectedOrder(selectedOrder);
-      };
-      const handleShowCancelModal = (orderId, selectedOrder) => {
-        setSelectedOrderId(orderId);
-        setSelectedOrder(selectedOrder);
-      };
-      const handleCancelOrder = () => {
-        setStatus("Dibatalkan");
-        dispatch(cancelOrder(selectedOrderId, id_user, status));
-      };
-      const isWaitingConfirmOrder =
-        order.status === "Menunggu Konfirmasi Pembayaran";
-      return (
-        <div className="min-h-[50px] flex flex-col" key={order.id_order}>
-          <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4 ">
-            <h1 className="font-bold text-2xl">Order: #{order.id_order}</h1>
-            <h1>Shipping: {order.shipping_method}</h1>
-            {order.productList.map((product) => (
-              <div
-                key={product.product_name}
-                className="hero-content justify-start lg:w-[400px] flex items-center"
-              >
-                <img
-                  src={`http://localhost:8000/${product.product_image}`}
-                  alt={product.product_name}
-                  className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
-                />
-                <div className="flex flex-col ml-4">
-                  <h1 className="text-base uppercase lg:text-3xl font-bold">
-                    {product.product_name}
-                  </h1>
-                  <p>x {product.quantity}</p>
-                  <p>Rp.{product.quantity * product.product_price}</p>
-                </div>
-              </div>
-            ))}
-            <div className="flex justify-between text-xl">
-              <div>
-                <p>Total Amount: {order.total_amount}</p>
-              </div>
-              <div className="flex gap-2">
-                {isWaitingPayment && <PaymentButton orderId={order.id_order} />}
-                {isWaitingPayment && (
-                  <CancelOrderButton
-                    onClick={() => handleShowCancelModal(order.id_order, order)}
-                  />
-                )}
-                {isWaitingConfirmOrder && (
-                  <SeeReceiptButton
-                    onClick={() => handleShowReceipt(order.id_order, order)}
-                  />
-                )}
-                {selectedOrderId && <ReceiptModal order={selectedOrder} />}
-                {selectedOrderId && (
-                  <CancelOrderModal
-                    order={selectedOrder}
-                    onclick={handleCancelOrder}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
+  const formattedPrice = (price) => {
+    return price.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     });
   };
 
+  const handleShowReceipt = (orderId, selectedOrder) => {
+    setSelectedOrderId(orderId);
+    setSelectedOrder(selectedOrder);
+  };
+
+  const handleShowCancelModal = (orderId, selectedOrder) => {
+    setSelectedOrderId(orderId);
+    setSelectedOrder(selectedOrder);
+  };
+
+  const handleCancelOrder = () => {
+    setStatus("Dibatalkan");
+    dispatch(cancelOrder(selectedOrderId, id_user, status));
+  };
+
+  const isWaitingPayment = (order) => {
+    return order.status === "Menunggu Pembayaran";
+  };
+
+  const isWaitingConfirmOrder = (order) => {
+    return order.status === "Menunggu Konfirmasi Pembayaran";
+  };
+
+  const renderOrder = () => {
+    if (orderList.length === 0) {
+      return (
+        <div className="min-h-[50px] flex flex-col">
+          <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
+            <h1 className="text-2xl">Order with the status does not exist</h1>
+          </div>
+        </div>
+      );
+    }
+
+    return orderList.map((order) => (
+      <OrderItem
+        key={order.id_order}
+        order={order}
+        formattedPrice={formattedPrice}
+        handleShowReceipt={handleShowReceipt}
+        handleShowCancelModal={handleShowCancelModal}
+        handleCancelOrder={handleCancelOrder}
+        isWaitingPayment={isWaitingPayment(order)}
+        isWaitingConfirmOrder={isWaitingConfirmOrder(order)}
+        selectedOrderId={selectedOrderId}
+        selectedOrder={selectedOrder}
+      />
+    ));
+  };
+
+  const handlePageChange = (page) => {
+    dispatch(fetchOrder(id_user, status, page));
+  };
+
   useEffect(() => {
-    dispatch(fetchOrder(id_user, status));
-  }, [dispatch, status, id_user]);
+    dispatch(fetchOrder(id_user, status, currentPage));
+  }, [dispatch, status, id_user, currentPage]);
 
   return (
     <div className="w-screen h-screen">
@@ -98,7 +89,7 @@ function OrderList() {
         <div className="flex items-center">
           <h1 className="lg:text-xl">Status:</h1>
           <select
-            className="select select-bordered w-[200px] lg:w-[400px] max-w-xs ml-4 text-xs lg:text-base"
+            className="select select-bordered w-[300px] lg:w-[400px] max-w-xs ml-4 text-xs lg:text-base"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
@@ -114,6 +105,11 @@ function OrderList() {
         </div>
         {renderOrder()}
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={handlePageChange}
+      />
     </div>
   );
 }

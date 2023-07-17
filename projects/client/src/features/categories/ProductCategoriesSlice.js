@@ -41,13 +41,13 @@ export const {
 export default productCatSLice.reducer;
 export function getAllProductCategories(page = 1, search = "", sort = "") {
   return async (dispatch) => {
-    // const adminToken = localStorage.getItem("admin_token");
+    const adminToken = localStorage.getItem("admin_token");
     try {
       const response = await Axios.get(
-        `http://localhost:8000/api/admins/categories/?page=${page}&search=${search}&sort=${sort}`
-        // {
-        //   headers: { Authorization: `Bearer ${adminToken}` },
-        // }
+        `http://localhost:8000/api/admins/categories/?page=${page}&search=${search}&sort=${sort}`,
+        {
+          headers: { Authorization: `Bearer ${adminToken}` },
+        }
       );
 
       const { productCategories, totalPages, itemsPerPage } = response.data;

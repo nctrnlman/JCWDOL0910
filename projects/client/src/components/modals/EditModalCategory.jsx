@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import CustomToastOptions from "../CustomToast/CustomToastOptions";
 import Axios from "axios";
 
-function EditModalCategory({ categoryId, categoryName }) {
+function EditModalCategory({ categoryId, categoryName, disabled }) {
   const dispatch = useDispatch();
   const [name, setName] = useState(categoryName);
   const [showModal, setShowModal] = useState(false);
@@ -45,8 +45,11 @@ function EditModalCategory({ categoryId, categoryName }) {
     <>
       <label
         htmlFor="my_modal_6"
-        className="btn btn-info w-[60px] lg:w-[100px] text-[10px] lg:text-[15px]"
-        onClick={handleToggleModal}
+        className={`btn btn-info w-[60px] lg:w-[100px] text-[10px] lg:text-[15px] ${
+          disabled ? "disabled" : ""
+        }`}
+        disabled={disabled}
+        onClick={disabled ? null : handleToggleModal}
       >
         Edit
       </label>
