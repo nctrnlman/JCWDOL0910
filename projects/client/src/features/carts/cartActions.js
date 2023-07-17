@@ -5,9 +5,10 @@ import {
   updateCartItemQuantity,
   showCartErrorToast,
 } from "./helpers/cartHelpers";
-import { toast } from "react-toastify";
-import CustomToast from "../../components/CustomToast/CustomToast";
-import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
+import {
+  showErrorToast,
+  showInfoToast,
+} from "../../components/CustomToast/CustomNotification";
 
 export function addToCart(id_product, quantity, cartItems) {
   return async (dispatch) => {
@@ -21,13 +22,12 @@ export function addToCart(id_product, quantity, cartItems) {
       const { message, product, quantity: updatedQuantity } = response.data;
 
       if ((product.total_stock = updatedQuantity)) {
-        // Check if stock is more than the updated quantity
         const updatedCartItems = isProductInCart(cartItems, product)
           ? updateCartItemQuantity(cartItems, product, updatedQuantity)
           : [...cartItems, { ...product, quantity: updatedQuantity }];
-        console.log(response, "cart");
 
         dispatch(setCartItems(updatedCartItems));
+        showInfoToast(message);
       }
     } catch (error) {
       console.error("Error adding product to cart: ", error);
@@ -45,9 +45,7 @@ export function fetchItemsCart() {
           Authorization: `Bearer ${token}`,
         },
       });
-      const { message, cartItems } = response.data;
-      dispatch(setCartItems(cartItems));
-      console.log(message);
+      dispatch(setCartItems(response.data.cartItems));
     } catch (error) {
       console.error("Error fetching cart items: ", error);
     }
@@ -65,10 +63,7 @@ export function increaseCartItemQuantity(id_product) {
       dispatch(fetchItemsCart());
     } catch (error) {
       console.error("Error increasing quantity: ", error);
-      toast(
-        <CustomToast type="error" message={error.response.data.message} />,
-        CustomToastOptions
-      );
+      showErrorToast(error.response.data.message);
     }
   };
 }
@@ -93,12 +88,12 @@ export function deleteProductFromCart(id_product) {
   return async (dispatch) => {
     try {
       const token = localStorage.getItem("user_token");
-      await axios.delete("http://localhost:8000/api/carts", {
+      const response = await axios.delete("http://localhost:8000/api/carts", {
         headers: { Authorization: `Bearer ${token}` },
         params: { id_product },
       });
       dispatch(fetchItemsCart());
-      console.log("Product deleted from the cart");
+      showInfoToast(response.data.message);
     } catch (error) {
       console.error("Error deleting product from cart: ", error);
     }

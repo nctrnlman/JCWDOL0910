@@ -25,6 +25,10 @@ module.exports = {
     return fetchWarehouseListQuery;
   },
 
+  fetchWarehouseDataQuery: () => {
+    return `SELECT * FROM warehouses`;
+  },
+
   countWarehouseQuery: (search) => {
     let countQuery = `SELECT COUNT(*) AS total FROM warehouses`;
 

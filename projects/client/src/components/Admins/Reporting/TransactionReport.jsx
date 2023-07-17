@@ -6,6 +6,7 @@ import {
   fetchAllMonthlyCatTransaction,
   fetchAllMonthlyProductTransaction,
 } from "../../../features/reportTransactionSlice";
+import { fetchAllWarehouseData } from "../../../features/warehouses/warehouseSlice";
 
 function TransactionReport() {
   const dailyTransaction = useSelector(
@@ -34,7 +35,7 @@ function TransactionReport() {
   );
 
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
-  const [warehouses, setWarehouses] = useState([]);
+  const warehouses = useSelector((state) => state.warehouses.warehouse.data);
   const [allMonthlyTransactionfilt, setallMonthlyTransactionfilt] = useState(
     []
   );
@@ -59,24 +60,7 @@ function TransactionReport() {
   }, []);
 
   useEffect(() => {
-    const fetchWarehouses = async () => {
-      try {
-        const token = localStorage.admin_token;
-        if (token) {
-          let response = await axios.get(
-            `http://localhost:8000/api/warehouses/`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          setWarehouses(response.data.warehouses);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchWarehouses();
+    dispatch(fetchAllWarehouseData());
   }, []);
 
   const selectTransactionFromWarehouse = async () => {
@@ -120,6 +104,8 @@ function TransactionReport() {
   useEffect(() => {
     selectTransactionFromWarehouse();
   }, [selectedWarehouse]);
+
+  console.log(warehouses, "warehouses di report sales");
   return (
     <div className="text-slate-900 min-h-screen flex-row bg-base-100 h-screen w-screen  px-20 lg:">
       <p className="font-bold text-3xl px-8 pt-4 m-3"> Sales Report</p>
@@ -139,7 +125,7 @@ function TransactionReport() {
             required
           >
             <option value="">Select warehouse</option>
-            {warehouses.map((w) => (
+            {warehouses?.map((w) => (
               <option key={w.id_warehouse} value={w.id_warehouse}>
                 {w.name}
               </option>
