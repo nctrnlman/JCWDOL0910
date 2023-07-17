@@ -29,7 +29,6 @@ const AddressContent = () => {
 
   const handleDelete = async (id_address) => {
     await dispatch(deleteAddress(id_address));
-    console.log("id untuk dihapus", id_address);
     closeDeleteModal();
   };
 
@@ -75,7 +74,6 @@ const AddressContent = () => {
   useEffect(() => {
     dispatch(getAddress());
   }, [dispatch]);
-
   return (
     <div className="bg-base-100 h-screen flex flex-col lg:flex-row lg:justify-start justify-center lg:items-center w-screen lg:h-full lg:w-full">
       <div className="flex flex-col gap-5 lg:gap-3 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md lg:mx-5 xl:mx-10">
