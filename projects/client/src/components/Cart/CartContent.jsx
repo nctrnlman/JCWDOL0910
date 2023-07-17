@@ -5,6 +5,7 @@ import EmptyCartCard from "../Cards/EmptyCartCard";
 import CheckoutButton from "../Buttons/CheckOutButton";
 
 function CartContent({ cartItems, onQuantityChange, totalPrice }) {
+  const disabled = cartItems.length === 0;
   return (
     <>
       <div className="flex flex-col flex-1 overflow-y-auto">
@@ -27,7 +28,7 @@ function CartContent({ cartItems, onQuantityChange, totalPrice }) {
       </div>
       <div className="bg-base-100 shadow-md p-4 flex justify-between items-center border border-solid border-base-300">
         <p className="text-lg font-semibold">Total Price: {totalPrice}</p>
-        <CheckoutButton />
+        <CheckoutButton disabled={disabled} />
       </div>
     </>
   );

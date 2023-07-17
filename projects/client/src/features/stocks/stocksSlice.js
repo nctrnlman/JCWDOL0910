@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
   showErrorToast,
+  showInfoToast,
   showSuccessToast,
 } from "../../components/CustomToast/CustomNotification";
 
@@ -145,7 +146,7 @@ export function deleteStockData(id_stock) {
         }
       );
       dispatch(fetchStockData());
-      showSuccessToast(response.data.message);
+      showInfoToast(response.data.message);
     } catch (error) {
       console.log(error.response);
       showErrorToast(error.response.data.message);

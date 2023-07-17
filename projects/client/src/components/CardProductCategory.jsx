@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getAllProductCategories } from "../features/categories/ProductCategoriesSlice";
+import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function ProductCategories() {
@@ -21,16 +20,15 @@ function ProductCategories() {
               return (
                 <div
                   key={product_category.id_category}
-                  className="flex flex-col items-center w-[250px] gap-3 hover:cursor-pointer"
-                  onClick={() => navigate(`/products/${product_category.name}`)}
+                  className="flex flex-col items-center w-[250px] gap-3 hover:cursor-pointer border-r border-gray-300  p-3"
+                  onClick={() =>
+                    navigate(`/products/${product_category.id_category}`)
+                  }
                 >
-                  <img
-                    src={require("../assets/Logo.png")}
-                    alt={product_category.name}
-                    className="w-32 h-12"
-                  />
                   <div className="w-full text-center">
-                    {product_category.name}
+                    <h1 className="text-xl font-bold text-gray-900">
+                      {product_category.name}
+                    </h1>
                   </div>
                 </div>
               );
