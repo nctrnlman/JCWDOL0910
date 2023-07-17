@@ -97,7 +97,8 @@ module.exports = {
       );
 
       return res.status(200).send({
-        getUpdate,
+        message: "Update profile picture success",
+        user: getUpdate[0],
       });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);

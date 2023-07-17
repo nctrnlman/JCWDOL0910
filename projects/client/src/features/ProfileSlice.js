@@ -3,6 +3,7 @@ import Axios from "axios";
 import { toast } from "react-toastify";
 import CustomToast from "../components/CustomToast/CustomToast";
 import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
+import { showSuccessToast } from "../components/CustomToast/CustomNotification";
 
 export const ProfileSLice = createSlice({
   name: "profile",
@@ -50,6 +51,9 @@ export function addProfilePic(data) {
           headers: { Authorization: `Bearer ${userToken}` },
         }
       );
+      dispatch(getProfile());
+      console.log(response);
+      showSuccessToast(response.data.message);
     } catch (error) {
       console.log(error);
       toast(

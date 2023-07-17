@@ -4,7 +4,7 @@ import SeeDetailButton from "./SeeDetailButton";
 import AddToCartButton from "./AddToCartButton";
 
 function ProductCardDashboard(props) {
-  const { product, openDeleteModal, openEditModal } = props;
+  const { product, openDeleteModal, openEditModal, userRole } = props;
   const location = useLocation();
   const isAdminRoute = location.pathname === "/admin-products";
 
@@ -41,24 +41,26 @@ function ProductCardDashboard(props) {
         <div className="flex items-center my-2 gap-3">
           {isAdminRoute ? (
             <div className="flex items-center my-2 gap-3">
-              <div className="gap-5 flex flex-row ">
-                <a
-                  className="btn btn-xs md:btn-md w-12 lg:w-2/4 btn-info"
-                  href="#edit_modal_product"
-                  onClick={() => openEditModal(product.id_product)}
-                >
-                  Edit
-                </a>
-                <a
-                  className="btn btn-xs w-12 lg:btn-md lg:w-2/4 btn-error"
-                  href="#delete_modal"
-                  onClick={() =>
-                    openDeleteModal(product.id_product, product.name)
-                  }
-                >
-                  Delete
-                </a>
-              </div>
+              {userRole === "Super Admin" && (
+                <div className="gap-5 flex flex-row ">
+                  <a
+                    className={`btn btn-xs  md:btn-md w-12 lg:w-2/4 btn-info`}
+                    href="#edit_modal_product"
+                    onClick={() => openEditModal(product.id_product)}
+                  >
+                    Edit
+                  </a>
+                  <a
+                    className="btn btn-xs w-12 lg:btn-md lg:w-2/4 btn-error"
+                    href="#delete_modal"
+                    onClick={() =>
+                      openDeleteModal(product.id_product, product.name)
+                    }
+                  >
+                    Delete
+                  </a>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center my-2 gap-3">

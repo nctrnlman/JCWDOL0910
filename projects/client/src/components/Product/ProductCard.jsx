@@ -35,38 +35,9 @@ function ProductCard(props) {
         <div className="text-[10px] lg:text-xs pt-2 text-gray-500">
           Stock: {product.total_stock}
         </div>
-        <div className="flex items-center my-2 gap-3">
-          {isAdminRoute ? (
-            <div className="flex items-center my-2 gap-3">
-              <div className="gap-5 flex flex-row ">
-                <a
-                  className="btn btn-xs w-12 lg:w-2/4 btn-info"
-                  href="#edit_modal_product"
-                  onClick={() => openEditModal(product.id_product)}
-                >
-                  Edit
-                </a>
-                <a
-                  className="btn btn-xs w-12 lg:w-2/4 btn-error"
-                  href="#delete_modal"
-                  onClick={() =>
-                    openDeleteModal(product.id_product, product.name)
-                  }
-                >
-                  Delete
-                </a>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center my-2 gap-3">
-              <div className="">
-                <SeeDetailButton productId={product.id_product} />
-              </div>
-              <div>
-                <AddToCartButton product={product} quantity={1} />
-              </div>
-            </div>
-          )}
+        <div className="flex justify-center items-center my-2 gap-3">
+          <SeeDetailButton productId={product.id_product} />
+          <AddToCartButton product={product} quantity={1} />
         </div>
       </div>
     </div>
