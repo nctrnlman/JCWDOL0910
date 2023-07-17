@@ -38,7 +38,7 @@ module.exports = {
         const product = await cartQueries.getProductDetails(id_product);
 
         res.status(200).send({
-          message: "Product quantity updated in the cart",
+          message: "Product added to the cart",
           quantity: updatedQuantity,
           product: product,
         });
