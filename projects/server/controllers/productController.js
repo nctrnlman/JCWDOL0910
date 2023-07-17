@@ -36,7 +36,7 @@ module.exports = {
 
       let countQuery = `SELECT COUNT(*) AS total FROM products`;
 
-      let productsQuery = `SELECT p.*, SUM(s.total_stock) AS total_stock FROM products p JOIN stocks s ON p.id_product = s.id_product JOIN categories c ON p.id_category = c.id_category `;
+      let productsQuery = `SELECT p.*,c.name, SUM(s.total_stock) AS total_stock FROM products p JOIN stocks s ON p.id_product = s.id_product JOIN categories c ON p.id_category = c.id_category `;
 
       if (category !== undefined && category !== "") {
         productsQuery += ` WHERE p.id_category = ${db.escape(category)}`;
@@ -66,7 +66,7 @@ module.exports = {
         FROM products
         WHERE LOWER(name) LIKE '%${search.toLowerCase()}%'`;
       } else if (category) {
-        countQuery = `SELECT COUNT(*) AS total FROM products p WHERE p.id_category = ${db.escape(
+        countQuery = `SELECT COUNT(*) AS total FROM products p JOIN categories c ON p.id_category = c.id_category WHERE c.name = ${db.escape(
           category
         )}`;
       }

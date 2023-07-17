@@ -20,7 +20,6 @@ import ReportingAdmin from "./pages/ReportingAdmin";
 import CategoriesAdmin from "./pages/CategoriesAdmin";
 import ReportingAdminStock from "./pages/ReportingAdminStock";
 import LandingPage from "./pages/LandingPage";
-import ProductCategory from "./pages/ProductCategory";
 import ProductDetail from "./pages/ProductDetail";
 import Products from "./pages/Products";
 import Verification from "./pages/Verification";
@@ -96,11 +95,10 @@ function App() {
       {showNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/products/:category" element={<ProductCategory />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/verification/" element={<Verification />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/products" element={<Products />} />
+        <Route path="/products/:category?" element={<Products />} />
         {userToken === null ? (
           <>
             <Route path="/register" element={<Register />} />

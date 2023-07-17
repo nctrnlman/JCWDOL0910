@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { fetchProducts } from "../features/products/productSlice";
 import ProductCard from "../components/Product/ProductCard";
 import { setSort } from "../features/stocks/stocksSlice";
@@ -8,10 +9,13 @@ import SearchInputList from "../components/utils/SearchInputList";
 import SortSection from "../components/Admins/Products/SortSection";
 
 function Products() {
+  const { category } = useParams();
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(
+    category ? category : ""
+  );
   const categories = useSelector(
     (state) => state.productCategories.productCategories
   );
