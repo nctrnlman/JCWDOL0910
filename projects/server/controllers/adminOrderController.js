@@ -13,8 +13,8 @@ module.exports = {
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock FROM orders o INNER JOIN order_items oi ON o.id_order = oi.id_order INNER JOIN products p ON oi.product_name = p.name INNER JOIN stocks s ON p.id_product = s.id_product WHERE o.id_order = ${db.escape(
-      id_order
-    )}  AND s.id_warehouse = o.id_warehouse;
+        id_order
+      )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
       for (const item of fetchOrder) {
@@ -196,8 +196,8 @@ module.exports = {
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product
     WHERE o.id_order = ${db.escape(
-      id_order
-    )}  AND s.id_warehouse = o.id_warehouse;
+        id_order
+      )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
       if (fetchOrder.length > 0) {
@@ -305,8 +305,13 @@ module.exports = {
     INNER JOIN stocks s ON p.id_product = s.id_product and o.id_warehouse = s.id_warehouse
     WHERE o.id_order = ${db.escape(id_order)} `);
 
+      console.log("fetchOrder", fetchOrder)
+      console.log("fetchOrder length", fetchOrder.length)
+
+      let kumpulanPerubahanStockHistory = []
+
       if (fetchOrder.length > 0) {
-        for (const item of fetchOrder) {
+        for (let i = 0; i <= fetchOrder.length - 1; i++) {
           const {
             id_order,
             id_product,
@@ -314,7 +319,7 @@ module.exports = {
             id_warehouse,
             total_stock,
             id_stock,
-          } = item;
+          } = fetchOrder[i]
 
           const updateStock = await query(
             `UPDATE stocks SET total_stock = total_stock + ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
@@ -326,15 +331,17 @@ module.exports = {
           `);
 
           const getStockHistory = await query(
-            `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
+            `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
           );
-
-          return res.status(400).send({
-            message: `Order sudah tercancel. Stok tiap produk sudah ditambahkan kembali.`,
-            result: getStockHistory,
-          });
+          console.log(getStockHistory)
         }
       }
+
+      return res.status(200).send({
+        message: `Order dibatalkan`,
+        result: kumpulanPerubahanStockHistory,
+      });
+
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }

@@ -28,7 +28,8 @@ function ProductAdminContent() {
   const [searchInput, setSearchInput] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-
+  const adminDetails = JSON.parse(localStorage.getItem("admin_details"));
+  const userRole = adminDetails.role;
   const handleSort = (option) => {
     setSelectedSort(option);
     dispatch(
@@ -92,16 +93,18 @@ function ProductAdminContent() {
   return (
     <div className="w-full p-5">
       <div className="">
-        <div className="btn btn-primary mt-4 mx-2">
-          <a
-            href="#create_modal_product"
-            onClick={() => {
-              setCreateModalOpen(true);
-            }}
-          >
-            Add New Product
-          </a>
-        </div>
+        {userRole === "Super Admin" && (
+          <div className="btn btn-primary mt-4 mx-2">
+            <a
+              href="#create_modal_product"
+              onClick={() => {
+                setCreateModalOpen(true);
+              }}
+            >
+              Add New Product
+            </a>
+          </div>
+        )}
         <SearchSection
           searchInput={searchInput}
           setSearchInput={setSearchInput}

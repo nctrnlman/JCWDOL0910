@@ -29,6 +29,18 @@ export const { setIsLoading, setUser, resetuser } = userSlice.actions;
 
 export default userSlice.reducer;
 
+export function getUserDetails() {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/users/");
+      console.log(response);
+      // localStorage.setItem("user_details", JSON.stringify(response.data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export function registerUser(data, callback) {
   return async (dispatch) => {
     dispatch(setIsLoading(true));

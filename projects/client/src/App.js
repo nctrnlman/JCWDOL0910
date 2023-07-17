@@ -36,6 +36,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ForgetPassword from "./pages/ForgetPassword";
 import Profiling from "./pages/Profiling";
 import { getAllProductCategories } from "./features/categories/ProductCategoriesSlice";
+import { getProfile } from "./features/ProfileSlice";
 
 function App() {
   const location = useLocation();
@@ -84,6 +85,7 @@ function App() {
   useEffect(() => {
     if (userToken) {
       dispatch(fetchItemsCart());
+      dispatch(getProfile());
     }
   }, [userToken, dispatch]);
 
@@ -99,7 +101,6 @@ function App() {
         <Route path="/products/:category" element={<ProductCategory />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/verification/" element={<Verification />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/products" element={<Products />} />
         {userToken === null ? (
           <>

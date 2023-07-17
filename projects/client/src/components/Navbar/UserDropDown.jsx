@@ -11,6 +11,7 @@ const UserDropdown = ({ user }) => {
   const totalQuantity = useSelector((state) => state.carts.totalQuantity);
   const cartItems = useSelector((state) => state.carts.cartItems);
   const isLargeScreen = window.innerWidth > 1024;
+  const existing_profile = useSelector((state) => state.profile.profile);
 
   const handleLogout = async () => {
     dispatch(logoutUser());
@@ -42,7 +43,7 @@ const UserDropdown = ({ user }) => {
         <label tabIndex={0} className="btn btn-ghost btn-circle avatar ml-1.5">
           <div className="w-10 rounded-full">
             <img
-              src={`http://localhost:8000${user?.image}`}
+              src={`http://localhost:8000/${existing_profile.image_path}`}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src =

@@ -1,8 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
-import CustomToast from "../../components/CustomToast/CustomToast";
-import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
 import {
   showErrorToast,
   showInfoToast,
@@ -107,7 +104,7 @@ export function deleteWarehouse(id_warehouse) {
         }
       );
       dispatch(fetchWarehouses());
-      showSuccessToast(response.data.message);
+      showInfoToast(response.data.message);
     } catch (error) {
       console.error("Error deleting warehouse:", error);
       showErrorToast(error.response.data.message);
@@ -151,7 +148,9 @@ export function createWarehouse(warehouseData) {
       dispatch(fetchWarehouses());
       showSuccessToast(response.data.message);
     } catch (error) {
-      console.error("Error creating warehouse:", error);
+      showErrorToast(error.response.data.message);
+      // console.error("Error creating warehouse:", error);
+      console.log(error);
     }
   };
 }

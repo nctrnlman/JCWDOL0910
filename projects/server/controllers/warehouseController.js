@@ -52,7 +52,7 @@ module.exports = {
         latitude,
         longitude
       );
-      res.status(201).send({
+      res.status(200).send({
         data: newWarehouse,
         message: "Warehouse created successfully",
       });
@@ -72,7 +72,7 @@ module.exports = {
         id_warehouse
       );
       if (existingWarehouse.length === 0) {
-        res.status(404).send({
+        res.status(400).send({
           message: "Warehouse not found",
         });
         return;
@@ -124,7 +124,7 @@ module.exports = {
       );
 
       if (existingWarehouse.length === 0) {
-        res.status(404).send({
+        res.status(400).send({
           message: "Warehouse not found",
         });
         return;
