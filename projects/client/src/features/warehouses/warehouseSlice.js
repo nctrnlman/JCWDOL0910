@@ -80,6 +80,23 @@ export function fetchWarehouses(page = 1, search = "", sort = "") {
   };
 }
 
+export function fetchAllWarehouseData() {
+  return async (dispatch) => {
+    const adminToken = localStorage.getItem("admin_token");
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/warehouses/data",
+        { headers: { Authorization: `Bearer ${adminToken}` } }
+      );
+      dispatch(setWarehouse(response.data.data));
+      console.log(response, "list warehouse");
+    } catch (error) {
+      showErrorToast(error.response.data.message);
+      console.log(error);
+    }
+  };
+}
+
 export function deleteWarehouse(id_warehouse) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");

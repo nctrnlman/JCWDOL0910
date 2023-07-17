@@ -17,7 +17,7 @@ function LandingPage() {
     <div className="bg-base-100">
       <Header />
       <LatestProducts />
-      <DisplayProduct />
+      {/* <DisplayProduct /> */}
       <Footer />
     </div>
   );

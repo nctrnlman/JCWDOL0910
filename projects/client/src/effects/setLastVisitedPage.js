@@ -1,9 +1,9 @@
 const setLastVisitedPage = (location) => {
-  if (location.pathname !== "/login" && location.pathname !== "/register") {
-    sessionStorage.setItem(
-      "lastVisitedPage",
-      location.pathname + location.search
-    );
+  const { pathname } = location;
+  const isAdminRoute = pathname.startsWith("/admin");
+
+  if (pathname !== "/login" && pathname !== "/register" && !isAdminRoute) {
+    sessionStorage.setItem("lastVisitedPage", pathname + location.search);
   }
 };
 

@@ -37,11 +37,9 @@ module.exports = {
         province,
         postal_code
       );
-
       if (!result) {
         res.status(400).send({ message: "Coordinates not found" });
       }
-
       const { latitude, longitude } = result;
 
       const newWarehouse = await warehouseQueries.createWarehouse(
@@ -73,7 +71,6 @@ module.exports = {
       const existingWarehouse = await warehouseQueries.checkWarehouse(
         id_warehouse
       );
-
       if (existingWarehouse.length === 0) {
         res.status(404).send({
           message: "Warehouse not found",
@@ -82,7 +79,6 @@ module.exports = {
       }
 
       const existingCity = warehouseQueries.checkCity(city);
-
       if (existingCity.length > 0) {
         res.status(400).send({
           message: "A warehouse with the same city already exists",
@@ -91,11 +87,9 @@ module.exports = {
       }
 
       const result = await getCoordinates(existingWarehouse);
-
       if (!result) {
         res.status(400).send({ message: "Coordinates not found" });
       }
-
       const { latitude, longitude } = result;
 
       await warehouseQueries.editWarehouse(
@@ -117,6 +111,7 @@ module.exports = {
       console.error("Error editing warehouse: ", error);
       res.status(500).send({
         message: "An error occurred while editing the warehouse",
+        error,
       });
     }
   },
@@ -152,9 +147,7 @@ module.exports = {
       let { search, sort } = req.query;
       const itemsPerPage = 3;
       const { offset } = getPaginationParams(req, itemsPerPage);
-
       let sortOption = "ASC";
-
       if (sort === "desc") {
         sortOption = "DESC";
       }
@@ -165,9 +158,7 @@ module.exports = {
         offset,
         sortOption
       );
-
       const countQuery = warehouseQueries.countWarehouseQuery(search);
-
       const [warehouseList, totalCountResult] = await Promise.all([
         query(fetchWarehouseListQuery),
         query(countQuery),
@@ -184,6 +175,21 @@ module.exports = {
     } catch (error) {
       res.status(500).send({
         message: "An error occurred while fetching the warehouse list",
+        error,
+      });
+    }
+  },
+  fetchWarehouseData: async (req, res) => {
+    try {
+      const warehouseData = await query(
+        warehouseQueries.fetchWarehouseDataQuery()
+      );
+      res.status(200).send({
+        data: warehouseData,
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: "An error occurred while fetching the warehouse data",
         error,
       });
     }

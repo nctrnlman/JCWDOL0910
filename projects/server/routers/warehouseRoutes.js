@@ -16,5 +16,10 @@ router.delete(
   warehouseController.deleteWarehouse
 );
 router.get("/", checkRole.superAdmin, warehouseController.fetchWarehouseList);
+router.get(
+  "/data",
+  checkRole.superAdmin,
+  warehouseController.fetchWarehouseData
+);
 
 module.exports = router;
