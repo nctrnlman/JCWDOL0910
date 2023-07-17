@@ -99,7 +99,6 @@ function App() {
         <Route path="/products/:category" element={<ProductCategory />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/verification/" element={<Verification />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/products" element={<Products />} />
         {userToken === null ? (
           <>

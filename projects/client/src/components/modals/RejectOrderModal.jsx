@@ -2,6 +2,10 @@ import axios from "axios";
 import React from "react";
 import { fetchOrderPaymentList } from "../../features/orders/orderListAdminSlice";
 import { useDispatch } from "react-redux";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../CustomToast/CustomNotification";
 
 function RejectOrderModal({ selectedId }) {
   const dispatch = useDispatch();
@@ -12,8 +16,10 @@ function RejectOrderModal({ selectedId }) {
         `http://localhost:8000/api/admins/orders/payment/reject?id_order=${selectedId}`
       );
       dispatch(fetchOrderPaymentList());
+      showSuccessToast(response.data.message);
     } catch (error) {
       console.log(error);
+      showErrorToast(error.response.message);
     }
   };
   return (

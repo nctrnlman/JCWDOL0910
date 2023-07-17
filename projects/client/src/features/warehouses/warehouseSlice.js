@@ -151,7 +151,9 @@ export function createWarehouse(warehouseData) {
       dispatch(fetchWarehouses());
       showSuccessToast(response.data.message);
     } catch (error) {
-      console.error("Error creating warehouse:", error);
+      showErrorToast(error.response.data.message);
+      // console.error("Error creating warehouse:", error);
+      console.log(error);
     }
   };
 }

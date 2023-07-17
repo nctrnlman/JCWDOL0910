@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const CreateModalWarehouse = ({
-  closeCreateModal,
-  handleCreate,
-  warehouses,
-}) => {
+const CreateModalWarehouse = ({ closeCreateModal, handleCreate }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState("");
