@@ -35,9 +35,17 @@ function Products() {
   };
 
   const renderProductList = () => {
-    return productList?.map((product) => {
-      return <ProductCard product={product} />;
-    });
+    if (productList && productList.length > 0) {
+      return productList.map((product) => {
+        return <ProductCard product={product} />;
+      });
+    } else {
+      return (
+        <div className="flex justify-center items-center p-4">
+          <p className="text-xl">No products found..</p>
+        </div>
+      );
+    }
   };
 
   useEffect(() => {
