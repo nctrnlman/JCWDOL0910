@@ -32,6 +32,7 @@ const superAdmin = async (req, res, next) => {
 };
 const admins = async (req, res, next) => {
   try {
+    console.log("from check role", req.headers)
     const adminId = getIdFromToken(req, res);
     const getAdminRoleQuery = `
     SELECT roles.name

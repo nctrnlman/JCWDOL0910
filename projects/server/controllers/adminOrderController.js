@@ -262,37 +262,37 @@ module.exports = {
 
           console.log(getorderstatus);
 
-          const kumpulanStockHistory = [];
+          // const kumpulanStockHistory = [];
 
-          for (const item of fetchOrder) {
-            const {
-              id_order,
-              id_product,
-              quantity,
-              id_warehouse,
-              total_stock,
-              id_stock,
-            } = item;
+          // for (const item of fetchOrder) {
+          //   const {
+          //     id_order,
+          //     id_product,
+          //     quantity,
+          //     id_warehouse,
+          //     total_stock,
+          //     id_stock,
+          //   } = item;
 
-            // Ketika send order, stock perlu dikurangi!!
-            const updateStock = await query(
-              `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-            );
+          //   // Ketika send order, stock perlu dikurangi!!
+          //   const updateStock = await query(
+          //     `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
+          //   );
 
-            const createHistory = await query(`
-            INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-            VALUES (${id_stock}, ${quantity}, "outgoing - order fulfillment", CURRENT_TIMESTAMP);
-            `);
+          //   const createHistory = await query(`
+          //   INSERT INTO stock_history (id_stock, stock_change, status, created_at)
+          //   VALUES (${id_stock}, ${quantity}, "outgoing - order fulfillment", CURRENT_TIMESTAMP);
+          //   `);
 
-            const getStockHistory = await query(
-              `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
-            );
-            console.log(getStockHistory);
-          }
+          //   const getStockHistory = await query(
+          //     `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
+          //   )
+          //   console.log(getStockHistory)
+          // }
 
           return res.status(200).send({
-            message: `Stok untuk semua produk tersedia. Siap dikirim. Stok tiap produk sudah berkurang untuk memenuhi order.`,
-            // result: getStockHistory
+            message: `Stok untuk semua produk tersedia. Siap dikirim.`,
+            result: getorderstatus,
           });
         }
       }
@@ -314,14 +314,10 @@ module.exports = {
       const getorderstatus = await query(
         `select * from orders WHERE id_order = ${db.escape(id_order)}`
       );
-      return res.status(200).send({
-        message: `Pesanan Dibatalkan`,
-        result: getorderstatus,
-      });
-
-      // Ketika cancel order, stock akan kembali !!
-      // Tapi karena saat order, 1) pengurangan stock terjadi cuma saat pesanan dikirim,
-      // dan 2) cancel cuma bisa terjadi sebelum status dikirim, sptnya stocknya tidak perlu berubah ya?
+      // return res.status(400).send({
+      //   message: `Pesanan Dibatalkan`,
+      //   result: getorderstatus
+      // });
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
@@ -329,44 +325,43 @@ module.exports = {
     INNER JOIN order_items oi ON o.id_order = oi.id_order
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product and o.id_warehouse = s.id_warehouse
-    WHERE o.id_order = ${db.escape(id_order)} 
-    `);
+    WHERE o.id_order = ${db.escape(id_order)} `);
 
       console.log(fetchOrder);
       console.log(fetchOrder.length);
 
-      // if (fetchOrder.length > 0) {
-      //   for (const item of fetchOrder) {
-      //     const {
-      //       id_order,
-      //       id_product,
-      //       quantity,
-      //       id_warehouse,
-      //       total_stock,
-      //       id_stock,
-      //     } = item;
+      if (fetchOrder.length > 0) {
+        for (const item of fetchOrder) {
+          const {
+            id_order,
+            id_product,
+            quantity,
+            id_warehouse,
+            total_stock,
+            id_stock,
+          } = item;
 
-      //     const updateStock = await query(
-      //       `UPDATE stocks SET total_stock = total_stock + ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-      //     );
+          const updateStock = await query(
+            `UPDATE stocks SET total_stock = total_stock + ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
+          );
 
-      //     const createHistory = await query(`
-      //     INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-      //     VALUES (${id_stock}, ${quantity}, "incoming - order cancel", CURRENT_TIMESTAMP);
-      //     `);
+          const createHistory = await query(`
+          INSERT INTO stock_history (id_stock, stock_change, status, created_at)
+          VALUES (${id_stock}, ${quantity}, "incoming - order cancel", CURRENT_TIMESTAMP);
+          `);
 
-      //     const getStockHistory = await query(
-      //       `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
-      //     )
+          const getStockHistory = await query(
+            `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
+          );
 
-      //     // console.log(item)
+          // console.log(item)
 
-      //     return res.status(400).send({
-      //       message: `Order sudah tercancel. Stok tiap produk sudah ditambahkan kembali.`,
-      //       result: getStockHistory
-      //     });
-      //   }
-      // }
+          return res.status(400).send({
+            message: `Order sudah tercancel. Stok tiap produk sudah ditambahkan kembali.`,
+            result: getStockHistory,
+          });
+        }
+      }
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }

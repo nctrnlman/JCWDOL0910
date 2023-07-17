@@ -11,8 +11,8 @@ router.post("/edit-data", verifyToken, userProfileController.editUserProfile);
 router.post(
   "/upload",
   verifyToken,
-  upload.single("file"),
-  userProfileController.uploadProfilePicture
+  upload.single("image_url"),
+  userProfileController.addProfilePic
 );
 router.post("/add-address", verifyToken, userProfileController.addAddress);
 router.post(

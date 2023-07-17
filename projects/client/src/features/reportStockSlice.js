@@ -5,7 +5,8 @@ export const reportStockSlice = createSlice({
     name: "reportStock",
     initialState: {
         stock: {
-            stockMovementHistory: []
+            stockMovementHistoryRecap: [],
+            stockMovementDetail: []
         },
         //   topProduct: [],
         //   filteredProduct: [],
@@ -13,17 +14,20 @@ export const reportStockSlice = createSlice({
         //   grossIncome: 0,
     },
     reducers: {
-        setStockMovHis: (state, action) => {
-            state.stock.stockMovementHistory = action.payload;
+        setStockMovHisRecap: (state, action) => {
+            state.stock.stockMovementHistoryRecap = action.payload;
+        },
+        setStockMovementDetail: (state, action) => {
+            state.stock.stockMovementDetail = action.payload;
         }
     }
 });
 
-export const { setStockMovHis } = reportStockSlice.actions;
+export const { setStockMovHisRecap, setStockMovementDetail } = reportStockSlice.actions;
 
 export default reportStockSlice.reducer;
 
-export function fetchStockMovement() {
+export function fetchStockMovementRecap() {
 
     return async (dispatch) => {
         console.log("dari fetchstockmovement ");
@@ -32,12 +36,35 @@ export function fetchStockMovement() {
 
         try {
             const response = await Axios.get(
-                `http://localhost:8000/api/admins/stock-movement`,
+                `http://localhost:8000/api/admins/stock-movement-recap`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            dispatch(setStockMovHis(response.data));
+            dispatch(setStockMovHisRecap(response.data));
+            console.log(response)
+            // }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+};
+
+export function fetchStockMovementDetail() {
+
+    return async (dispatch) => {
+        console.log("dari fetchstockmovement ");
+        const token = localStorage.admin_token;
+        console.log("token fetchStockMovement", token)
+
+        try {
+            const response = await Axios.get(
+                `http://localhost:8000/api/admins/stock-movement-detail`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            dispatch(setStockMovementDetail(response.data));
             console.log(response)
             // }
         } catch (error) {

@@ -58,18 +58,10 @@ module.exports = {
         orderQueries.fetchAddressQuery(id_address)
       );
 
-      const result = await getCoordinates(
-        fetchAddress[0].address,
-        fetchAddress[0].city,
-        fetchAddress[0].province,
-        fetchAddress[0].postal_code
-      );
+      const latitude = fetchAddress[0].latitude;
+      const longitude = fetchAddress[0].longitude;
 
-      if (!result) {
-        throw new Error("Coordinates not found");
-      }
-
-      const { latitude, longitude } = result;
+      // const { latitude, longitude } = result;
       const checkNearestWarehouse = await query(
         orderQueries.checkNearestWarehouseQuery(latitude, longitude)
       );

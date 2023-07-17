@@ -1,44 +1,68 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-// import { getProfile } from "../features/ProfileSlice";
+import { addProfilePic } from "../features/ProfileSlice";
+
 // import { Link, useNavigate } from "react-router-dom";
 
 function ImageProfileUploader() {
-    var loadFile = function (event) {
-
-        var input = event.target;
-        var file = input.files[0];
-        var type = file.type;
-
-        var output = document.getElementById('preview_img');
-
-
-        output.src = URL.createObjectURL(event.target.files[0]);
-        output.onload = function () {
-            URL.revokeObjectURL(output.src) // free memory
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const existing_profile = useSelector((state) => state.profile.profile);
+    const dispatch = useDispatch();
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+            setImagePreview(URL.createObjectURL(file));
         }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("image_url", image);
+        dispatch(addProfilePic(formData));
     };
 
     return (
         <div>
-            <form>
-                <div class="grid grid-cols-1 grid-rows-3 items-center space-x-6">
-                    <div class=" row-start-1 shrink-0">
-                        <img id='preview_img' class="h-16 w-16 object-cover rounded-full" src="https://lh3.googleusercontent.com/a-/AFdZucpC_6WFBIfaAbPHBwGM9z8SxyM1oV4wB4Ngwp_UyQ=s96-c" alt="Current profile photo" />
+            <img
+                className="w-[300px] h-[200px] object-cover p-2"
+                src={existing_profile.image_path}
+                alt="img"
+            />
+
+            <div className="form-control">
+
+                <label className="label">
+                    <span className="label-text">Choose Profile Picture :</span>
+                </label>
+                <input
+                    type="file"
+                    className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+                    onChange={handleImageChange}
+                    required
+                />
+                {imagePreview && (
+                    <div>
+                        <div className="w-40 h-40 mt-2 lg:w-60 lg:h-60">
+                            <img
+                                src={imagePreview}
+                                alt="Preview"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <div>
+                            <button
+                                className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-m font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 text-center"
+                                onClick={handleSubmit}
+                            >Save</button>
+                        </div>
                     </div>
-                    <label class=" row-start-2 block">
-                        <span class=" sr-only">Choose profile photo</span>
-                        <input type="file" onchange="loadFile(event)" class="block w-full text-sm text-slate-500
-        file:mr-4 file:py-2 file:px-4
-        file:rounded-full file:border-0
-        file:text-sm file:font-semibold
-        file:bg-violet-50 file:text-violet-700
-        hover:file:bg-violet-100
-      "/>
-                    </label>
-                </div>
-            </form>
+                )}
+
+            </div>
         </div>
     )
 }

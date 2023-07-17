@@ -1,8 +1,325 @@
 const { db, query } = require(`../database/index`);
 const format = require(`date-fns/format`);
 const add = require(`date-fns/add`);
+const { getIdFromToken, getRoleFromToken } = require("../helper/jwt-payload");
 
 module.exports = {
+
+    fetchAllMonthlyTransactions: async (req, res) => {
+        try {
+            const role = getRoleFromToken(req, res); // Get the role from the token
+            // let warehouseId = null;
+            if (role === "warehouse admin") {
+                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+                console.log("dari report", adminId)
+                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
+                console.log("wh dari report", getwarehouseId[0].id_warehouse)
+                let warehouseId = getwarehouseId[0].id_warehouse
+                let transactionQueryWHAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+                o.id_warehouse, w.name warehouse_name,
+                sum(total_amount) total_amount, 
+                count(distinct id_order) total_orders 
+                from orders o
+                left join warehouses w on o.id_warehouse = w.id_warehouse
+                where o.id_warehouse = ${warehouseId} and lower(status) like "%pesanan dikonfirmasi%"
+                group by 1,2,3 order by 1 asc`;
+                console.log(transactionQueryWHAdmin)
+                let result = await query(transactionQueryWHAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data", result });
+            }
+
+            if (role === "super admin") {
+                let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+                o.id_warehouse, w.name warehouse_name,
+                sum(total_amount) total_amount, 
+                count(distinct id_order) total_orders 
+                from orders o
+                left join warehouses w on o.id_warehouse = w.id_warehouse
+                where lower(o.status) like "%pesanan dikonfirmasi%"
+                group by 1,2,3 order by 1 asc`;
+                let result = await query(transactionQuerySuperAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data", result });
+            }
+
+        } catch (error) {
+            return res.status(400).send(error);
+        }
+    },
+
+    fetchAllMonthlyTransactions: async (req, res) => {
+        try {
+            const role = getRoleFromToken(req, res); // Get the role from the token
+            // let warehouseId = null;
+            if (role === "warehouse admin") {
+                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+                console.log("dari report", adminId)
+                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
+                console.log("wh dari report", getwarehouseId[0].id_warehouse)
+                let warehouseId = getwarehouseId[0].id_warehouse
+                let transactionQueryWHAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+                o.id_warehouse, w.name warehouse_name,
+                sum(total_amount) total_amount, 
+                count(distinct id_order) total_orders 
+                from orders o
+                left join warehouses w on o.id_warehouse = w.id_warehouse
+                where o.id_warehouse = ${warehouseId} and lower(o.status) like "%pesanan dikonfirmasi%"
+                group by 1,2,3 order by 1 asc`;
+                console.log(transactionQueryWHAdmin)
+                let result = await query(transactionQueryWHAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data", result });
+            }
+
+            if (role === "super admin") {
+                let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+                o.id_warehouse, w.name warehouse_name,
+                sum(total_amount) total_amount, 
+                count(distinct id_order) total_orders 
+                from orders o
+                left join warehouses w on o.id_warehouse = w.id_warehouse
+                where lower(status) like "%pesanan dikonfirmasi%"
+                group by 1,2,3 order by 1 asc`;
+                let result = await query(transactionQuerySuperAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data", result });
+            }
+
+        } catch (error) {
+            return res.status(400).send(error);
+        }
+    },
+
+    fetchAllMonthlyCategoryTransactions: async (req, res) => {
+        try {
+            const role = getRoleFromToken(req, res); // Get the role from the token
+            // let warehouseId = null;
+            if (role === "warehouse admin") {
+                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+                console.log("dari report", adminId)
+                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
+                console.log("wh dari report", getwarehouseId[0].id_warehouse)
+                let warehouseId = getwarehouseId[0].id_warehouse
+                let transactionQueryWHAdmin = `with orderss as (
+                    select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
+                    from order_items as oi 
+                    left join orders as o on oi.id_order = o.id_order
+                    left join products as p on oi.product_name = p.name
+                    left join categories as c on p.id_category = c.id_category
+					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
+                    order by 1 asc)
+                    select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
+                    product_category, 
+                    sum(total_amount_product) total_amount, count(distinct id_order) total_orders 
+                    from orderss
+                    where created_at is not null and id_warehouse = ${warehouseId} 
+                group by 1,2,3
+                    order by 1 asc, 2 asc, total_amount desc`;
+                console.log(transactionQueryWHAdmin)
+                let result = await query(transactionQueryWHAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data by category", result });
+            }
+
+            if (role === "super admin") {
+                let transactionQuerySuperAdmin = `with orderss as (
+                    select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
+                    from order_items as oi 
+                    left join orders as o on oi.id_order = o.id_order
+                    left join products as p on oi.product_name = p.name
+                    left join categories as c on p.id_category = c.id_category
+					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
+                    order by 1 asc)
+                    select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
+                    product_category, 
+                    sum(total_amount_product) total_amount, count(distinct id_order) total_orders 
+                    from orderss
+                    where created_at is not null
+                    group by 1,2,3
+                    order by 1 asc, 2 asc, total_amount desc`;
+                let result = await query(transactionQuerySuperAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data by category", result });
+            }
+
+        } catch (error) {
+            return res.status(400).send(error);
+        }
+    },
+
+    fetchAllMonthlyProductTransactions: async (req, res) => {
+        try {
+            const role = getRoleFromToken(req, res); // Get the role from the token
+            // let warehouseId = null;
+            if (role === "warehouse admin") {
+                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+                console.log("dari report", adminId)
+                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
+                console.log("wh dari report", getwarehouseId[0].id_warehouse)
+                let warehouseId = getwarehouseId[0].id_warehouse
+                let transactionQueryWHAdmin = `with orderss as (
+                    select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
+                    from order_items as oi 
+                    left join orders as o on oi.id_order = o.id_order
+                    left join products as p on oi.product_name = p.name
+                    left join categories as c on p.id_category = c.id_category
+					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
+                    order by 1 asc)
+                    select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
+                    product_name, 
+                    sum(total_amount_product) total_amount, count(distinct id_order) total_orders 
+                    from orderss
+                    where created_at is not null and id_warehouse = ${warehouseId} 
+                group by 1,2,3
+                    order by 1 asc, 2 asc, total_amount desc`;
+                console.log(transactionQueryWHAdmin)
+                let result = await query(transactionQueryWHAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data by category", result });
+            }
+
+            if (role === "super admin") {
+                let transactionQuerySuperAdmin = `with orderss as (
+                    select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
+                    from order_items as oi 
+                    left join orders as o on oi.id_order = o.id_order
+                    left join products as p on oi.product_name = p.name
+                    left join categories as c on p.id_category = c.id_category
+					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(o.status) like "%pesanan dikonfirmasi%"
+                    order by 1 asc)
+                    select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
+                    product_name, 
+                    sum(total_amount_product) total_amount, count(distinct id_order) total_orders 
+                    from orderss
+                    where created_at is not null
+                    group by 1,2,3
+                    order by 1 asc, 2 asc, total_amount desc`;
+                let result = await query(transactionQuerySuperAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data by category", result });
+            }
+
+        } catch (error) {
+            return res.status(400).send(error);
+        }
+    },
+
+    fetchAllMonthlyTransactionsByWarehouse: async (req, res) => {
+        try {
+            const role = getRoleFromToken(req, res); // Get the role from the token
+            // let warehouseId = null;
+            const id_warehouse = req.params.id;
+
+            if (role === "super admin") {
+                let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+                o.id_warehouse, w.name warehouse_name,
+                sum(total_amount) total_amount, 
+                count(distinct id_order) total_orders 
+                from orders o
+                left join warehouses w on o.id_warehouse = w.id_warehouse
+                where o.id_warehouse = ${id_warehouse} and lower(status) like "%pesanan dikonfirmasi%"
+                group by 1,2,3 order by 1 asc`;
+                let result = await query(transactionQuerySuperAdmin);
+                console.log(result)
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data by warehouse", result });
+            }
+
+        } catch (error) {
+            return res.status(400).send(error);
+        }
+    },
+
+    fetchAllMonthlyCategoryTransactionsByWarehouse: async (req, res) => {
+        try {
+            const role = getRoleFromToken(req, res); // Get the role from the token
+            // let warehouseId = null;
+            const id_warehouse = req.params.id;
+
+            if (role === "super admin") {
+                let transactionQuerySuperAdmin = `with orderss as (
+                    select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
+                    from order_items as oi 
+                    left join orders as o on oi.id_order = o.id_order
+                    left join products as p on oi.product_name = p.name
+                    left join categories as c on p.id_category = c.id_category
+					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(status) like "%pesanan dikonfirmasi%"
+                    order by 1 asc)
+                    select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
+                    product_category, 
+                    sum(total_amount_product) total_amount, count(distinct id_order) total_orders 
+                    from orderss
+                    where created_at is not null and id_warehouse = ${id_warehouse}
+                    group by 1,2,3
+                    order by 1 asc, 2 asc, total_amount desc`;
+                let result = await query(transactionQuerySuperAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data by category by warehouse", result });
+            }
+
+        } catch (error) {
+            return res.status(400).send(error);
+        }
+    },
+
+    fetchAllMonthlyProductTransactionsByWarehouse: async (req, res) => {
+        try {
+            const role = getRoleFromToken(req, res); // Get the role from the token
+            // let warehouseId = null;
+            const id_warehouse = req.params.id;
+
+            if (role === "super admin") {
+                let transactionQuerySuperAdmin = `with orderss as (
+                    select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+                    p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
+                    from order_items as oi 
+                    left join orders as o on oi.id_order = o.id_order
+                    left join products as p on oi.product_name = p.name
+                    left join categories as c on p.id_category = c.id_category
+					left join warehouses w on o.id_warehouse = w.id_warehouse
+                    where lower(status) like "%pesanan dikonfirmasi%"
+                    order by 1 asc)
+                    select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, warehouse_name,
+                    product_name, 
+                    sum(total_amount_product) total_amount, count(distinct id_order) total_orders 
+                    from orderss
+                    where created_at is not null and id_warehouse = ${id_warehouse}
+                    group by 1,2,3
+                    order by 1 asc, 2 asc, total_amount desc`;
+                let result = await query(transactionQuerySuperAdmin);
+                return res
+                    .status(200)
+                    .send({ success: true, message: "Fetch transactions data by category by warehouse", result });
+            }
+
+        } catch (error) {
+            return res.status(400).send(error);
+        }
+    },
+
+
+
     fetchTransactionOnDateRange: async (req, res) => {
         try {
             // const { id } = req.params;
@@ -35,7 +352,6 @@ module.exports = {
             console.log(transactionQuery)
             if (startDate === endDate) {
                 let transactionQuery = `select date(created_at) as date, sum(total_amount) as total_amount, count(distinct id_order) as total_orders from orders where date(created_at) = "${startDate}" group by 1 order by 1 desc`;
-                // transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date="${startDate}" order by transaction.idtransaction asc`;
             }
             let result = await query(transactionQuery);
 

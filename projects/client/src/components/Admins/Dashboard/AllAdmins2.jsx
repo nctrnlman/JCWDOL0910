@@ -20,6 +20,8 @@ function AllAdminList() {
     const [password, setPassword] = useState(null);
     const [id, setId] = useState(null)
     const [warehouse_name, setWarehouseName] = useState(null)
+    // const [selectedWarehouse, setSelectedWarehouse] = useState("");
+    const [warehouses, setWarehouses] = useState([]);
 
     const selectAdmin = (id_admin) => {
         setId(id_admin);
@@ -118,6 +120,30 @@ function AllAdminList() {
             );
         }
     };
+
+    useEffect(() => {
+        const fetchWarehouses = async () => {
+            try {
+                const token = localStorage.admin_token;
+                console.log("token dari fetchwarehouse", token)
+                if (token) {
+                    console.log("token dari fetchwarehouse 2", token)
+                    let response = await Axios.get(
+                        `http://localhost:8000/api/warehouses/`,
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    );
+                    console.log(response.data)
+                    setWarehouses(response.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchWarehouses();
+    }, []);
 
     const handleAssignWH = async (e) => {
         e.preventDefault();
@@ -417,7 +443,22 @@ function AllAdminList() {
                                         readOnly
                                     />
                                 </div> */}
-                                <div className="form-control">
+                                <div className="form-control m-5">
+                                    <select
+                                        value={warehouse_name}
+                                        onChange={(e) => { setWarehouseName(e.target.value) }}
+                                        className="select select-bordered"
+                                        required
+                                    >
+                                        <option value="">Select warehouse</option>
+                                        {warehouses.map((w) => (
+                                            <option key={w.name} value={w.name}>
+                                                {w.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {/* <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Warehouse Name</span>
                                     </label>
@@ -428,7 +469,7 @@ function AllAdminList() {
                                         value={warehouse_name}
                                         onChange={(e) => setWarehouseName(e.target.value)}
                                     />
-                                </div>
+                                </div> */}
 
                                 <div className="form-control mt-6">
                                     <button

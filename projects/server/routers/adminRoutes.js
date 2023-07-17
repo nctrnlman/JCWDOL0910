@@ -52,10 +52,61 @@ router.post(
   checkRole.superAdmin,
   reportTransactionController.fetchMonthlyProductTransaction
 );
+
 router.get(
-  "/stock-movement",
-  checkRole.superAdmin,
+  "/all-transactions-monthly",
+  checkRole.admins,
+  reportTransactionController.fetchAllMonthlyTransactions
+);
+
+router.get(
+  "/all-transactions-category-monthly",
+  checkRole.admins,
+  reportTransactionController.fetchAllMonthlyCategoryTransactions
+);
+router.get(
+  "/all-transactions-product-monthly",
+  checkRole.admins,
+  reportTransactionController.fetchAllMonthlyProductTransactions
+);
+
+router.get(
+  "/all-transactions-monthly/:id",
+  checkRole.admins,
+  reportTransactionController.fetchAllMonthlyTransactionsByWarehouse
+);
+
+router.get(
+  "/all-transactions-category-monthly/:id",
+  checkRole.admins,
+  reportTransactionController.fetchAllMonthlyCategoryTransactionsByWarehouse
+);
+router.get(
+  "/all-transactions-product-monthly/:id",
+  checkRole.admins,
+  reportTransactionController.fetchAllMonthlyProductTransactionsByWarehouse
+);
+
+router.get(
+  "/stock-movement-detail",
+  checkRole.admins,
   reportStockController.fetchStockMovementHistory
 );
+router.get(
+  "/stock-movement-recap",
+  checkRole.admins,
+  reportStockController.fetchRingkasanStockBulanan
+);
+router.get(
+  "/stock-movement-detail/:id",
+  checkRole.admins,
+  reportStockController.fetchStockMovementHistoryByWarehouse
+);
+router.get(
+  "/stock-movement-recap/:id",
+  checkRole.admins,
+  reportStockController.fetchRingkasanStockBulananByWarehouse
+);
+
 
 module.exports = router;

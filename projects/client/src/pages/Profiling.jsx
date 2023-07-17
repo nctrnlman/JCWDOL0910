@@ -13,7 +13,7 @@ function Profiling() {
       <Navbar />
       <p>profile</p>
       <div className=" mt-8 flex-row gap-4 pt-12">
-        <div className=" flex-col">
+        <div className=" mt-5 ml-10  mr-10 flex-col">
           <div>
             <FormProfile />
           </div>
