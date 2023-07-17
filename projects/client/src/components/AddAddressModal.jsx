@@ -48,7 +48,7 @@ export default function AddressModal() {
         const response = await axios.get(
           "http://localhost:8000/api/rajaongkir/provinces"
         );
-        console.log("fetchProvinces", response.data)
+        console.log("fetchProvinces", response.data);
         setProvinces(response.data);
       } catch (error) {
         console.error("Error fetching provinces: ", error);
@@ -84,9 +84,8 @@ export default function AddressModal() {
         : "",
       province: selectedProvince ? selectedProvince.province : "",
       postal_code: e.target.postal_code.value,
-      is_primary: e.target.is_primary.value
+      is_primary: e.target.is_primary.value,
     };
-
 
     try {
       if (token) {
@@ -108,12 +107,10 @@ export default function AddressModal() {
     }
   };
 
-
-
   return (
     <>
       <button
-        className=" bg-slate-900 text-white active: bg-slate-500 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+        className=" bg-slate-900 text-white active:bg-slate-500 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
         type="button"
         onClick={() => setShowModal(true)}
       >
@@ -132,7 +129,9 @@ export default function AddressModal() {
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                     onClick={() => setShowModal(false)}
                   >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">X</span>
+                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                      X
+                    </span>
                   </button>
                 </div>
                 {/*body*/}
@@ -164,7 +163,10 @@ export default function AddressModal() {
                     >
                       <option value="">Select province</option>
                       {provinces.map((province) => (
-                        <option key={province.province_id} value={province.province_id}>
+                        <option
+                          key={province.province_id}
+                          value={province.province_id}
+                        >
                           {province.province}
                         </option>
                       ))}
