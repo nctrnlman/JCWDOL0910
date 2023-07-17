@@ -34,7 +34,6 @@ const AddressContent = () => {
 
   const handleSetPrimary = async (id_address) => {
     await dispatch(setPrimaryAddress(id_address));
-    console.log("id untuk di-setPrimary", id_address);
     closeSetPrimaryModal();
   };
 

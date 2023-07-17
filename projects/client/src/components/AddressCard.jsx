@@ -7,19 +7,6 @@ import { AiFillDelete } from "react-icons/ai";
 import AddressModal from "./AddAddressModal";
 
 function AddressCard() {
-  // const existing_address = useSelector((state) => state.addresses.addresses);
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //     dispatch(getAddress());
-  //     // console.log("dispatch", dispatch(getProfile()))
-  // }, []);
-
-  // console.log(existing_address)
-  // return (
-  //     <div>Addresses</div>
-  // )
-
   const existing_address = useSelector((state) => state.addresses.addresses);
   const [temp_address, setTempAddress] = useState(existing_address);
   const [changed, setChanged] = useState(false);
@@ -27,7 +14,6 @@ function AddressCard() {
 
   useEffect(() => {
     dispatch(getAddress());
-    // console.log("dispatch", dispatch(getProfile()))
   }, []);
 
   useEffect(() => {
@@ -79,7 +65,6 @@ function AddressCard() {
 
   const deleteAddress = async (id_address, event) => {
     try {
-      console.log(id_address);
       const token = localStorage.user_token;
       if (token) {
         let response = await axios.delete(

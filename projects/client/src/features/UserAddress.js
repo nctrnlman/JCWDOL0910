@@ -43,7 +43,6 @@ export function addAddress(addressData) {
   return async (dispatch) => {
     const token = localStorage.getItem("user_token");
     try {
-      console.log("dari User Address Slice", addressData);
       const response = await axios.post(
         "http://localhost:8000/api/user-profile/add-address",
         addressData,
@@ -65,7 +64,6 @@ export function addAddress(addressData) {
 export function deleteAddress(id_address) {
   return async (dispatch) => {
     const token = localStorage.getItem("user_token");
-    console.log("from user address deleteaddress slice", token);
     try {
       const response = await axios.delete(
         `http://localhost:8000/api/user-profile/delete-address/${id_address}`,

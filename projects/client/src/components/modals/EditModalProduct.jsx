@@ -34,7 +34,6 @@ const EditModalProduct = ({
       setImage(selectedProduct.image_url);
       setImagePreview(`http://localhost:8000${selectedProduct.image_url}`); // Set initial image preview
     }
-    console.log(image, "urlimg");
   }, [editItemId, products]);
 
   const handleImageChange = (e) => {

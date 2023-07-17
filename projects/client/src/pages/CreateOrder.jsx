@@ -62,7 +62,6 @@ const CreateOrder = () => {
         navigate("/orders");
       }
     } catch (error) {
-      console.log(error.response, "console error");
       toast(
         <CustomToast type="error" message={error.response.data.message} />,
         CustomToastOptions

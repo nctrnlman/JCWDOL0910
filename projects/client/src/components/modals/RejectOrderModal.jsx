@@ -11,7 +11,6 @@ function RejectOrderModal({ selectedId }) {
       let response = await axios.post(
         `http://localhost:8000/api/admins/orders/payment/reject?id_order=${selectedId}`
       );
-      console.log(response);
       dispatch(fetchOrderPaymentList());
     } catch (error) {
       console.log(error);

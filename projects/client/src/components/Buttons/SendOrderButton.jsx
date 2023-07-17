@@ -3,7 +3,6 @@ import React from "react";
 function SendOrderButton({ id_order, setSelectedId, status }) {
   const handleSend = () => {
     setSelectedId(id_order);
-    console.log(id_order);
     window.send_order.showModal();
   };
 

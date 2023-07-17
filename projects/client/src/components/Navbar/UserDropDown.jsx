@@ -13,7 +13,6 @@ const UserDropdown = ({ user }) => {
   const isLargeScreen = window.innerWidth > 1024;
 
   const handleLogout = async () => {
-    console.log("Logged out");
     dispatch(logoutUser());
     navigate("/login");
   };

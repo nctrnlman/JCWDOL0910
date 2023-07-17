@@ -89,9 +89,8 @@ export function fetchAllWarehouseData() {
         { headers: { Authorization: `Bearer ${adminToken}` } }
       );
       dispatch(setWarehouse(response.data.data));
-      console.log(response, "list warehouse");
     } catch (error) {
-      showErrorToast(error.response.data.message);
+      // showErrorToast(error.response.data.message);
       console.log(error);
     }
   };
@@ -129,7 +128,6 @@ export function editWarehouse(id_warehouse, updatedWarehouse) {
       );
 
       dispatch(updateWarehouse({ id_warehouse, updatedWarehouse }));
-      console.log(response);
       showInfoToast(response.data.message);
     } catch (error) {
       console.error("Error editing warehouse:", error);
@@ -150,7 +148,6 @@ export function createWarehouse(warehouseData) {
           headers: { Authorization: `Bearer ${adminToken}` },
         }
       );
-      console.log(response.data.message);
       dispatch(fetchWarehouses());
       showSuccessToast(response.data.message);
     } catch (error) {

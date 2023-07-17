@@ -9,7 +9,6 @@ module.exports = {
     try {
       const apiKey = env.OPENCAGE_API_KEY;
       const location = `${address}, ${district}, ${city}, ${province},${postal_code} Indonesia`;
-      console.log("location dari helper opencage", location);
       const response = await axios.get(
         "https://api.opencagedata.com/geocode/v1/json",
         {

@@ -4,18 +4,17 @@ const add = require(`date-fns/add`);
 const { getIdFromToken, getRoleFromToken } = require("../helper/jwt-payload");
 
 module.exports = {
-
-    fetchAllMonthlyTransactions: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            if (role === "warehouse admin") {
-                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
-                console.log("dari report", adminId)
-                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
-                console.log("wh dari report", getwarehouseId[0].id_warehouse)
-                let warehouseId = getwarehouseId[0].id_warehouse
-                let transactionQueryWHAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+  fetchAllMonthlyTransactions: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        let getwarehouseId = await query(
+          `select id_warehouse from warehouses where id_admin = ${adminId}`
+        );
+        let warehouseId = getwarehouseId[0].id_warehouse;
+        let transactionQueryWHAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
                 o.id_warehouse, w.name warehouse_name,
                 sum(total_amount) total_amount, 
                 count(distinct id_order) total_orders 
@@ -23,15 +22,14 @@ module.exports = {
                 left join warehouses w on o.id_warehouse = w.id_warehouse
                 where o.id_warehouse = ${warehouseId} and lower(status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
-                console.log(transactionQueryWHAdmin)
-                let result = await query(transactionQueryWHAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data", result });
-            }
+        let result = await query(transactionQueryWHAdmin);
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetch transactions data", result });
+      }
 
-            if (role === "super admin") {
-                let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+      if (role === "super admin") {
+        let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
                 o.id_warehouse, w.name warehouse_name,
                 sum(total_amount) total_amount, 
                 count(distinct id_order) total_orders 
@@ -39,28 +37,27 @@ module.exports = {
                 left join warehouses w on o.id_warehouse = w.id_warehouse
                 where lower(o.status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
-                let result = await query(transactionQuerySuperAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data", result });
-            }
+        let result = await query(transactionQuerySuperAdmin);
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetch transactions data", result });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
-
-    fetchAllMonthlyTransactions: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            if (role === "warehouse admin") {
-                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
-                console.log("dari report", adminId)
-                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
-                console.log("wh dari report", getwarehouseId[0].id_warehouse)
-                let warehouseId = getwarehouseId[0].id_warehouse
-                let transactionQueryWHAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+  fetchAllMonthlyTransactions: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        let getwarehouseId = await query(
+          `select id_warehouse from warehouses where id_admin = ${adminId}`
+        );
+        let warehouseId = getwarehouseId[0].id_warehouse;
+        let transactionQueryWHAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
                 o.id_warehouse, w.name warehouse_name,
                 sum(total_amount) total_amount, 
                 count(distinct id_order) total_orders 
@@ -68,15 +65,14 @@ module.exports = {
                 left join warehouses w on o.id_warehouse = w.id_warehouse
                 where o.id_warehouse = ${warehouseId} and lower(o.status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
-                console.log(transactionQueryWHAdmin)
-                let result = await query(transactionQueryWHAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data", result });
-            }
+        let result = await query(transactionQueryWHAdmin);
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetch transactions data", result });
+      }
 
-            if (role === "super admin") {
-                let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+      if (role === "super admin") {
+        let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
                 o.id_warehouse, w.name warehouse_name,
                 sum(total_amount) total_amount, 
                 count(distinct id_order) total_orders 
@@ -84,28 +80,27 @@ module.exports = {
                 left join warehouses w on o.id_warehouse = w.id_warehouse
                 where lower(status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
-                let result = await query(transactionQuerySuperAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data", result });
-            }
+        let result = await query(transactionQuerySuperAdmin);
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetch transactions data", result });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
-
-    fetchAllMonthlyCategoryTransactions: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            if (role === "warehouse admin") {
-                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
-                console.log("dari report", adminId)
-                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
-                console.log("wh dari report", getwarehouseId[0].id_warehouse)
-                let warehouseId = getwarehouseId[0].id_warehouse
-                let transactionQueryWHAdmin = `with orderss as (
+  fetchAllMonthlyCategoryTransactions: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        let getwarehouseId = await query(
+          `select id_warehouse from warehouses where id_admin = ${adminId}`
+        );
+        let warehouseId = getwarehouseId[0].id_warehouse;
+        let transactionQueryWHAdmin = `with orderss as (
                     select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
@@ -122,15 +117,18 @@ module.exports = {
                     where created_at is not null and id_warehouse = ${warehouseId} 
                 group by 1,2,3
                     order by 1 asc, 2 asc, total_amount desc`;
-                console.log(transactionQueryWHAdmin)
-                let result = await query(transactionQueryWHAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by category", result });
-            }
+        let result = await query(transactionQueryWHAdmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by category",
+            result,
+          });
+      }
 
-            if (role === "super admin") {
-                let transactionQuerySuperAdmin = `with orderss as (
+      if (role === "super admin") {
+        let transactionQuerySuperAdmin = `with orderss as (
                     select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
@@ -147,28 +145,31 @@ module.exports = {
                     where created_at is not null
                     group by 1,2,3
                     order by 1 asc, 2 asc, total_amount desc`;
-                let result = await query(transactionQuerySuperAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by category", result });
-            }
+        let result = await query(transactionQuerySuperAdmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by category",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
-
-    fetchAllMonthlyProductTransactions: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            if (role === "warehouse admin") {
-                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
-                console.log("dari report", adminId)
-                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
-                console.log("wh dari report", getwarehouseId[0].id_warehouse)
-                let warehouseId = getwarehouseId[0].id_warehouse
-                let transactionQueryWHAdmin = `with orderss as (
+  fetchAllMonthlyProductTransactions: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        let getwarehouseId = await query(
+          `select id_warehouse from warehouses where id_admin = ${adminId}`
+        );
+        let warehouseId = getwarehouseId[0].id_warehouse;
+        let transactionQueryWHAdmin = `with orderss as (
                     select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
@@ -185,15 +186,18 @@ module.exports = {
                     where created_at is not null and id_warehouse = ${warehouseId} 
                 group by 1,2,3
                     order by 1 asc, 2 asc, total_amount desc`;
-                console.log(transactionQueryWHAdmin)
-                let result = await query(transactionQueryWHAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by category", result });
-            }
+        let result = await query(transactionQueryWHAdmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by category",
+            result,
+          });
+      }
 
-            if (role === "super admin") {
-                let transactionQuerySuperAdmin = `with orderss as (
+      if (role === "super admin") {
+        let transactionQuerySuperAdmin = `with orderss as (
                     select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
@@ -210,25 +214,28 @@ module.exports = {
                     where created_at is not null
                     group by 1,2,3
                     order by 1 asc, 2 asc, total_amount desc`;
-                let result = await query(transactionQuerySuperAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by category", result });
-            }
+        let result = await query(transactionQuerySuperAdmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by category",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
+  fetchAllMonthlyTransactionsByWarehouse: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      const id_warehouse = req.params.id;
 
-    fetchAllMonthlyTransactionsByWarehouse: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            const id_warehouse = req.params.id;
-
-            if (role === "super admin") {
-                let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
+      if (role === "super admin") {
+        let transactionQuerySuperAdmin = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months,
                 o.id_warehouse, w.name warehouse_name,
                 sum(total_amount) total_amount, 
                 count(distinct id_order) total_orders 
@@ -236,26 +243,28 @@ module.exports = {
                 left join warehouses w on o.id_warehouse = w.id_warehouse
                 where o.id_warehouse = ${id_warehouse} and lower(status) like "%pesanan dikonfirmasi%"
                 group by 1,2,3 order by 1 asc`;
-                let result = await query(transactionQuerySuperAdmin);
-                console.log(result)
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by warehouse", result });
-            }
+        let result = await query(transactionQuerySuperAdmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by warehouse",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
+  fetchAllMonthlyCategoryTransactionsByWarehouse: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      const id_warehouse = req.params.id;
 
-    fetchAllMonthlyCategoryTransactionsByWarehouse: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            const id_warehouse = req.params.id;
-
-            if (role === "super admin") {
-                let transactionQuerySuperAdmin = `with orderss as (
+      if (role === "super admin") {
+        let transactionQuerySuperAdmin = `with orderss as (
                     select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
@@ -272,25 +281,28 @@ module.exports = {
                     where created_at is not null and id_warehouse = ${id_warehouse}
                     group by 1,2,3
                     order by 1 asc, 2 asc, total_amount desc`;
-                let result = await query(transactionQuerySuperAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by category by warehouse", result });
-            }
+        let result = await query(transactionQuerySuperAdmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by category by warehouse",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
+  fetchAllMonthlyProductTransactionsByWarehouse: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      const id_warehouse = req.params.id;
 
-    fetchAllMonthlyProductTransactionsByWarehouse: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            const id_warehouse = req.params.id;
-
-            if (role === "super admin") {
-                let transactionQuerySuperAdmin = `with orderss as (
+      if (role === "super admin") {
+        let transactionQuerySuperAdmin = `with orderss as (
                     select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, o.id_warehouse, w.name warehouse_name, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
@@ -307,137 +319,116 @@ module.exports = {
                     where created_at is not null and id_warehouse = ${id_warehouse}
                     group by 1,2,3
                     order by 1 asc, 2 asc, total_amount desc`;
-                let result = await query(transactionQuerySuperAdmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by category by warehouse", result });
-            }
+        let result = await query(transactionQuerySuperAdmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by category by warehouse",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
+  fetchTransactionOnDateRange: async (req, res) => {
+    try {
+      const { startDate, endDate } = req.body.dateRange;
+      if (!startDate && !endDate) {
+        const currentDate = format(Date.now(), "yyyy-MM-dd");
+        const sevenDaysAgo = format(
+          add(Date.now(), { days: -7 }),
+          "yyyy-MM-dd"
+        );
+        let transactionQuery = `select date(created_at) as date, sum(total_amount) as total_amount, count(distinct id_order) as total_orders from orders where date(created_at) >= "${sevenDaysAgo}" and date(created_at) <= "${currentDate}" group by 1 order by 1 desc`;
+        let result = await query(transactionQuery);
+        if (result.length === 0) {
+          return res
+            .status(200)
+            .send({ success: true, message: "No data for the past 7 days" });
         }
-    },
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetching works!", result });
+      }
 
+      let transactionQuery = `select date(created_at) as date, sum(total_amount) as total_amount, count(distinct id_order) as total_orders from orders where date(created_at) >= "${startDate}" and date(created_at) <= "${endDate}" group by 1 order by 1 desc`;
+      if (startDate === endDate) {
+        let transactionQuery = `select date(created_at) as date, sum(total_amount) as total_amount, count(distinct id_order) as total_orders from orders where date(created_at) = "${startDate}" group by 1 order by 1 desc`;
+      }
+      let result = await query(transactionQuery);
 
+      if (result.length === 0) {
+        return res.status(200).send({
+          success: false,
+          message: `No data available, display transaction for the past 7 days`,
+        });
+      }
+      res
+        .status(200)
+        .send({ success: true, message: "Fetching works!", result });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-    fetchTransactionOnDateRange: async (req, res) => {
-        try {
-            // const { id } = req.params;
-            const { startDate, endDate } = req.body.dateRange;
-            // console.log(req.params);
-            // console.log(req.body);
-            console.log("start", startDate)
-            console.log("end", endDate)
-            console.log(req.body)
-            if (!startDate && !endDate) {
-                const currentDate = format(Date.now(), "yyyy-MM-dd");
-                const sevenDaysAgo = format(
-                    add(Date.now(), { days: -7 }),
-                    "yyyy-MM-dd"
-                );
-                let transactionQuery = `select date(created_at) as date, sum(total_amount) as total_amount, count(distinct id_order) as total_orders from orders where date(created_at) >= "${sevenDaysAgo}" and date(created_at) <= "${currentDate}" group by 1 order by 1 desc`;
-                let result = await query(transactionQuery);
-                if (result.length === 0) {
-                    return res
-                        .status(200)
-                        .send({ success: true, message: "No data for the past 7 days" });
-                }
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetching works!", result });
-            }
-
-            let transactionQuery = `select date(created_at) as date, sum(total_amount) as total_amount, count(distinct id_order) as total_orders from orders where date(created_at) >= "${startDate}" and date(created_at) <= "${endDate}" group by 1 order by 1 desc`;
-            // res.status(200).send({ message: "fetching works!" });
-            console.log(transactionQuery)
-            if (startDate === endDate) {
-                let transactionQuery = `select date(created_at) as date, sum(total_amount) as total_amount, count(distinct id_order) as total_orders from orders where date(created_at) = "${startDate}" group by 1 order by 1 desc`;
-            }
-            let result = await query(transactionQuery);
-
-            if (result.length === 0) {
-                return res.status(200).send({
-                    success: false,
-                    message: `No data available, display transaction for the past 7 days`,
-                });
-            }
-            res
-                .status(200)
-                .send({ success: true, message: "Fetching works!", result });
-        } catch (error) {
-            return res.status(400).send(error);
+  fetchMonthlyTransaction: async (req, res) => {
+    try {
+      const { startDate, endDate } = req.body.dateRange;
+      if (!startDate && !endDate) {
+        const currentDate = format(Date.now(), "yyyy-MM-dd");
+        const sevenDaysAgo = format(
+          add(Date.now(), { days: -7 }),
+          "yyyy-MM-dd"
+        );
+        // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
+        let transactionQuery = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, sum(total_amount) total_amount, count(distinct id_order) total_orders from orders where date(created_at) >= "${sevenDaysAgo}" and date(created_at) <= "${currentDate}" group by 1 order by 1 desc`;
+        let result = await query(transactionQuery);
+        if (result.length === 0) {
+          return res
+            .status(200)
+            .send({ success: true, message: "No data for the past 7 days" });
         }
-    },
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetching works!", result });
+      }
 
-    fetchMonthlyTransaction: async (req, res) => {
-        try {
-            // console.log(req)
-            // const { id } = req.params;
-            const { startDate, endDate } = req.body.dateRange;
-            // console.log(req.params);
-            console.log(req.body);
-            console.log("start", startDate)
-            console.log("end", endDate)
-            console.log(req.body)
-            if (!startDate && !endDate) {
-                const currentDate = format(Date.now(), "yyyy-MM-dd");
-                const sevenDaysAgo = format(
-                    add(Date.now(), { days: -7 }),
-                    "yyyy-MM-dd"
-                );
-                // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
-                let transactionQuery = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, sum(total_amount) total_amount, count(distinct id_order) total_orders from orders where date(created_at) >= "${sevenDaysAgo}" and date(created_at) <= "${currentDate}" group by 1 order by 1 desc`;
-                let result = await query(transactionQuery);
-                if (result.length === 0) {
-                    return res
-                        .status(200)
-                        .send({ success: true, message: "No data for the past 7 days" });
-                }
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetching works!", result });
-            }
+      let transactionQuery = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, sum(total_amount) total_amount, count(distinct id_order) total_orders from orders where date(created_at) >= "${startDate}" and date(created_at) <= "${endDate}" group by 1 order by 1 desc`;
+      // res.status(200).send({ message: "fetching works!" });
+      if (startDate === endDate) {
+        let transactionQuery = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, sum(total_amount) total_amount, count(distinct id_order) total_orders from orders where date(created_at) = "${startDate}" group by 1 order by 1 desc`;
+      }
+      let result = await query(transactionQuery);
 
-            let transactionQuery = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, sum(total_amount) total_amount, count(distinct id_order) total_orders from orders where date(created_at) >= "${startDate}" and date(created_at) <= "${endDate}" group by 1 order by 1 desc`;
-            // res.status(200).send({ message: "fetching works!" });
-            console.log(transactionQuery)
-            if (startDate === endDate) {
-                let transactionQuery = `select concat(DATE_FORMAT(created_at, "%m"), ". ", DATE_FORMAT(created_at, "%M"), " ", DATE_FORMAT(created_at, "%Y")) months, sum(total_amount) total_amount, count(distinct id_order) total_orders from orders where date(created_at) = "${startDate}" group by 1 order by 1 desc`;
-            }
-            let result = await query(transactionQuery);
+      if (result.length === 0) {
+        return res.status(200).send({
+          success: false,
+          message: `No data available, display transaction for the past 7 days`,
+        });
+      }
+      res
+        .status(200)
+        .send({ success: true, message: "Fetching works!", result });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-            if (result.length === 0) {
-                return res.status(200).send({
-                    success: false,
-                    message: `No data available, display transaction for the past 7 days`,
-                });
-            }
-            res
-                .status(200)
-                .send({ success: true, message: "Fetching works!", result });
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
+  fetchMonthlyCategoryTransaction: async (req, res) => {
+    try {
+      const { startDate, endDate } = req.body.dateRange;
 
-    fetchMonthlyCategoryTransaction: async (req, res) => {
-        try {
-            // console.log(req)
-            // const { id } = req.params;
-            const { startDate, endDate } = req.body.dateRange;
-            // console.log(req.params);
-            console.log(req.body);
-            console.log("start", startDate)
-            console.log("end", endDate)
-            console.log(req.body)
-            if (!startDate && !endDate) {
-                const currentDate = format(Date.now(), "yyyy-MM-dd");
-                const sevenDaysAgo = format(
-                    add(Date.now(), { days: -7 }),
-                    "yyyy-MM-dd"
-                );
-                // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
-                let transactionQuery = `with orderss as (
+      if (!startDate && !endDate) {
+        const currentDate = format(Date.now(), "yyyy-MM-dd");
+        const sevenDaysAgo = format(
+          add(Date.now(), { days: -7 }),
+          "yyyy-MM-dd"
+        );
+        // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
+        let transactionQuery = `with orderss as (
                     select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
@@ -451,19 +442,19 @@ module.exports = {
                     from orderss
                     where date(created_at) >= "${sevenDaysAgo}" and date(created_at) <= "${currentDate}" 
                     group by 1,2
-                    order by 1 asc, total_amount desc`
-                let result = await query(transactionQuery);
-                if (result.length === 0) {
-                    return res
-                        .status(200)
-                        .send({ success: true, message: "No data for the past 7 days" });
-                }
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetching works!", result });
-            }
+                    order by 1 asc, total_amount desc`;
+        let result = await query(transactionQuery);
+        if (result.length === 0) {
+          return res
+            .status(200)
+            .send({ success: true, message: "No data for the past 7 days" });
+        }
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetching works!", result });
+      }
 
-            let transactionQuery = `with orderss as (
+      let transactionQuery = `with orderss as (
                 select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                 p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                 from order_items as oi 
@@ -479,10 +470,9 @@ module.exports = {
                 group by 1,2
                 order by 1 asc, total_amount desc`;
 
-            // res.status(200).send({ message: "fetching works!" });
-            console.log(transactionQuery)
-            if (startDate === endDate) {
-                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+      // res.status(200).send({ message: "fetching works!" });
+      if (startDate === endDate) {
+        let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
                     left join orders as o on oi.id_order = o.id_order
@@ -495,41 +485,35 @@ module.exports = {
                     from orderss
                     where date(created_at) = "${startDate}" 
                     group by 1,2
-                    order by 1 asc, total_amount desc`            }
-            let result = await query(transactionQuery);
+                    order by 1 asc, total_amount desc`;
+      }
+      let result = await query(transactionQuery);
 
-            if (result.length === 0) {
-                return res.status(200).send({
-                    success: false,
-                    message: `No data available, display transaction for the past 7 days`,
-                });
-            }
-            res
-                .status(200)
-                .send({ success: true, message: "Fetching works!", result });
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
+      if (result.length === 0) {
+        return res.status(200).send({
+          success: false,
+          message: `No data available, display transaction for the past 7 days`,
+        });
+      }
+      res
+        .status(200)
+        .send({ success: true, message: "Fetching works!", result });
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-    fetchMonthlyProductTransaction: async (req, res) => {
-        try {
-            // console.log(req)
-            // const { id } = req.params;
-            const { startDate, endDate } = req.body.dateRange;
-            // console.log(req.params);
-            console.log(req.body);
-            console.log("start", startDate)
-            console.log("end", endDate)
-            console.log(req.body)
-            if (!startDate && !endDate) {
-                const currentDate = format(Date.now(), "yyyy-MM-dd");
-                const sevenDaysAgo = format(
-                    add(Date.now(), { days: -7 }),
-                    "yyyy-MM-dd"
-                );
-                // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
-                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+  fetchMonthlyProductTransaction: async (req, res) => {
+    try {
+      const { startDate, endDate } = req.body.dateRange;
+      if (!startDate && !endDate) {
+        const currentDate = format(Date.now(), "yyyy-MM-dd");
+        const sevenDaysAgo = format(
+          add(Date.now(), { days: -7 }),
+          "yyyy-MM-dd"
+        );
+        // let transactionQuery = `select transaction_product.idtransaction, product.name, category.name as category, transaction_product.quantity, product.price as pricePerPiece, transaction.totalPrice, transaction.date from transaction_product inner join transaction on transaction_product.idtransaction = transaction.idtransaction inner join product on transaction_product.idproduct = product.idproduct inner join category on product.idcategory = category.idcategory where transaction.iduser=${id} and transaction.date between "${sevenDaysAgo}" and "${currentDate}" order by transaction.idtransaction asc`;
+        let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
                     left join orders as o on oi.id_order = o.id_order
@@ -542,19 +526,19 @@ module.exports = {
                     from orderss
                     where date(created_at) >= "${sevenDaysAgo}" and date(created_at) <= "${currentDate}" 
                     group by 1,2
-                    order by 1 asc, total_amount desc`
-                let result = await query(transactionQuery);
-                if (result.length === 0) {
-                    return res
-                        .status(200)
-                        .send({ success: true, message: "No data for the past 7 days" });
-                }
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetching works!", result });
-            }
+                    order by 1 asc, total_amount desc`;
+        let result = await query(transactionQuery);
+        if (result.length === 0) {
+          return res
+            .status(200)
+            .send({ success: true, message: "No data for the past 7 days" });
+        }
+        return res
+          .status(200)
+          .send({ success: true, message: "Fetching works!", result });
+      }
 
-            let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+      let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                 p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                 from order_items as oi 
                 left join orders as o on oi.id_order = o.id_order
@@ -569,10 +553,9 @@ module.exports = {
                 group by 1,2
                 order by 1 asc, total_amount desc`;
 
-            // res.status(200).send({ message: "fetching works!" });
-            console.log(transactionQuery)
-            if (startDate === endDate) {
-                let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
+      // res.status(200).send({ message: "fetching works!" });
+      if (startDate === endDate) {
+        let transactionQuery = `with orderss as (select oi.id_item, oi.id_user, oi.id_order, oi.product_name, oi.product_price, oi.quantity, 
                     p.id_category, c.name product_category, o.created_at, o.status, p.price*oi.quantity total_amount_product 
                     from order_items as oi 
                     left join orders as o on oi.id_order = o.id_order
@@ -585,20 +568,21 @@ module.exports = {
                     from orderss
                     where date(created_at) = "${startDate}" 
                     group by 1,2
-                    order by 1 asc, total_amount desc`            }
-            let result = await query(transactionQuery);
+                    order by 1 asc, total_amount desc`;
+      }
+      let result = await query(transactionQuery);
 
-            if (result.length === 0) {
-                return res.status(200).send({
-                    success: false,
-                    message: `No data available, display transaction for the past 7 days`,
-                });
-            }
-            res
-                .status(200)
-                .send({ success: true, message: "Fetching works!", result });
-        } catch (error) {
-            return res.status(400).send(error);
-        }
+      if (result.length === 0) {
+        return res.status(200).send({
+          success: false,
+          message: `No data available, display transaction for the past 7 days`,
+        });
+      }
+      res
+        .status(200)
+        .send({ success: true, message: "Fetching works!", result });
+    } catch (error) {
+      return res.status(400).send(error);
     }
-}
+  },
+};

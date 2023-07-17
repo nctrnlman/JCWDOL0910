@@ -17,8 +17,6 @@ function ProductCategory() {
     (state) => state.products.productCategory
   );
 
-  console.log(category);
-
   const handleNext = () => {
     setPage(page + 1);
     setOffset(offset + 10);

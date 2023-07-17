@@ -24,7 +24,6 @@ export function getProfile() {
   return async (dispatch) => {
     try {
       const token = localStorage.user_token;
-      console.log("token dari profile slice", token)
       if (token) {
         let response = await Axios.get(
           `http://localhost:8000/api/user-profile/`,
@@ -51,9 +50,8 @@ export function addProfilePic(data) {
           headers: { Authorization: `Bearer ${userToken}` },
         }
       );
-      console.log(response);
     } catch (error) {
-      console.log(error.response, "test");
+      console.log(error);
       toast(
         <CustomToast type={"error"} message={error.response.data} />,
         CustomToastOptions
@@ -61,4 +59,3 @@ export function addProfilePic(data) {
     }
   };
 }
-

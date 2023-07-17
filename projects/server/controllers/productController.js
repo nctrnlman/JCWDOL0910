@@ -27,7 +27,6 @@ module.exports = {
     try {
       let { page, search, sort, category } = req.query;
       const itemsPerPage = 10;
-      console.log(category);
       page = parseInt(page);
       if (isNaN(page) || page < 1) {
         page = 1;
@@ -39,8 +38,6 @@ module.exports = {
 
       let productsQuery = `SELECT p.*, SUM(s.total_stock) AS total_stock FROM products p JOIN stocks s ON p.id_product = s.id_product JOIN categories c ON p.id_category = c.id_category `;
 
-      // console.log(productsQuery);
-
       if (category !== undefined && category !== "") {
         productsQuery += ` WHERE p.id_category = ${db.escape(category)}`;
       }
@@ -49,8 +46,6 @@ module.exports = {
         search = search.toLowerCase();
         productsQuery += ` WHERE LOWER(p.name) LIKE '%${search}%'`;
       }
-
-      // console.log(productsQuery);
 
       productsQuery += `GROUP BY p.id_product`;
 
@@ -64,8 +59,6 @@ module.exports = {
         productsQuery += ` ORDER BY p.name DESC`;
       }
 
-      // console.log(productsQuery);
-
       productsQuery += `  LIMIT ${itemsPerPage} OFFSET ${offset}`;
 
       if (search) {
@@ -78,11 +71,6 @@ module.exports = {
         )}`;
       }
 
-      console.log(productsQuery);
-      console.log(countQuery);
-
-      // console.log(productsQuery, "last");
-
       const productsList = await query(productsQuery);
       parseTotalStock(productsList);
 
@@ -94,7 +82,6 @@ module.exports = {
       const totalItems = countResult[0].total;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-      // console.log(products);
       return res.status(200).send({ products, totalPages, itemsPerPage });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
