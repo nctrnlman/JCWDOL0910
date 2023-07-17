@@ -224,7 +224,6 @@ module.exports = {
   resetPassword: async (req, res) => {
     try {
       const { newPassword } = req.body;
-
       const userId = getIdFromToken(req, res);
 
       const user = await query(

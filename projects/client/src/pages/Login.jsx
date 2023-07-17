@@ -24,7 +24,7 @@ function Login() {
     const lastVisitedPage = sessionStorage.getItem("lastVisitedPage") || "/";
     await dispatch(
       loginUser(values, () => {
-        navigate(lastVisitedPage); // Replace the current URL with the last visited URL
+        navigate(lastVisitedPage);
       })
     );
   };

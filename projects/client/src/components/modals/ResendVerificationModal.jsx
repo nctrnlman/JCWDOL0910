@@ -50,7 +50,7 @@ const ResendVerificationModal = () => {
             onClick={() => {
               formik.handleSubmit();
             }}
-            disabled={isEmailInvalid} // Disable the button when the email is invalid
+            disabled={isEmailInvalid}
           >
             Send
           </button>

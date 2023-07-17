@@ -53,7 +53,6 @@ export function loginAdmin(data, callback) {
         CustomToastOptions
       );
     } catch (error) {
-      console.log(error.response);
       dispatch(setIsLoading(false));
       toast(
         <CustomToast type="error" message={error.response.data.error} />,
@@ -75,7 +74,6 @@ export function logoutAdmin() {
         CustomToastOptions
       );
     } catch (error) {
-      console.log(error);
       toast(
         <CustomToast type="error" message="Error occurred during logout" />,
         CustomToastOptions

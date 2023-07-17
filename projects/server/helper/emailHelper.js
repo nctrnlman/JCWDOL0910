@@ -15,7 +15,6 @@ module.exports = {
     };
 
     const response = await nodemailer.sendMail(mailOptions);
-    console.log(response);
   },
 
   sendResetPasswordEmail: async (nodemailer, email, token) => {
@@ -32,6 +31,5 @@ module.exports = {
     `,
     };
     const response = await nodemailer.sendMail(mailOptions);
-    console.log(response);
   },
 };
