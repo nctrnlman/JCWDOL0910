@@ -41,8 +41,6 @@ function StockReport() {
     try {
       const token = localStorage.admin_token;
       if (selectedWarehouse) {
-        const token = localStorage.admin_token;
-        console.log("selectStockFromWarehouse", token);
         if (token) {
           let responseRecap = await axios.get(
             `http://localhost:8000/api/admins/stock-movement-recap/${selectedWarehouse}`,

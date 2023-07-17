@@ -3,63 +3,66 @@ const { db, query } = require(`../database/index`);
 // const add = require(`date-fns/add`);
 const { getIdFromToken, getRoleFromToken } = require("../helper/jwt-payload");
 
-
 module.exports = {
-    fetchStockMovementHistory: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            if (role === "warehouse admin") {
-                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
-                console.log("dari report", adminId)
-                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
-                console.log("wh dari report", getwarehouseId[0].id_warehouse)
-                let warehouseId = getwarehouseId[0].id_warehouse
-                let stockQueryByWhadmin = `select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
+  fetchStockMovementHistory: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        let getwarehouseId = await query(
+          `select id_warehouse from warehouses where id_admin = ${adminId}`
+        );
+        let warehouseId = getwarehouseId[0].id_warehouse;
+        let stockQueryByWhadmin = `select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
             from stock_history sh 
             left join stocks s on sh.id_stock = s.id_stock
             left join products p on s.id_product = p.id_product
             left join warehouses w on s.id_warehouse = w.id_warehouse
             where w.id_warehouse = ${warehouseId}
             order by 1 asc, 2 asc, created_at asc`;
-                let result = await query(stockQueryByWhadmin);
-                return res
-                    .status(200)
-                    .send({ success: true, message: "Fetch transactions data by category", result });
-            }
+        let result = await query(stockQueryByWhadmin);
+        return res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetch transactions data by category",
+            result,
+          });
+      }
 
-            if (role === "super admin") {
-                let stockQuery = `select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
+      if (role === "super admin") {
+        let stockQuery = `select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
             from stock_history sh 
             left join stocks s on sh.id_stock = s.id_stock
             left join products p on s.id_product = p.id_product
             left join warehouses w on s.id_warehouse = w.id_warehouse
             order by 1 asc, 2 asc, created_at asc`;
 
-                let result = await query(stockQuery);
-                res
-                    .status(200)
-                    .send({ success: true, message: "Fetching stock history works!", result });
+        let result = await query(stockQuery);
+        res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetching stock history works!",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-            }
-
-
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
-
-    fetchRingkasanStockBulanan: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            console.log("dari controller", role)
-            if (role === "warehouse admin") {
-                const adminId = getIdFromToken(req, res); // Get the admin ID from the token
-                console.log("dari report", adminId)
-                let getwarehouseId = await query(`select id_warehouse from warehouses where id_admin = ${adminId}`);
-                console.log("wh dari report", getwarehouseId[0].id_warehouse)
-                let warehouseId = getwarehouseId[0].id_warehouse
-                let RingkasanStockBulananByWHAdmin = `with stockz as (select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
+  fetchRingkasanStockBulanan: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        let getwarehouseId = await query(
+          `select id_warehouse from warehouses where id_admin = ${adminId}`
+        );
+        let warehouseId = getwarehouseId[0].id_warehouse;
+        let RingkasanStockBulananByWHAdmin = `with stockz as (select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
                     from stock_history sh 
                     left join stocks s on sh.id_stock = s.id_stock
                     left join products p on s.id_product = p.id_product
@@ -94,17 +97,20 @@ module.exports = {
                     left join final1 f2 on f1.prev_month = f2.months and f1.id_warehouse = f2.id_warehouse and f1.product_name = f2.product_name
                     ) n
                     where id_warehouse = ${warehouseId}
-                    order by months asc, id_warehouse asc, product_name asc`
+                    order by months asc, id_warehouse asc, product_name asc`;
 
-                let result = await query(RingkasanStockBulananByWHAdmin);
-                res
-                    .status(200)
-                    .send({ success: true, message: "Fetching stock history recap works!", result });
+        let result = await query(RingkasanStockBulananByWHAdmin);
+        res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetching stock history recap works!",
+            result,
+          });
+      }
 
-            }
-
-            if (role === "super admin") {
-                let RingkasanStockBulananbysuper = `with stockz as (select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
+      if (role === "super admin") {
+        let RingkasanStockBulananbysuper = `with stockz as (select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
                     from stock_history sh 
                     left join stocks s on sh.id_stock = s.id_stock
                     left join products p on s.id_product = p.id_product
@@ -140,27 +146,29 @@ module.exports = {
                     from final1 f1 
                     left join final1 f2 on f1.prev_month = f2.months and f1.id_warehouse = f2.id_warehouse and f1.product_name = f2.product_name
                     ) n
-                    order by months asc, id_warehouse asc, product_name asc`
+                    order by months asc, id_warehouse asc, product_name asc`;
 
-                let result = await query(RingkasanStockBulananbysuper);
-                res
-                    .status(200)
-                    .send({ success: true, message: "Fetching stock history recap works!", result });
-            }
+        let result = await query(RingkasanStockBulananbysuper);
+        res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetching stock history recap works!",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
+  fetchRingkasanStockBulananByWarehouse: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      const id_warehouse = req.params.id;
 
-    fetchRingkasanStockBulananByWarehouse: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            console.log("dari controller", role)
-            const id_warehouse = req.params.id;
-
-            if (role === "super admin") {
-                let RingkasanStockBulananbysuper = `with stockz as (select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
+      if (role === "super admin") {
+        let RingkasanStockBulananbysuper = `with stockz as (select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
                     from stock_history sh 
                     left join stocks s on sh.id_stock = s.id_stock
                     left join products p on s.id_product = p.id_product
@@ -197,27 +205,30 @@ module.exports = {
                     left join final1 f2 on f1.prev_month = f2.months and f1.id_warehouse = f2.id_warehouse and f1.product_name = f2.product_name
                     ) n
                     where id_warehouse = ${id_warehouse}
-                    order by months asc, id_warehouse asc, product_name asc`
+                    order by months asc, id_warehouse asc, product_name asc`;
 
-                let result = await query(RingkasanStockBulananbysuper);
-                res
-                    .status(200)
-                    .send({ success: true, message: "Fetching stock history recap works!", result });
-            }
+        let result = await query(RingkasanStockBulananbysuper);
+        res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetching stock history recap works!",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
+  fetchStockMovementHistoryByWarehouse: async (req, res) => {
+    try {
+      const role = getRoleFromToken(req, res); // Get the role from the token
+      // let warehouseId = null;
+      const id_warehouse = req.params.id;
 
-    fetchStockMovementHistoryByWarehouse: async (req, res) => {
-        try {
-            const role = getRoleFromToken(req, res); // Get the role from the token
-            // let warehouseId = null;
-            const id_warehouse = req.params.id;
-
-            if (role === "super admin") {
-                let stockQuery = `select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
+      if (role === "super admin") {
+        let stockQuery = `select w.id_warehouse, w.name warehouse_name, p.name product_name, sh.status, sh.stock_change, sh.created_at
             from stock_history sh 
             left join stocks s on sh.id_stock = s.id_stock
             left join products p on s.id_product = p.id_product
@@ -225,16 +236,17 @@ module.exports = {
             where w.id_warehouse = ${id_warehouse}
             order by 1 asc, 2 asc, created_at asc`;
 
-                let result = await query(stockQuery);
-                res
-                    .status(200)
-                    .send({ success: true, message: "Fetching stock history works!", result });
-
-            }
-
-
-        } catch (error) {
-            return res.status(400).send(error);
-        }
-    },
-}
+        let result = await query(stockQuery);
+        res
+          .status(200)
+          .send({
+            success: true,
+            message: "Fetching stock history works!",
+            result,
+          });
+      }
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
+};

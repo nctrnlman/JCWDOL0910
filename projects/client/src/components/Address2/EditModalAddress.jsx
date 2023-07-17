@@ -61,7 +61,6 @@ const EditModalAddress = ({
       (provinceItem) => provinceItem.province_id === province
     );
 
-    console.log(selectedProvince, "province");
     const selectedCity = cities.find((cityItem) => cityItem.city_id === city);
 
     const updatedAddressData = {
@@ -73,9 +72,6 @@ const EditModalAddress = ({
         : "",
       postal_code: postalCode,
     };
-
-    console.log(updatedAddressData);
-    // handleEdit(editItemId, updatedAddressData);
 
     try {
       const token = localStorage.user_token;

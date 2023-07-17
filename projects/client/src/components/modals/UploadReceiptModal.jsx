@@ -42,7 +42,6 @@ function UploadReceiptModal({ closeModal, orderId, orders }) {
       }
     }
   };
-  console.log(bankName, "bank name");
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {

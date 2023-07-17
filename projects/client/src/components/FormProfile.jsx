@@ -7,8 +7,6 @@ import { toast } from "react-toastify";
 import CustomToast from "./CustomToast/CustomToast";
 import CustomToastOptions from "./CustomToast/CustomToast";
 
-
-
 function FormProfile() {
   //   const navigate = useNavigate();
   const existing_profile = useSelector((state) => state.profile.profile);
@@ -47,8 +45,10 @@ function FormProfile() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        // console.log("response.data.getUser[0]", response.data.getUser[0])
-        localStorage.setItem("user_details", JSON.stringify(response.data.getUser[0])); // Save user details in local storage
+        localStorage.setItem(
+          "user_details",
+          JSON.stringify(response.data.getUser[0])
+        ); // Save user details in local storage
         toast(
           <CustomToast type="success" message={response.data.message} />,
           CustomToastOptions

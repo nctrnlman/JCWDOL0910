@@ -75,7 +75,6 @@ export function uploadPaymentOrder(orderId, formData) {
         }
       );
       dispatch(updatePaymentProof(response.data));
-      console.log(response.data, "response data");
       toast(
         <CustomToast type={"success"} message={response.data.message} />,
         CustomToastOptions

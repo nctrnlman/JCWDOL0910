@@ -18,8 +18,6 @@ module.exports = {
       const { status, id_user } = req.query;
       const itemsPerPage = 3;
 
-      console.log(status);
-
       const { offset } = getPaginationParams(req, itemsPerPage);
 
       const orderListQuery = orderQueries.orderListQuery(
@@ -78,7 +76,6 @@ module.exports = {
 
       const checkWeight = await query(orderQueries.checkWeightQuery(id_user));
 
-      console.log(checkWeight, "ini weight");
       const services = await getShippingCost(
         originWarehouse.city.city_id,
         destinationAddress.city.city_id,

@@ -52,7 +52,6 @@ function OrderListAdminContent() {
       )
     );
   }, [currentPage, selectedSort, searchInput, selectedStatus]);
-  console.log(orders);
   return (
     <div className="flex flex-col px-5">
       <div className="lg:flex-col lg:flex lg:justify-center lg:items-center">

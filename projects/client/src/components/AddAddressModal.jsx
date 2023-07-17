@@ -11,44 +11,12 @@ export default function AddressModal() {
   const [cities, setCities] = useState([]);
   const [postalCode, setPostalCode] = useState("");
 
-  // const addAddress = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     // const token = localStorage.user_token;
-  //     // const { name, value } = e.target;
-  //     // console.log("name", name);
-  //     // const address = e.target.address.value;
-  //     // const city = e.target.city.value;
-  //     // const province = e.target.province.value;
-  //     // const postal_code = e.target.postal_code.value;
-  //     // const is_primary = e.target.is_primary.value;
-
-  //     if (token) {
-  //       let response = await axios.post(
-  //         `http://localhost:8000/api/user-profile/add-address`,
-  //         newAddressData,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-
-  //       console.log(response);
-  //       // Handle the response as needed
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   useEffect(() => {
     const fetchProvinces = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8000/api/rajaongkir/provinces"
         );
-        console.log("fetchProvinces", response.data);
         setProvinces(response.data);
       } catch (error) {
         console.error("Error fetching provinces: ", error);
@@ -98,9 +66,6 @@ export default function AddressModal() {
             },
           }
         );
-
-        console.log(response);
-        // Handle the response as needed
       }
     } catch (error) {
       console.log(error);

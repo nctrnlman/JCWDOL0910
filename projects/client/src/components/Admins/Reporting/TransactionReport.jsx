@@ -105,7 +105,6 @@ function TransactionReport() {
     selectTransactionFromWarehouse();
   }, [selectedWarehouse]);
 
-  console.log(warehouses, "warehouses di report sales");
   return (
     <div className="text-slate-900 min-h-screen flex-row bg-base-100 h-screen w-screen  px-20 lg:">
       <p className="font-bold text-3xl px-8 pt-4 m-3"> Sales Report</p>

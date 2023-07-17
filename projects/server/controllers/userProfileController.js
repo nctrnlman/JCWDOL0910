@@ -14,13 +14,11 @@ const {
 
 module.exports = {
   getUserProfile: async (req, res) => {
-    // console.log(req)
     try {
       const idUser = req.user.id;
       const getUserProfile = await query(
         `SELECT * FROM users WHERE id_user = ${db.escape(idUser)}`
       );
-      // console.log(getUserProfile);
       return res.status(200).send(getUserProfile);
     } catch (error) {
       return res.status(error.status || 500).send(error);
@@ -39,7 +37,6 @@ module.exports = {
       }
 
       const editUserQuery = `UPDATE users SET ${dataUpdate} WHERE id_user=${idUser}`;
-      console.log(editUserQuery);
 
       const editUser = await query(editUserQuery);
 
@@ -74,7 +71,6 @@ module.exports = {
     try {
       const idUser = req.user.id;
       const { file } = req;
-      console.log(file);
       if (!req.file) {
         return res.status(400).send("No image file provided");
       }
@@ -118,7 +114,6 @@ module.exports = {
         throw new Error("Coordinates not found");
       }
       const { latitude, longitude } = result;
-      console.log(latitude, longitude);
 
       const addAddressQuery = `
       INSERT INTO addresses (id_user,address, city, province, postal_code, is_primary,latitude,longitude)
@@ -159,7 +154,6 @@ module.exports = {
       )},
       latitude = ${db.escape(latitude)}, longitude = ${db.escape(longitude)}
       WHERE id_address = ${db.escape(id_address)}`;
-      console.log(editAddressQuery);
 
       const editAddress = await query(editAddressQuery);
 
@@ -207,7 +201,6 @@ module.exports = {
 
   setPrimaryAddress: async (req, res) => {
     try {
-      console.log(req.params);
       const idUser = req.user.id;
       const id_address = req.params.id;
 

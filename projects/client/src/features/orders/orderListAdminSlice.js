@@ -53,7 +53,6 @@ export function fetchOrderPaymentList(
       dispatch(setCurrentPage(page));
       dispatch(setTotalPages(totalPages));
       dispatch(setItemsPerPage(itemsPerPage));
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

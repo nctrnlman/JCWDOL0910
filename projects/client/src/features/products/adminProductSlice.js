@@ -103,7 +103,6 @@ export function fetchAllAdminProducts() {
 export function editProduct(id, productData) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
-    console.log(productData, "productdata");
     try {
       const response = await axios.put(
         `http://localhost:8000/api/admins/products/${id}`,
@@ -116,7 +115,6 @@ export function editProduct(id, productData) {
         }
       );
       dispatch(updateProduct(response.data));
-      console.log(response);
       dispatch(fetchAdminProducts());
     } catch (error) {
       console.error("Error editing product:", error);
@@ -153,9 +151,8 @@ export function addNewProduct(productData) {
       );
       dispatch(addProduct(response.data));
       dispatch(fetchAdminProducts());
-      console.log(response);
     } catch (error) {
-      console.log(error.response, "test");
+      console.log(error);
       toast(
         <CustomToast type={"error"} message={error.response.data} />,
         CustomToastOptions

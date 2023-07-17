@@ -3,7 +3,6 @@ import React from "react";
 function CancelOrderButtonAdmin({ id_order, setSelectedId, status }) {
   const handleCancel = () => {
     setSelectedId(id_order);
-    console.log(id_order);
     window.cancel_order.showModal();
   };
 

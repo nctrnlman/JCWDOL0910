@@ -188,7 +188,6 @@ module.exports = {
   sendOrder: async (req, res) => {
     try {
       const { id_order } = req.query;
-      console.log(id_order);
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
@@ -201,15 +200,9 @@ module.exports = {
     )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
-      console.log(fetchOrder);
-      console.log(fetchOrder.length);
-
       if (fetchOrder.length > 0) {
         const isAllProductsAlreadyAvailableInWarehouse = [];
-        console.log(
-          "isAllProductsAlreadyAvailableInWarehouse",
-          isAllProductsAlreadyAvailableInWarehouse
-        );
+
         for (const item of fetchOrder) {
           const {
             id_order,
@@ -219,11 +212,9 @@ module.exports = {
             total_stock,
             id_stock,
           } = item;
-          // console.log(item)
 
           if (total_stock < quantity) {
             const stockShortage = quantity - total_stock;
-            console.log(`${id_product}, stockShortage, ${stockShortage}`);
             isAllProductsAlreadyAvailableInWarehouse.push(
               `Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(
                 quantity
@@ -234,14 +225,6 @@ module.exports = {
             // });
           }
         }
-        console.log(
-          "isAllProductsAlreadyAvailableInWarehouse 2",
-          isAllProductsAlreadyAvailableInWarehouse
-        );
-        console.log(
-          "isAllProductsAlreadyAvailableInWarehouse 2",
-          isAllProductsAlreadyAvailableInWarehouse.length
-        );
 
         if (isAllProductsAlreadyAvailableInWarehouse.length > 0) {
           return res.status(400).send({
@@ -250,7 +233,6 @@ module.exports = {
           });
         }
         if (isAllProductsAlreadyAvailableInWarehouse.length == 0) {
-          console.log("udah ada stocknya semua");
           const updateStatus = await query(`
             UPDATE orders
             SET status = "Dikirim"
@@ -259,8 +241,6 @@ module.exports = {
           const getorderstatus = await query(
             `select * from orders WHERE id_order = ${db.escape(id_order)}`
           );
-
-          console.log(getorderstatus);
 
           // const kumpulanStockHistory = [];
 
@@ -287,7 +267,6 @@ module.exports = {
           //   const getStockHistory = await query(
           //     `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
           //   )
-          //   console.log(getStockHistory)
           // }
 
           return res.status(200).send({
@@ -304,7 +283,6 @@ module.exports = {
   cancelOrder: async (req, res) => {
     try {
       const { id_order } = req.query;
-      console.log(id_order);
 
       const updateStatus = await query(`
             UPDATE orders
@@ -326,9 +304,6 @@ module.exports = {
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product and o.id_warehouse = s.id_warehouse
     WHERE o.id_order = ${db.escape(id_order)} `);
-
-      console.log(fetchOrder);
-      console.log(fetchOrder.length);
 
       if (fetchOrder.length > 0) {
         for (const item of fetchOrder) {
@@ -353,8 +328,6 @@ module.exports = {
           const getStockHistory = await query(
             `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
           );
-
-          // console.log(item)
 
           return res.status(400).send({
             message: `Order sudah tercancel. Stok tiap produk sudah ditambahkan kembali.`,

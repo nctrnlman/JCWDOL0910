@@ -33,7 +33,6 @@ export function loginAdmin(data, callback) {
   return async (dispatch) => {
     dispatch(setIsLoading(true));
     try {
-      console.log(data);
       let response = await axios.post(
         "http://localhost:8000/api/admins/login",
         data
@@ -43,7 +42,6 @@ export function loginAdmin(data, callback) {
       localStorage.setItem("admin_token", response.data.token);
       localStorage.setItem("exp_token", response.data.data.expToken);
       localStorage.setItem("admin_details", JSON.stringify(response.data.data));
-      console.log(response, "login");
       if (typeof callback === "function") {
         callback();
       }
