@@ -26,7 +26,7 @@ module.exports = {
   },
 
   fetchWarehouseDataQuery: () => {
-    return `SELECT * FROM warehouses`;
+    return `SELECT * FROM warehouses ORDER BY name ASC;`;
   },
 
   countWarehouseQuery: (search) => {

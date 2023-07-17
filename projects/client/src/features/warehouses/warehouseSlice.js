@@ -88,7 +88,7 @@ export function fetchAllWarehouseData() {
         "http://localhost:8000/api/warehouses/data",
         { headers: { Authorization: `Bearer ${adminToken}` } }
       );
-      dispatch(setWarehouse(response.data));
+      dispatch(setWarehouse(response.data.data));
       console.log(response, "list warehouse");
     } catch (error) {
       showErrorToast(error.response.data.message);
