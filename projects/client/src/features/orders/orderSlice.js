@@ -7,6 +7,9 @@ export const orderSlice = createSlice({
   name: "orders",
   initialState: {
     orderList: [],
+    currentPage: 1,
+    totalPages: 1,
+    itemsPerPage: 0,
   },
   reducers: {
     setOrderList: (state, action) => {
@@ -15,26 +18,41 @@ export const orderSlice = createSlice({
     updatePaymentProof: (state, action) => {
       state.orderList.push(action.payload);
     },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+    setTotalPages: (state, action) => {
+      state.totalPages = action.payload;
+    },
+    setItemsPerPage: (state, action) => {
+      state.itemsPerPage = action.payload;
+    },
   },
 });
 
-export const { setOrderList, updatePaymentProof } = orderSlice.actions;
+export const {
+  setOrderList,
+  updatePaymentProof,
+  setCurrentPage,
+  setTotalPages,
+  setItemsPerPage,
+} = orderSlice.actions;
 
 export default orderSlice.reducer;
 
-export function fetchOrder(id_user, status) {
+export function fetchOrder(id_user, status, page = 1) {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/orders/order-list",
-        {
-          params: {
-            id_user: id_user,
-            status: status,
-          },
-        }
+        `http://localhost:8000/api/orders/order-list?page=${page}&id_user=${id_user}&status=${status}`
       );
-      dispatch(setOrderList(response.data));
+
+      const { orderItems, totalPages, itemsPerPage } = response.data;
+
+      dispatch(setOrderList(orderItems));
+      dispatch(setCurrentPage(page));
+      dispatch(setTotalPages(totalPages));
+      dispatch(setItemsPerPage(itemsPerPage));
     } catch (error) {
       console.log(error);
     }

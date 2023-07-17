@@ -19,6 +19,8 @@ function CategoriesAdminContent() {
     (state) => state.productCategories.currentPage
   );
   const totalPages = useSelector((state) => state.productCategories.totalPages);
+  const adminDetails = JSON.parse(localStorage.getItem("admin_details"));
+  const userRole = adminDetails.role;
 
   const handleSort = (option) => {
     setSelectedSort(option);
@@ -50,7 +52,7 @@ function CategoriesAdminContent() {
         </div>
       </div>
       <div className="p-4">
-        <CreateModalCategory />
+        <CreateModalCategory disabled={userRole !== "Super Admin"} />
       </div>
       <div className="overflow-x-auto rounded-xl lg:flex lg:justify-center lg:items-center">
         <CategoriesTable categories={categories} currentPage={currentPage} />

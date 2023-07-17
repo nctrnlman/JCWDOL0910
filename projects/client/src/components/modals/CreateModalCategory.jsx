@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import CustomToastOptions from "../CustomToast/CustomToastOptions";
 import Axios from "axios";
 
-function CreateModalCategory() {
+function CreateModalCategory({ disabled }) {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -45,7 +45,8 @@ function CreateModalCategory() {
     <>
       <label
         htmlFor="my_modal_6"
-        className="btn btn-primary"
+        className={`btn btn-primary ${disabled ? "disabled" : ""}`}
+        disabled={disabled}
         onClick={handleToggleModal}
       >
         Add Category

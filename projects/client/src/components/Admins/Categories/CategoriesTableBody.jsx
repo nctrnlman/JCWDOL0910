@@ -8,6 +8,8 @@ function CategoriesTableBody({ categories, currentPage }) {
     (state) => state.productCategories.itemsPerPage
   );
   const startIndex = (currentPage - 1) * itemsPerPage;
+  const adminDetails = JSON.parse(localStorage.getItem("admin_details"));
+  const userRole = adminDetails.role;
 
   return (
     <>
@@ -28,10 +30,12 @@ function CategoriesTableBody({ categories, currentPage }) {
                   <EditModalCategory
                     categoryId={category.id_category}
                     categoryName={category.name}
+                    disabled={userRole !== "Super Admin"}
                   />
                   <DeleteModalCategory
                     categoryId={category.id_category}
                     categoryName={category.name}
+                    disabled={userRole !== "Super Admin"}
                   />
                 </div>
               </td>
