@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewStock, fetchStockData } from "../../features/stocks/stocksSlice";
-import { fetchWarehouses } from "../../features/warehouses/warehouseSlice";
+import {
+  fetchAllWarehouseData,
+  fetchWarehouses,
+} from "../../features/warehouses/warehouseSlice";
 import { fetchAllAdminProducts } from "../../features/products/adminProductSlice";
 
 const CreateModalStock = ({ closeCreateModal }) => {
@@ -31,7 +34,7 @@ const CreateModalStock = ({ closeCreateModal }) => {
 
   useEffect(() => {
     dispatch(fetchAllAdminProducts());
-    dispatch(fetchWarehouses());
+    dispatch(fetchAllWarehouseData());
   }, [dispatch]);
   useEffect(() => {
     if (warehouses.length === 1) {
