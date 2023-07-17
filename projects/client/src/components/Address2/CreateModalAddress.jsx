@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { addAddress } from "../../features/UserAddress";
+import { useDispatch } from "react-redux";
 
-const CreateModalAddress = ({
-  closeCreateModal,
-  handleCreate,
-  addresses,
-}) => {
+const CreateModalAddress = ({ closeCreateModal, handleCreate }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [district, setDistrict] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [postalCode, setPostalCode] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -52,7 +50,6 @@ const CreateModalAddress = ({
     const newAddressData = {
       name,
       address,
-      district,
       province: selectedProvince ? selectedProvince.province : "",
       city: selectedCity
         ? `${selectedCity.type} ${selectedCity.city_name}`
@@ -60,7 +57,7 @@ const CreateModalAddress = ({
       postal_code: postalCode,
     };
 
-    handleCreate(newAddressData);
+    dispatch(addAddress(newAddressData));
     closeCreateModal();
   };
 
@@ -69,19 +66,6 @@ const CreateModalAddress = ({
       <div className="modal-box">
         <h3 className="font-bold text-lg">Add Address</h3>
         <form onSubmit={handleSubmit}>
-          {/* <div className="form-control">
-            <label className="label">
-              <span className="label-text">Name:</span>
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="input input-bordered"
-              placeholder="Enter warehouse name"
-              required
-            />
-          </div> */}
           <div className="form-control">
             <label className="label">
               <span className="label-text">Address:</span>
@@ -134,19 +118,6 @@ const CreateModalAddress = ({
                 </option>
               ))}
             </select>
-          </div>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">District:</span>
-            </label>
-            <input
-              type="text"
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-              className="input input-bordered"
-              placeholder="Enter District (Kecamatan)"
-              required
-            />
           </div>
           <div className="form-control">
             <label className="label">

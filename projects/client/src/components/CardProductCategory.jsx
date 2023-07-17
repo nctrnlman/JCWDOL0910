@@ -7,12 +7,7 @@ function ProductCategories() {
   const product_categories = useSelector(
     (state) => state.productCategories.productCategories
   );
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(getAllProductCategories());
-  }, [dispatch]);
 
   return (
     <div className="flex justify-center px-5 mx-5 relative group">

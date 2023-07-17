@@ -28,17 +28,6 @@ function PaymentConfirmationButton({ id_order, setSelectedId, status }) {
         </button>
       </div>
     );
-  } else if (status === "Diproses") {
-    return (
-      <div className="flex flex-col gap-2">
-        <button
-          className="btn btn-error btn-xs lg:btn-sm"
-          onClick={handleClick}
-        >
-          Reject
-        </button>
-      </div>
-    );
   } else if (
     status !== "Menunggu Konfirmasi Pembayaran" &&
     status !== "Diproses"

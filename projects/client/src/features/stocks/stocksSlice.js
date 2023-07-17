@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../components/CustomToast/CustomNotification";
 
 export const stockSlice = createSlice({
   name: "stocks",
@@ -71,7 +75,7 @@ export function fetchStockData(page = 1, search = "", sort = "") {
       dispatch(setTotalPages(totalPages));
       dispatch(setItemsPerPage(itemsPerPage));
     } catch (error) {
-      console.error("Error fetching stocks:", error);
+      console.log("Error fetching stocks:", error.response);
     }
   };
 }
@@ -94,8 +98,10 @@ export function addNewStock(idWarehouse, idProduct, quantity) {
       const newStock = response.data;
 
       dispatch(addStock(newStock));
+      showSuccessToast(response.data.message);
     } catch (error) {
-      console.error("Error adding stock:", error);
+      console.log("Error adding stock:", error.response);
+      showErrorToast(error.response.data.message);
     }
   };
 }
@@ -120,9 +126,10 @@ export function updateStockData(stockId, quantity, status) {
 
       dispatch(updateStock(updatedStock));
       dispatch(fetchStockData());
+      showSuccessToast(response.data.message);
     } catch (error) {
-      console.error("Error editing stock:", error);
       console.log(error.response);
+      showErrorToast(error.response.data.message);
     }
   };
 }
@@ -138,11 +145,10 @@ export function deleteStockData(id_stock) {
         }
       );
       dispatch(fetchStockData());
-      console.log(response, "response delete");
-      console.log(id_stock, "slice");
+      showSuccessToast(response.data.message);
     } catch (error) {
-      console.error("Error deleting warehouse:", error);
       console.log(error.response);
+      showErrorToast(error.response.data.message);
     }
   };
 }

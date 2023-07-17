@@ -10,15 +10,35 @@ const {
 } = require("../helper/imageValidatorHelper");
 const orderQueries = require("../queries/orderQueries");
 const { getShippingCost } = require("../helper/getShippingCost");
+const { getPaginationParams } = require("../helper/getPaginationHelper");
 
 module.exports = {
   orderList: async (req, res) => {
     try {
       const { status, id_user } = req.query;
-      const orderList = await query(
-        orderQueries.orderListQuery(id_user, status)
+      const itemsPerPage = 3;
+
+      console.log(status);
+
+      const { offset } = getPaginationParams(req, itemsPerPage);
+
+      const orderListQuery = orderQueries.orderListQuery(
+        id_user,
+        status,
+        offset,
+        itemsPerPage
       );
-      return res.status(200).send(orderList);
+      const countQuery = orderQueries.countQuery(id_user, status);
+
+      const [orderItems, countResult] = await Promise.all([
+        query(orderListQuery),
+        query(countQuery),
+      ]);
+
+      const totalItems = countResult[0].total;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      return res.status(200).send({ orderItems, totalPages, itemsPerPage });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
@@ -26,21 +46,22 @@ module.exports = {
 
   getShippingWarehouse: async (req, res) => {
     try {
-      const { id_user, courier } = req.query;
-      const fetchAddress = await query(orderQueries.fetchAddressQuery(id_user));
+      const { id_user, id_address, courier } = req.query;
 
-      const result = await getCoordinates(
-        fetchAddress[0].address,
-        fetchAddress[0].city,
-        fetchAddress[0].province,
-        fetchAddress[0].postal_code
-      );
-
-      if (!result) {
-        throw new Error("Coordinates not found");
+      if (id_address === null || id_address === "") {
+        return res
+          .status(400)
+          .send({ message: "Please check the address first." });
       }
 
-      const { latitude, longitude } = result;
+      const fetchAddress = await query(
+        orderQueries.fetchAddressQuery(id_address)
+      );
+
+      const latitude = fetchAddress[0].latitude;
+      const longitude = fetchAddress[0].longitude;
+
+      // const { latitude, longitude } = result;
       const checkNearestWarehouse = await query(
         orderQueries.checkNearestWarehouseQuery(latitude, longitude)
       );
@@ -57,6 +78,7 @@ module.exports = {
 
       const checkWeight = await query(orderQueries.checkWeightQuery(id_user));
 
+      console.log(checkWeight, "ini weight");
       const services = await getShippingCost(
         originWarehouse.city.city_id,
         destinationAddress.city.city_id,
@@ -67,10 +89,8 @@ module.exports = {
       return res.status(200).send({
         service: services,
         warehouse: checkNearestWarehouse[0],
-        address: fetchAddress[0],
       });
     } catch (error) {
-      console.log(error);
       return res.status(error.statusCode || 500).send(error);
     }
   },
@@ -84,6 +104,12 @@ module.exports = {
         shipping_method,
         productList,
       } = req.body;
+
+      if (id_warehouse === null || id_warehouse === "") {
+        return res
+          .status(400)
+          .send({ message: "Please check the address first." });
+      }
 
       await query(
         orderQueries.insertOrderQuery(

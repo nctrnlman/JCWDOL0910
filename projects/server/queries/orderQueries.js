@@ -1,7 +1,7 @@
 const { db, query } = require("../database");
 
 module.exports = {
-  orderListQuery: (id_user, status) => {
+  orderListQuery: (id_user, status, offset, itemsPerPage) => {
     let orderListQuery;
     if (status === "Dibatalkan") {
       orderListQuery = `
@@ -10,7 +10,7 @@ module.exports = {
         FROM orders o
         JOIN order_items oi ON o.id_order = oi.id_order
         WHERE o.id_user = ${id_user} AND o.status = '${status}'
-        GROUP BY o.id_order, o.shipping_method, o.status, o.created_at;
+        GROUP BY o.id_order, o.shipping_method, o.status, o.created_at
       `;
     } else {
       orderListQuery = `
@@ -20,18 +20,27 @@ module.exports = {
         JOIN order_items oi ON o.id_order = oi.id_order
         LEFT JOIN payment_details pd ON o.id_order = pd.id_order
         WHERE o.id_user = ${id_user} AND o.status = '${status}'
-        GROUP BY o.id_order, o.shipping_method, o.status, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number, o.created_at;
+        GROUP BY o.id_order, o.shipping_method, o.status, pd.payment_proof, pd.remitter, pd.bank_name, pd.account_number, o.created_at
       `;
     }
+
+    orderListQuery += `LIMIT ${itemsPerPage} OFFSET ${offset};`;
     return orderListQuery;
   },
 
-  fetchAddressQuery: (id_user) => {
-    return `
-          SELECT * FROM addresses WHERE id_user = ${db.escape(
-            id_user
-          )} AND is_primary = 1
-        `;
+  countQuery: (id_user, status) => {
+    const countQuery = `
+    SELECT COUNT(*) AS total
+    FROM orders o
+    WHERE o.id_user = ${id_user} AND o.status = '${status}';
+  `;
+    return countQuery;
+  },
+
+  fetchAddressQuery: (id_address) => {
+    return `SELECT * FROM addresses WHERE id_address = ${db.escape(
+      id_address
+    )} `;
   },
 
   checkNearestWarehouseQuery: (latitude, longitude) => {
@@ -46,10 +55,10 @@ module.exports = {
 
   checkWeightQuery: (id_user) => {
     return `SELECT SUM(p.weight) AS total_weight
-      FROM cart_items ci
-      JOIN products p ON ci.id_product = p.id_product
-      JOIN users u ON ci.id_user = u.id_user
-      WHERE u.id_user = ${id_user}`;
+    FROM cart_items ci
+    JOIN products p ON ci.id_product = p.id_product
+    JOIN users u ON ci.id_user = u.id_user
+    WHERE u.id_user = ${id_user}`;
   },
 
   insertOrderQuery: (id_user, id_warehouse, total_amount, shipping_method) => {

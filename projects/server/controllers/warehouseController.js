@@ -1,25 +1,31 @@
-const { db, query } = require("../database");
+const { query } = require("../database");
+const { getPaginationParams } = require("../helper/getPaginationHelper");
 const {
   getCoordinates,
   checkProvinceAndCity,
 } = require("../helper/setAddressHelper");
-require("dotenv").config({
-  path: ".env.local",
-});
+const warehouseQueries = require("../queries/warehouseQueries");
 
 module.exports = {
   createWarehouse: async (req, res) => {
     const { name, address, district, city, province, postal_code } = req.body;
     try {
       await checkProvinceAndCity(province, city);
-      const checkCityQuery = `
-      SELECT * FROM warehouses WHERE city = ${db.escape(city)}
-    `;
-      const existingCity = await query(checkCityQuery);
+      const existingCity = warehouseQueries.checkCity(city);
 
       if (existingCity.length > 0) {
         res.status(400).send({
-          error: "A warehouse with the same city already exists",
+          message: "A warehouse with the same city already exists",
+        });
+        return;
+      }
+
+      const isWarehouseNameExisting = await warehouseQueries.checkWarehouseName(
+        name
+      );
+      if (isWarehouseNameExisting) {
+        res.status(400).send({
+          message: "A warehouse with the same name already exists",
         });
         return;
       }
@@ -31,87 +37,78 @@ module.exports = {
         province,
         postal_code
       );
+
       if (!result) {
-        throw new Error("Coordinates not found");
+        res.status(400).send({ message: "Coordinates not found" });
       }
+
       const { latitude, longitude } = result;
-      console.log(latitude, longitude);
 
-      const createWarehouseQuery = `
-      INSERT INTO warehouses (name,address, district,city, province, postal_code, latitude, longitude, id_admin)
-      VALUES (${db.escape(name)},${db.escape(address)}, ${db.escape(
-        district
-      )}, ${db.escape(city)}, ${db.escape(province)}, ${db.escape(
-        postal_code
-      )}, ${db.escape(latitude)}, ${db.escape(longitude)}, null)
-    `;
-      await query(createWarehouseQuery);
-
+      const newWarehouse = await warehouseQueries.createWarehouse(
+        name,
+        address,
+        district,
+        city,
+        province,
+        postal_code,
+        latitude,
+        longitude
+      );
       res.status(201).send({
+        data: newWarehouse,
         message: "Warehouse created successfully",
       });
     } catch (error) {
-      console.error("Error creating warehouse: ", error);
       res.status(500).send({
-        error: "An error occurred while creating the warehouse",
+        message: "An error occurred while creating the warehouse",
+        error,
       });
     }
   },
+
   editWarehouse: async (req, res) => {
     const { id_warehouse } = req.params;
     const { name, address, district, city, province, postal_code } = req.body;
     try {
-      const checkWarehouseQuery = `
-      SELECT * FROM warehouses WHERE id_warehouse = ${db.escape(id_warehouse)}
-    `;
-      const existingWarehouse = await query(checkWarehouseQuery);
+      const existingWarehouse = await warehouseQueries.checkWarehouse(
+        id_warehouse
+      );
 
       if (existingWarehouse.length === 0) {
         res.status(404).send({
-          error: "Warehouse not found",
+          message: "Warehouse not found",
         });
         return;
       }
 
-      const checkCityQuery = `
-      SELECT * FROM warehouses WHERE city = ${db.escape(
-        city
-      )} AND id_warehouse != ${db.escape(id_warehouse)}
-    `;
-      const existingCity = await query(checkCityQuery);
+      const existingCity = warehouseQueries.checkCity(city);
 
       if (existingCity.length > 0) {
         res.status(400).send({
-          error: "A warehouse with the same city already exists",
+          message: "A warehouse with the same city already exists",
         });
         return;
       }
 
-      const result = await getCoordinates(
-        address,
-        district,
-        city,
-        province,
-        postal_code
-      );
+      const result = await getCoordinates(existingWarehouse);
 
       if (!result) {
-        throw new Error("Coordinates not found");
+        res.status(400).send({ message: "Coordinates not found" });
       }
 
       const { latitude, longitude } = result;
 
-      const editWarehouseQuery = `
-      UPDATE warehouses
-      SET name = ${db.escape(name)}, address = ${db.escape(address)},
-      district = ${db.escape(district)}, city = ${db.escape(city)},
-      province = ${db.escape(province)}, postal_code = ${db.escape(
-        postal_code
-      )},
-      latitude = ${db.escape(latitude)}, longitude = ${db.escape(longitude)}
-      WHERE id_warehouse = ${db.escape(id_warehouse)}
-    `;
-      await query(editWarehouseQuery);
+      await warehouseQueries.editWarehouse(
+        name,
+        address,
+        district,
+        city,
+        province,
+        postal_code,
+        latitude,
+        longitude,
+        id_warehouse
+      );
 
       res.status(200).send({
         message: "Warehouse updated successfully",
@@ -119,7 +116,7 @@ module.exports = {
     } catch (error) {
       console.error("Error editing warehouse: ", error);
       res.status(500).send({
-        error: "An error occurred while editing the warehouse",
+        message: "An error occurred while editing the warehouse",
       });
     }
   },
@@ -127,44 +124,67 @@ module.exports = {
   deleteWarehouse: async (req, res) => {
     const { id_warehouse } = req.params;
     try {
-      const checkWarehouseQuery = `
-      SELECT * FROM warehouses WHERE id_warehouse = ${db.escape(id_warehouse)}
-    `;
-      const existingWarehouse = await query(checkWarehouseQuery);
+      const existingWarehouse = await warehouseQueries.checkWarehouse(
+        id_warehouse
+      );
 
       if (existingWarehouse.length === 0) {
         res.status(404).send({
-          error: "Warehouse not found",
+          message: "Warehouse not found",
         });
         return;
       }
-      const deleteWarehouseQuery = `
-      DELETE FROM warehouses WHERE id_warehouse = ${db.escape(id_warehouse)}
-    `;
-      await query(deleteWarehouseQuery);
 
+      await warehouseQueries.deleteWarehouse(id_warehouse);
       res.status(200).send({
         message: "Warehouse deleted successfully",
       });
     } catch (error) {
-      console.error("Error deleting warehouse: ", error);
       res.status(500).send({
-        error: "An error occurred while deleting the warehouse",
+        message: "An error occurred while deleting the warehouse",
+        error,
       });
     }
   },
+
   fetchWarehouseList: async (req, res) => {
     try {
-      const fetchWarehouseListQuery = `
-        SELECT * FROM warehouses
-      `;
-      const warehouseList = await query(fetchWarehouseListQuery);
+      let { search, sort } = req.query;
+      const itemsPerPage = 3;
+      const { offset } = getPaginationParams(req, itemsPerPage);
 
-      res.status(200).send(warehouseList);
+      let sortOption = "ASC";
+
+      if (sort === "desc") {
+        sortOption = "DESC";
+      }
+
+      const fetchWarehouseListQuery = warehouseQueries.fetchWarehouseQuery(
+        search,
+        itemsPerPage,
+        offset,
+        sortOption
+      );
+
+      const countQuery = warehouseQueries.countWarehouseQuery(search);
+
+      const [warehouseList, totalCountResult] = await Promise.all([
+        query(fetchWarehouseListQuery),
+        query(countQuery),
+      ]);
+
+      const totalCount = totalCountResult[0].total;
+      const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+      res.status(200).send({
+        warehouses: warehouseList,
+        totalPages: totalPages,
+        itemsPerPage: itemsPerPage,
+      });
     } catch (error) {
-      console.error("Error fetching warehouse list: ", error);
       res.status(500).send({
-        error: "An error occurred while fetching the warehouse list",
+        message: "An error occurred while fetching the warehouse list",
+        error,
       });
     }
   },

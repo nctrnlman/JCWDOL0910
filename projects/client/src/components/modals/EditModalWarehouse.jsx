@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { editWarehouse } from "../../features/warehouses/warehouseSlice";
+import { useDispatch } from "react-redux";
 
-const EditModalWarehouse = ({
-  closeEditModal,
-  handleEdit,
-  editItemId,
-  warehouses,
-}) => {
+const EditModalWarehouse = ({ closeEditModal, editItemId, warehouses }) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState("");
@@ -21,9 +19,8 @@ const EditModalWarehouse = ({
       try {
         const response = await axios.get(
           "http://localhost:8000/api/rajaongkir/provinces"
-        ); // Modify the URL to match your backend route for fetching provinces
-
-        setProvinces(response.data); // Assuming the response data is an array of provinces
+        );
+        setProvinces(response.data);
       } catch (error) {
         console.error("Error fetching provinces: ", error);
       }
@@ -36,9 +33,9 @@ const EditModalWarehouse = ({
     try {
       const response = await axios.get(
         `http://localhost:8000/api/rajaongkir/cities/${provinceId}`
-      ); // Modify the URL to match your backend route for fetching cities by province
+      );
 
-      setCities(response.data); // Assuming the response data is an array of cities
+      setCities(response.data);
     } catch (error) {
       console.error("Error fetching cities: ", error);
     }
@@ -55,7 +52,7 @@ const EditModalWarehouse = ({
       setDistrict(warehouse.district);
       setProvince(warehouse.province);
       setCity(`${warehouse.type} ${warehouse.city_name}`);
-      setPostalCode(warehouse.postal_code); // Set the postalCode state
+      setPostalCode(warehouse.postal_code);
     }
   }, [editItemId, warehouses]);
 
@@ -65,7 +62,6 @@ const EditModalWarehouse = ({
       (provinceItem) => provinceItem.province_id === province
     );
 
-    console.log(selectedProvince, "province");
     const selectedCity = cities.find((cityItem) => cityItem.city_id === city);
 
     const updatedWarehouseData = {
@@ -79,8 +75,7 @@ const EditModalWarehouse = ({
         : "",
       postal_code: postalCode,
     };
-
-    handleEdit(editItemId, updatedWarehouseData);
+    dispatch(editWarehouse(editItemId, updatedWarehouseData));
     closeEditModal();
   };
 

@@ -3,7 +3,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import LoginAdmin from "./pages/LoginAdmin";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import showToastProtectedRoutes from "./effects/showToastProtectedRoutes";
 import setLastVisitedPage from "./effects/setLastVisitedPage";
 import checkTokenExpiration from "./effects/checkTokenExpiration";
@@ -17,7 +17,7 @@ import DashboardAdmin from "./pages/DashboardAdmin";
 import ProductsAdmin from "./pages/ProductsAdmin";
 import WarehousesAdmin from "./pages/WarehousesAdmin";
 import ReportingAdmin from "./pages/ReportingAdmin";
-import AdminCategory from "./pages/AdminCategory";
+import CategoriesAdmin from "./pages/CategoriesAdmin";
 import ReportingAdminStock from "./pages/ReportingAdminStock";
 import LandingPage from "./pages/LandingPage";
 import ProductCategory from "./pages/ProductCategory";
@@ -35,6 +35,7 @@ import StockMutationAdmin from "./pages/StockMutationAdmin";
 import ResetPassword from "./pages/ResetPassword";
 import ForgetPassword from "./pages/ForgetPassword";
 import Profiling from "./pages/Profiling";
+import { getAllProductCategories } from "./features/categories/ProductCategoriesSlice";
 
 function App() {
   const location = useLocation();
@@ -42,6 +43,10 @@ function App() {
   const navigate = useNavigate();
   const userToken = localStorage.getItem("user_token");
   const adminToken = localStorage.getItem("admin_token");
+  const adminRole = useSelector((state) =>
+    state.admins.admin?.role?.toLowerCase()
+  );
+
   const [showToast, setShowToast] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
 
@@ -82,6 +87,10 @@ function App() {
     }
   }, [userToken, dispatch]);
 
+  useEffect(() => {
+    dispatch(getAllProductCategories());
+  }, [dispatch]);
+
   return (
     <div>
       {showNavbar && <Navbar />}
@@ -113,8 +122,10 @@ function App() {
           <>
             <Route path="/admin-dashboard" element={<DashboardAdmin />} />
             <Route path="/admin-products" element={<ProductsAdmin />} />
-            <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
-            <Route path="/admin-categories" element={<AdminCategory />} />
+            {adminRole === "super admin" && (
+              <Route path="/admin-warehouses" element={<WarehousesAdmin />} />
+            )}
+            <Route path="/admin-categories" element={<CategoriesAdmin />} />
             <Route path="/admin-stocks" element={<StocksAdmin />} />
             <Route
               path="/admin-stock-mutation"

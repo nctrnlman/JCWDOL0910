@@ -56,14 +56,15 @@ function OrderListTableBody({
                     status={order.status}
                   />
                 </div>
-                <div className="gap-5 grid grid-cols-1 items-center justify-center">
+                <div className="gap-5 grid grid-cols-1 items-center justify-center p-2">
                   <SendOrderButton
                     setSelectedId={setSelectedId}
                     id_order={order.id_order}
                     status={order.status}
                   />
                 </div>
-                <div className="gap-5 grid grid-cols-1 items-center justify-center">
+
+                <div className="gap-5 grid grid-cols-1 items-center justify-center p-2">
                   <CancelOrderButtonAdmin
                     setSelectedId={setSelectedId}
                     id_order={order.id_order}

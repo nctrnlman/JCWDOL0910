@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAddress, addAddress, deleteAddress, editAddress, setPrimaryAddress } from "../../features/UserAddress";
+import {
+  getAddress,
+  addAddress,
+  deleteAddress,
+  editAddress,
+  setPrimaryAddress,
+} from "../../features/UserAddress";
 // import {
 //   deleteAddress,
 //   getAddress,
@@ -23,13 +29,12 @@ const AddressContent = () => {
 
   const handleDelete = async (id_address) => {
     await dispatch(deleteAddress(id_address));
-    console.log("id untuk dihapus", id_address)
     closeDeleteModal();
   };
 
   const handleSetPrimary = async (id_address) => {
     await dispatch(setPrimaryAddress(id_address));
-    console.log("id untuk di-setPrimary", id_address)
+    console.log("id untuk di-setPrimary", id_address);
     closeSetPrimaryModal();
   };
 
@@ -69,7 +74,6 @@ const AddressContent = () => {
   useEffect(() => {
     dispatch(getAddress());
   }, [dispatch]);
-
   return (
     <div className="bg-base-100 h-screen flex flex-col lg:flex-row lg:justify-start justify-center lg:items-center w-screen lg:h-full lg:w-full">
       <div className="flex flex-col gap-5 lg:gap-3 text-white p-4 h-screen lg:h-auto lg:w-screen lg:max-w-screen-md lg:mx-5 xl:mx-10">
@@ -103,7 +107,6 @@ const AddressContent = () => {
       {editItemId && (
         <EditModalAddress
           editItemId={editItemId}
-
           closeEditModal={closeEditModal}
           addresses={addresses}
         />
@@ -118,8 +121,8 @@ const AddressContent = () => {
       {createModalOpen && (
         <CreateModalAddress
           closeCreateModal={() => setCreateModalOpen(false)}
-          handleCreate={handleCreate}
-          addresses={addresses}
+          handlCreate={handleCreate}
+          addreesses={addresses}
         />
       )}
     </div>

@@ -1,27 +1,36 @@
 const { db, query } = require("../database");
+const { getPaginationParams } = require("../helper/getPaginationHelper");
+const { getRoleFromToken, getIdFromToken } = require("../helper/jwt-payload");
 const { parseTotalStock } = require("../helper/productHelper");
 const stockQueries = require("../queries/stockQueries");
 
 module.exports = {
   fetchStocks: async (req, res) => {
     try {
-      let { page, search, sort } = req.query;
+      let { search, sort } = req.query;
       const itemsPerPage = 10;
+      const { offset } = getPaginationParams(req, itemsPerPage);
+      const role = getRoleFromToken(req, res); // Get the role from the token
 
-      page = parseInt(page);
-      if (isNaN(page) || page < 1) {
-        page = 1;
+      let warehouseId = null;
+      if (role === "warehouse admin") {
+        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        warehouseId = await stockQueries.getWarehouseId(adminId);
       }
-
-      const offset = (page - 1) * itemsPerPage;
 
       const stocksQuery = stockQueries.fetchStocksQuery(
         search,
         sort,
         offset,
-        itemsPerPage
+        itemsPerPage,
+        warehouseId,
+        role
       );
-      const countQuery = stockQueries.countStocksQuery(search);
+      const countQuery = stockQueries.countStocksQuery(
+        search,
+        warehouseId,
+        role
+      );
 
       const [stocks, countResult] = await Promise.all([
         query(stocksQuery),
@@ -32,7 +41,6 @@ module.exports = {
       const totalPages = Math.ceil(totalItems / itemsPerPage);
 
       parseTotalStock(stocks);
-      console.log(stocks);
 
       return res.status(200).send({ stocks, totalPages, itemsPerPage });
     } catch (error) {
@@ -82,19 +90,29 @@ module.exports = {
     try {
       const { id_product, id_warehouse, quantity } = req.body;
       const status = "incoming";
-      const checkStock = stockQueries.checkStockQuery(id_product, id_warehouse);
+      const checkStock = stockQueries.checkProductQuery(
+        id_product,
+        id_warehouse
+      );
       const [existingStock] = await query(checkStock);
 
       if (existingStock) {
-        return res
-          .status(409)
-          .send({ message: "Stock already exists in the specified warehouse" });
+        // If the stock already exists, fetch the warehouse name
+        const warehouseNameQuery = `SELECT name FROM warehouses WHERE id_warehouse = ${db.escape(
+          id_warehouse
+        )}`;
+        const [warehouseResult] = await query(warehouseNameQuery);
+        const warehouseName = warehouseResult.name;
+        return res.status(409).send({
+          message: `Stock already exists in ${warehouseName}`,
+        });
       } else {
         const insertStock = stockQueries.insertStockQuery(
           id_product,
           id_warehouse,
           quantity
         );
+
         const result = await query(insertStock);
 
         const id_stock = result.insertId;
@@ -112,16 +130,16 @@ module.exports = {
       return res.status(error.statusCode || 500).send(error);
     }
   },
+
   deleteStock: async (req, res) => {
     try {
       const { id_stock } = req.query;
       const checkStock = stockQueries.checkStockQuery(id_stock);
       const [existingStock] = await query(checkStock);
-
       if (!existingStock) {
         return res
           .status(404)
-          .send({ message: "Stock not found with the provided ID" });
+          .send({ message: "Stock product data not found" });
       } else {
         const deleteStock = stockQueries.deleteStockQuery(id_stock);
         await query(deleteStock);

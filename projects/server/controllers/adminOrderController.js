@@ -11,22 +11,27 @@ module.exports = {
     try {
       const { id_order } = req.query;
 
-      const updateStatus = await query(`
-        UPDATE orders
-        SET status = "Diproses"
-        WHERE id_order = ${db.escape(id_order)}
-      `);
-
       const fetchOrder = await query(`
-    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
-    FROM orders o
-    INNER JOIN order_items oi ON o.id_order = oi.id_order
-    INNER JOIN products p ON oi.product_name = p.name
-    INNER JOIN stocks s ON p.id_product = s.id_product
-    WHERE o.id_order = ${db.escape(
-        id_order
-      )}  AND s.id_warehouse = o.id_warehouse;
+    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock FROM orders o INNER JOIN order_items oi ON o.id_order = oi.id_order INNER JOIN products p ON oi.product_name = p.name INNER JOIN stocks s ON p.id_product = s.id_product WHERE o.id_order = ${db.escape(
+      id_order
+    )}  AND s.id_warehouse = o.id_warehouse;
     `);
+
+      for (const item of fetchOrder) {
+        const { id_product, quantity } = item;
+
+        const checkStock = await query(`
+                SELECT SUM(total_stock) AS total_stock
+                FROM stocks
+                WHERE id_product = ${id_product}
+              `);
+
+        if (checkStock[0].total_stock < quantity) {
+          return res.status(400).send({
+            message: `Insufficient stock available for product with ID ${id_product} across all warehouses`,
+          });
+        }
+      }
 
       if (fetchOrder.length > 0) {
         for (const item of fetchOrder) {
@@ -41,8 +46,6 @@ module.exports = {
 
           if (total_stock < quantity) {
             const stockShortage = quantity - total_stock;
-
-            // Lakukan mutasi stok karena stok tidak mencukupi
             const warehouseNearnest = await query(`  SELECT *,
                   SQRT(POW((latitude - (SELECT latitude FROM warehouses WHERE id_warehouse = 30)), 2) + POW((longitude - (SELECT longitude FROM warehouses WHERE id_warehouse = 30)), 2)) AS distance
                   FROM warehouses
@@ -60,9 +63,6 @@ module.exports = {
                   `);
 
               if (checkStock[0].total_stock >= stockShortage) {
-                // Warehouse terdekat memiliki stok yang cukup
-
-                // Lakukan proses mutasi stok atau update stok di sini
                 const createMutation =
                   await query(`INSERT INTO stock_mutations (id_product, id_request_warehouse, id_send_warehouse, quantity, created_at)
                 VALUES (${id_product}, ${id_warehouse}, ${nearestWarehouse.id_warehouse}, ${stockShortage}, CURRENT_TIMESTAMP);`);
@@ -77,16 +77,15 @@ module.exports = {
 
                 const createHistorySendWarehouse = await query(`
                 INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-                VALUES (${checkStock[0].id_stock}, ${quantity}, "outgoing", CURRENT_TIMESTAMP);
+                VALUES (${checkStock[0].id_stock}, ${stockShortage}, "outgoing", CURRENT_TIMESTAMP);
                `);
 
                 const createHistoryRequetWarehouse = await query(`
                 INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-                VALUES (${id_stock}, ${quantity}, "incoming", CURRENT_TIMESTAMP);
+                VALUES (${id_stock}, ${stockShortage}, "incoming", CURRENT_TIMESTAMP);
                `);
 
-                // Set flag foundWarehouse menjadi true untuk keluar dari perulangan
-                isProductAvailable = true; // Setel menjadi true jika produk tersedia di setidaknya satu gudang
+                isProductAvailable = true;
                 break;
               }
             }
@@ -95,11 +94,10 @@ module.exports = {
               return res.status(400).send({
                 message: `Stok tidak tersedia untuk produk dengan ID ${id_product} di seluruh gudang`,
               });
-              isAnyProductUnavailable = true; // Setel menjadi true jika setidaknya satu produk tidak tersedia di semua gudang
+              isAnyProductUnavailable = true;
             }
           }
 
-          // Update total_stock dengan pengurangan quantity
           const updateStock = await query(
             `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
           );
@@ -110,6 +108,12 @@ module.exports = {
             `);
         }
       }
+
+      const updateStatus = await query(`
+        UPDATE orders
+        SET status = "Diproses"
+        WHERE id_order = ${db.escape(id_order)}
+      `);
 
       return res
         .status(200)
@@ -184,7 +188,7 @@ module.exports = {
   sendOrder: async (req, res) => {
     try {
       const { id_order } = req.query;
-      console.log(id_order)
+      console.log(id_order);
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
@@ -193,16 +197,19 @@ module.exports = {
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product
     WHERE o.id_order = ${db.escape(
-        id_order
-      )}  AND s.id_warehouse = o.id_warehouse;
+      id_order
+    )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
-      console.log(fetchOrder)
-      console.log(fetchOrder.length)
+      console.log(fetchOrder);
+      console.log(fetchOrder.length);
 
       if (fetchOrder.length > 0) {
         const isAllProductsAlreadyAvailableInWarehouse = [];
-        console.log("isAllProductsAlreadyAvailableInWarehouse", isAllProductsAlreadyAvailableInWarehouse)
+        console.log(
+          "isAllProductsAlreadyAvailableInWarehouse",
+          isAllProductsAlreadyAvailableInWarehouse
+        );
         for (const item of fetchOrder) {
           const {
             id_order,
@@ -216,32 +223,44 @@ module.exports = {
 
           if (total_stock < quantity) {
             const stockShortage = quantity - total_stock;
-            console.log(`${id_product}, stockShortage, ${stockShortage}`)
-            isAllProductsAlreadyAvailableInWarehouse.push(`Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(quantity)}, saat ini hanya tersedia ${db.escape(total_stock)}`)
+            console.log(`${id_product}, stockShortage, ${stockShortage}`);
+            isAllProductsAlreadyAvailableInWarehouse.push(
+              `Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(
+                quantity
+              )}, saat ini hanya tersedia ${db.escape(total_stock)}`
+            );
             // return res.status(400).send({
             //   message: `Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(quantity)}, saat ini hanya tersedia ${db.escape(total_stock)} `,
             // });
           }
         }
-        console.log("isAllProductsAlreadyAvailableInWarehouse 2", isAllProductsAlreadyAvailableInWarehouse)
-        console.log("isAllProductsAlreadyAvailableInWarehouse 2", isAllProductsAlreadyAvailableInWarehouse.length)
-
+        console.log(
+          "isAllProductsAlreadyAvailableInWarehouse 2",
+          isAllProductsAlreadyAvailableInWarehouse
+        );
+        console.log(
+          "isAllProductsAlreadyAvailableInWarehouse 2",
+          isAllProductsAlreadyAvailableInWarehouse.length
+        );
 
         if (isAllProductsAlreadyAvailableInWarehouse.length > 0) {
           return res.status(400).send({
-            message: `Stok Masih Kurang`, isAllProductsAlreadyAvailableInWarehouse,
+            message: `Stok Masih Kurang`,
+            isAllProductsAlreadyAvailableInWarehouse,
           });
         }
         if (isAllProductsAlreadyAvailableInWarehouse.length == 0) {
-          console.log("udah ada stocknya semua")
+          console.log("udah ada stocknya semua");
           const updateStatus = await query(`
             UPDATE orders
             SET status = "Dikirim"
             WHERE id_order = ${db.escape(id_order)}
           `);
-          const getorderstatus = await query(`select * from orders WHERE id_order = ${db.escape(id_order)}`)
+          const getorderstatus = await query(
+            `select * from orders WHERE id_order = ${db.escape(id_order)}`
+          );
 
-          console.log(getorderstatus)
+          console.log(getorderstatus);
 
           // const kumpulanStockHistory = [];
 
@@ -255,7 +274,7 @@ module.exports = {
           //     id_stock,
           //   } = item;
 
-          //   // Ketika send order, stock perlu dikurangi!! 
+          //   // Ketika send order, stock perlu dikurangi!!
           //   const updateStock = await query(
           //     `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
           //   );
@@ -273,11 +292,10 @@ module.exports = {
 
           return res.status(200).send({
             message: `Stok untuk semua produk tersedia. Siap dikirim.`,
-            result: getorderstatus
+            result: getorderstatus,
           });
         }
       }
-
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
@@ -286,14 +304,16 @@ module.exports = {
   cancelOrder: async (req, res) => {
     try {
       const { id_order } = req.query;
-      console.log(id_order)
+      console.log(id_order);
 
       const updateStatus = await query(`
             UPDATE orders
             SET status = "Dibatalkan"
             WHERE id_order = ${db.escape(id_order)}
           `);
-      const getorderstatus = await query(`select * from orders WHERE id_order = ${db.escape(id_order)}`)
+      const getorderstatus = await query(
+        `select * from orders WHERE id_order = ${db.escape(id_order)}`
+      );
       // return res.status(400).send({
       //   message: `Pesanan Dibatalkan`,
       //   result: getorderstatus
@@ -307,8 +327,8 @@ module.exports = {
     INNER JOIN stocks s ON p.id_product = s.id_product and o.id_warehouse = s.id_warehouse
     WHERE o.id_order = ${db.escape(id_order)} `);
 
-      console.log(fetchOrder)
-      console.log(fetchOrder.length)
+      console.log(fetchOrder);
+      console.log(fetchOrder.length);
 
       if (fetchOrder.length > 0) {
         for (const item of fetchOrder) {
@@ -321,7 +341,6 @@ module.exports = {
             id_stock,
           } = item;
 
-
           const updateStock = await query(
             `UPDATE stocks SET total_stock = total_stock + ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
           );
@@ -333,17 +352,16 @@ module.exports = {
 
           const getStockHistory = await query(
             `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where id_stock = ${id_stock}`
-          )
+          );
 
           // console.log(item)
 
           return res.status(400).send({
             message: `Order sudah tercancel. Stok tiap produk sudah ditambahkan kembali.`,
-            result: getStockHistory
+            result: getStockHistory,
           });
         }
       }
-
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }
