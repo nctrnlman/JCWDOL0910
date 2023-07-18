@@ -29,14 +29,24 @@ function StockMutationContent() {
   };
 
   const renderStockMutation = () => {
-    return stockMutations?.map((stockMutation, index) => {
+    if (!stockMutations || stockMutations.length === 0) {
+      return (
+        <tr>
+          <td colSpan="8" className="text-center">
+            No data available.
+          </td>
+        </tr>
+      );
+    }
+
+    return stockMutations.map((stockMutation, index) => {
       const date = stockMutation.created_at.substring(0, 10);
       const [year, month, day] = date.split("-");
       const formattedDate = `${day}-${month}-${year}`;
       const time = stockMutation.created_at.substring(11, 16);
       const startIndex = (currentPage - 1) * itemsPerPage;
       return (
-        <tr>
+        <tr key={index}>
           <td>{startIndex + index + 1}</td>
           <td>{stockMutation.product_name}</td>
           <td>{stockMutation.request_warehouse}</td>
@@ -84,6 +94,17 @@ function StockMutationContent() {
             </tr>
           </thead>
           <tbody>{renderStockMutation()}</tbody>
+          <tfoot className="sticky bottom-0 lg:text-lg">
+            <tr className="bg-base-300 text-base-content">
+              <th></th>
+              <th>Product Name</th>
+              <th>Request Warehosue</th>
+              <th>Send Warehosue</th>
+              <th>Quantity</th>
+              <th>Date</th>
+              <th>Time</th>
+            </tr>
+          </tfoot>
         </table>
       </div>
       <div className="lg:flex lg:justify-center lg:items-center">

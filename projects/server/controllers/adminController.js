@@ -11,7 +11,6 @@ module.exports = {
   createAdmin: async (req, res) => {
     const { name, email, password } = req.body;
     try {
-      // Check if an admin with the Super Admin role already exists
       const checkExistingAdminQuery = `
       SELECT * FROM admins AS a
       JOIN roles AS r ON a.id_role = r.id_role
@@ -118,8 +117,8 @@ module.exports = {
         role: admin.role_name.toLowerCase(),
       };
 
-      const expiresIn = 60 * 60; // Set the token expiration time to 1 hour
-      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp (in seconds)
+      const expiresIn = 60 * 60;
+      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn;
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
       res.status(200).send({
         token,
@@ -201,11 +200,9 @@ module.exports = {
         const assignAdmin = await query(assignAdminQuery);
         const getAdminAssignQuery = `SELECT * FROM warehouses WHERE name = '${warehouse_name}'`;
         const getAdminAssign = await query(getAdminAssignQuery);
-        return res
-          .status(200)
-          .send({
-            message: `WH admin is unassigned to its previous warehouse. Now assigned to ${warehouse_name}`,
-          });
+        return res.status(200).send({
+          message: `WH admin is unassigned to its previous warehouse. Now assigned to ${warehouse_name}`,
+        });
       }
       const assignAdminQuery = `UPDATE warehouses SET id_admin = ${id_admin} WHERE name='${warehouse_name}'`;
 

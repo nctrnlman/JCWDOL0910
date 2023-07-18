@@ -1,9 +1,6 @@
 import React from "react";
 
-function CancelOrderModal({ order, onclick }) {
-  const handleCancelOrder = () => {
-    onclick();
-  };
+function CancelOrderModal({ order, onClick }) {
   return (
     <div>
       <input type="checkbox" id="my_modal_6" className="modal-toggle" />
@@ -17,7 +14,7 @@ function CancelOrderModal({ order, onclick }) {
             <label
               htmlFor="my_modal_6"
               className="btn btn-error"
-              onClick={handleCancelOrder}
+              onClick={onClick}
             >
               Yes
             </label>

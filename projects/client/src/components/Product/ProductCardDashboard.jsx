@@ -8,12 +8,15 @@ function ProductCardDashboard(props) {
   const location = useLocation();
   const isAdminRoute = location.pathname === "/admin-products";
 
-  const formattedPrice = product.price.toLocaleString("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
+  const formattedPrice = product.price
+    ? product.price.toLocaleString("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      })
+    : "Price not available";
+
   const imageSrc = `http://localhost:8000${product.image_url}`;
 
   return (
@@ -27,7 +30,7 @@ function ProductCardDashboard(props) {
       </div>
       <div className="bottom flex flex-col justify-center items-start p-3 bg-">
         <div className="title font-semibold text-sm my-1">
-          {product.name.charAt(0).toUpperCase() + product.name.slice(1)}
+          {product.name?.charAt(0).toUpperCase() + product.name?.slice(1)}
         </div>
         <div className="category text-xs font-light my-1">
           {product.description}

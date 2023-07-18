@@ -3,6 +3,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import CustomToast from "../../components/CustomToast/CustomToast";
 import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
+import {
+  showErrorToast,
+  showInfoToast,
+} from "../../components/CustomToast/CustomNotification";
 export const orderSlice = createSlice({
   name: "orders",
   initialState: {
@@ -116,6 +120,39 @@ export function cancelOrder(orderId, id_user, status) {
         CustomToastOptions
       );
       console.log(error);
+    }
+  };
+}
+
+export function checkUserOrders() {
+  return async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/status-orders/"
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function changeStatusToPesananDiterima(id_order) {
+  return async () => {
+    const token = localStorage.getItem("user_token");
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/status-orders/",
+        { id_order },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      showInfoToast(response.data.message);
+    } catch (error) {
+      console.log(error);
+      showErrorToast(error.response.data.message);
     }
   };
 }

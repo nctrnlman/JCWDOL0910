@@ -8,7 +8,6 @@ import CustomToast from "./CustomToast/CustomToast";
 import CustomToastOptions from "./CustomToast/CustomToast";
 
 function FormProfile() {
-  //   const navigate = useNavigate();
   const existing_profile = useSelector((state) => state.profile.profile);
   const [temp_profile, setTempProfile] = useState(existing_profile);
   const [changed, setChanged] = useState(false);
@@ -48,7 +47,7 @@ function FormProfile() {
         localStorage.setItem(
           "user_details",
           JSON.stringify(response.data.getUser[0])
-        ); // Save user details in local storage
+        );
         toast(
           <CustomToast type="success" message={response.data.message} />,
           CustomToastOptions
@@ -111,19 +110,6 @@ function FormProfile() {
                   onChange={handleInputChange}
                 />
               </div>
-
-              {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">
-                  Gender
-                </dt>
-                <input
-                  className=" m-2 block px-2 bg-white"
-                  type="text"
-                  name="gender"
-                  value={temp_profile.gender}
-                  onChange={handleInputChange}
-                />
-              </div> */}
             </form>
 
             {changed ? (

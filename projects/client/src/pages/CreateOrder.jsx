@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import CustomToast from "../components/CustomToast/CustomToast";
@@ -8,9 +8,11 @@ import CustomToastOptions from "../components/CustomToast/CustomToastOptions";
 import AddressSelect from "../components/Order/AddressSelect";
 import CartItem from "../components/Order/CartItem";
 import ShippingMethodSelect from "../components/Order/ShippingMethodSelect";
+import { fetchItemsCart } from "../features/carts/cartActions";
 
 const CreateOrder = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.users.user);
   const cartItems = useSelector((state) => state.carts.cartItems);
   const totalPrice = useSelector((state) => state.carts.totalPrice);
@@ -55,6 +57,7 @@ const CreateOrder = () => {
       );
 
       if (response.data.success) {
+        dispatch(fetchItemsCart());
         toast(
           <CustomToast type="success" message={response.data.message} />,
           CustomToastOptions

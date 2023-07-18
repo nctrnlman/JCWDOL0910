@@ -29,7 +29,7 @@ function ProductAdminContent() {
   const [selectedSort, setSelectedSort] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const adminDetails = JSON.parse(localStorage.getItem("admin_details"));
-  const userRole = adminDetails.role;
+  const userRole = adminDetails?.role;
   const handleSort = (option) => {
     setSelectedSort(option);
     dispatch(
@@ -116,17 +116,24 @@ function ProductAdminContent() {
           setSelectedCategory={setSelectedCategory}
           handleSort={handleSort}
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-          {products.map((product) => {
-            return (
-              <ProductCardDashboard
-                product={product}
-                key={product.id_product}
-                openDeleteModal={openDeleteModal}
-                openEditModal={openEditModal}
-              />
-            );
-          })}
+        <div>
+          {products.length === 0 ? (
+            <div className="flex justify-center items-center gap-4 my-8">
+              <p className="text-lg font-semibold">No Products data found</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+              {products.map((product) => (
+                <ProductCardDashboard
+                  product={product}
+                  key={product.id_product}
+                  openDeleteModal={openDeleteModal}
+                  openEditModal={openEditModal}
+                  userRole={userRole}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
       {deleteItemId && (

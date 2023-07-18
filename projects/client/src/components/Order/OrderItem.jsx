@@ -4,6 +4,7 @@ import SeeReceiptButton from "../Buttons/SeeReceiptButton";
 import ReceiptModal from "../modals/ReceiptModal";
 import CancelOrderButton from "../Buttons/CancelOrderButton";
 import CancelOrderModal from "../modals/CancelOrderModal";
+import OrderReceivedButton from "../Buttons/OrderReceivedButton";
 
 const OrderItem = ({
   order,
@@ -11,7 +12,9 @@ const OrderItem = ({
   handleShowReceipt,
   handleShowCancelModal,
   handleCancelOrder,
+  handleShowConfirmOrder,
   isWaitingPayment,
+  isWaitingOrder,
   isWaitingConfirmOrder,
   selectedOrderId,
   selectedOrder,
@@ -24,22 +27,27 @@ const OrderItem = ({
 
   return (
     <div className="min-h-[50px] flex flex-col" key={order.id_order}>
-      <div className="bg-base-100 mb-4 rounded-lg shadow-lg p-4">
-        <div className="flex justify-between">
-          <h1 className="font-bold text-2xl">Order #{order.id_order}</h1>
+      <div
+        className="bg-base-100 mb-4 rounded-lg shadow-lg p-4"
+        style={{ overflowX: "hidden" }}
+      >
+        <div className="flex flex-col sm:flex-row justify-between items-center">
+          <h1 className="font-bold text-2xl mb-2 sm:mb-0">
+            Order #{order.id_order}
+          </h1>
           <h1>{formattedDate}</h1>
         </div>
         {order.productList.map((product) => (
           <div
             key={product.product_name}
-            className="hero-content justify-start lg:w-[1250px] flex items-center"
+            className="hero-content justify-start sm:w-auto flex items-center"
           >
             <img
               src={`http://localhost:8000/${product.product_image}`}
               alt={product.product_name}
-              className="w-[100px] lg:w-[100px] rounded-lg shadow-2xl"
+              className="w-[100px] h-[100px] sm:w-[150px] sm:h-[150px] rounded-lg shadow-2xl"
             />
-            <div className="flex flex-col ml-4 w-[600px] lg:w-[1250px]">
+            <div className="flex flex-col ml-4 w-full">
               <div className="flex flex-row justify-between items-center gap-4">
                 <div>
                   <h1 className="text-base uppercase lg:text-3xl font-bold">
@@ -68,6 +76,13 @@ const OrderItem = ({
             {isWaitingConfirmOrder && (
               <SeeReceiptButton
                 onClick={() => handleShowReceipt(order.id_order, order)}
+              />
+            )}
+            {isWaitingOrder && (
+              <OrderReceivedButton
+                onClick={() => {
+                  handleShowConfirmOrder(order.id_order, order);
+                }}
               />
             )}
             {selectedOrderId && <ReceiptModal order={selectedOrder} />}
