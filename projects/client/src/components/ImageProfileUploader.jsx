@@ -3,8 +3,6 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { addProfilePic, getProfile } from "../features/ProfileSlice";
 
-// import { Link, useNavigate } from "react-router-dom";
-
 function ImageProfileUploader() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);

@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiFillDelete } from "react-icons/ai";
 import AddressModal from "./AddAddressModal";
 import { Card, Typography } from "@material-tailwind/react";
-// import EditAddressModal from "./EditAddressModal";
 
 function UserAddressTable() {
   const existing_address = useSelector((state) => state.addresses.addresses);
@@ -90,9 +89,6 @@ function UserAddressTable() {
         <h3 className="font-bold leading-7 text-gray-900 text-xl">
           My Addresses
         </h3>
-        {/* <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-                    Personal addresses.
-                </p> */}
         <div className="col-start-6 col-span-6">
           <AddressModal></AddressModal>
         </div>

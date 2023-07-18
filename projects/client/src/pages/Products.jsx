@@ -56,7 +56,7 @@ function Products() {
 
   return (
     <div>
-      <div className="text-center p-4 text-3xl lg:text-4xl font-bold">
+      <div className="text-center p-4  mt-20 text-3xl lg:text-4xl font-bold">
         Our Product
       </div>
       <div className=" bg-slate-200 flex flex-col items-center justify-center m-10 p-4 rounded gap-2">

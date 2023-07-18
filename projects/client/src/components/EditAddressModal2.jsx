@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { AiFillDelete } from "react-icons/ai";
 import axios from "axios";
 
 function EditAddressModal({ address, handleInputChange, editAddress }) {
   const [showModal, setShowModal] = React.useState(false);
-  // const [address, setAddress] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
   const [provinces, setProvinces] = useState([]);
@@ -68,16 +66,6 @@ function EditAddressModal({ address, handleInputChange, editAddress }) {
                   onChange={(e) => handleInputChange(address.id_address, e)}
                 />
               </div>
-              {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt className="text-sm font-medium leading-6 text-gray-900">City</dt>
-                                <input
-                                    className="m-2 block px-2 bg-white"
-                                    type="text"
-                                    name="city"
-                                    value={address.city}
-                                    // onChange={(e) => handleInputChange(address.id_address, e)}
-                                />
-                            </div> */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Province:</span>
@@ -86,7 +74,7 @@ function EditAddressModal({ address, handleInputChange, editAddress }) {
                   value={province}
                   onChange={(e) => {
                     setProvince(e.target.value);
-                    setCity(""); // Reset city when province changes
+                    setCity("");
                     fetchCities(e.target.value);
                     handleInputChange(address.id_address, selectedProvince);
                   }}
@@ -104,18 +92,6 @@ function EditAddressModal({ address, handleInputChange, editAddress }) {
                   ))}
                 </select>
               </div>
-
-              {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                <dt className="text-sm font-medium leading-6 text-gray-900">Province</dt>
-                                <input
-                                    className="m-2 block px-2 bg-white"
-                                    type="text"
-                                    name="province"
-                                    value={address.province}
-                                    onChange={(e) => handleInputChange(address.id_address, e)}
-                                />
-                            </div> */}
-
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">City:</span>
@@ -179,12 +155,6 @@ function EditAddressModal({ address, handleInputChange, editAddress }) {
                 Save
               </button>
             </div>
-            {/* <button
-                            className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-m font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 text-center"
-                            onClick={(e) => deleteAddress(address.id_address, e)}
-                        >
-                            <AiFillDelete />
-                        </button> */}
           </dl>
         </div>
       )}

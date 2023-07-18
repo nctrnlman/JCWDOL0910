@@ -201,11 +201,9 @@ module.exports = {
         const assignAdmin = await query(assignAdminQuery);
         const getAdminAssignQuery = `SELECT * FROM warehouses WHERE name = '${warehouse_name}'`;
         const getAdminAssign = await query(getAdminAssignQuery);
-        return res
-          .status(200)
-          .send({
-            message: `WH admin is unassigned to its previous warehouse. Now assigned to ${warehouse_name}`,
-          });
+        return res.status(200).send({
+          message: `WH admin is unassigned to its previous warehouse. Now assigned to ${warehouse_name}`,
+        });
       }
       const assignAdminQuery = `UPDATE warehouses SET id_admin = ${id_admin} WHERE name='${warehouse_name}'`;
 
