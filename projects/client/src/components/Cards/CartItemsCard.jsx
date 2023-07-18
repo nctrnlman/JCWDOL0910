@@ -1,6 +1,6 @@
 import React from "react";
 
-function CartItemsCard({ item }) {
+function CartItemsCard({ item, formattedPrice }) {
   return (
     <div className="flex flex-row items-center gap-5">
       <img
@@ -12,7 +12,9 @@ function CartItemsCard({ item }) {
         <p className="text-sm uppercase lg:text-lg font-semibold">
           {item.name}
         </p>
-        <p className="text-sm lg:text-lg text-gray-500">Price: {item.price}</p>
+        <p className="text-sm lg:text-lg text-gray-500">
+          Price: {formattedPrice(item.price)}
+        </p>
       </div>
     </div>
   );

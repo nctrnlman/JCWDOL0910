@@ -4,6 +4,16 @@ import EmptyCartCard from "../Cards/EmptyCartCard";
 
 function CartDropdownContent({ cartItems }) {
   const navigate = useNavigate();
+
+  const formattedPrice = (price) => {
+    return price.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
+
   const handleClickItem = () => {
     navigate("/cart");
   };
@@ -33,7 +43,9 @@ function CartDropdownContent({ cartItems }) {
               />
               <div>
                 <p className="text-base font-semibold">{item.name}</p>
-                <p className="text-sm text-gray-500">Price: {item.price}</p>
+                <p className="text-sm text-gray-500">
+                  Price: {formattedPrice(item.price)}
+                </p>
                 <p className="text-sm text-gray-500">
                   Quantity: {item.quantity}
                 </p>

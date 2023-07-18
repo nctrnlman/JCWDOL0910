@@ -6,6 +6,16 @@ import CheckoutButton from "../Buttons/CheckOutButton";
 
 function CartContent({ cartItems, onQuantityChange, totalPrice }) {
   const disabled = cartItems.length === 0;
+
+  const formattedPrice = (price) => {
+    return price.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col flex-1 overflow-y-auto">
@@ -21,13 +31,16 @@ function CartContent({ cartItems, onQuantityChange, totalPrice }) {
                 key={item.id_product}
                 item={item}
                 onQuantityChange={onQuantityChange}
+                formattedPrice={formattedPrice}
               />
             ))}
           </>
         )}
       </div>
       <div className="bg-base-100 shadow-md p-4 flex justify-between items-center border border-solid border-base-300">
-        <p className="text-lg font-semibold">Total Price: {totalPrice}</p>
+        <p className="text-lg font-semibold">
+          Total Price: {formattedPrice(totalPrice)}
+        </p>
         <CheckoutButton disabled={disabled} />
       </div>
     </>

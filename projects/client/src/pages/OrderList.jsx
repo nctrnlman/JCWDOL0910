@@ -84,7 +84,7 @@ function OrderList() {
   }, [dispatch, status, id_user, currentPage]);
 
   return (
-    <div className="w-screen h-screen">
+    <div className=" h-screen">
       <div className="flex flex-col pt-20 p-10 gap-3">
         <div className="flex items-center">
           <h1 className="lg:text-xl">Status:</h1>

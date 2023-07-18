@@ -11,7 +11,7 @@ import QuantityControl from "./QuantityControl";
 import DeleteCartItemButton from "../Buttons/DeleteCartItemButton";
 import CartItemsCard from "../Cards/CartItemsCard";
 
-function CartItemsContent({ item }) {
+function CartItemsContent({ item, formattedPrice }) {
   const dispatch = useDispatch();
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [deleteItemName, setDeleteItemName] = useState("");
@@ -48,7 +48,7 @@ function CartItemsContent({ item }) {
   return (
     <div className="bg-base-100 p-4 shadow-xl mb-2 relative">
       <div className="flex flex-row justify-between items-center">
-        <CartItemsCard item={item} />
+        <CartItemsCard item={item} formattedPrice={formattedPrice} />
         <div className="flex flex-row">
           <DeleteCartItemButton
             setShowDeleteModal={setShowDeleteModal}
@@ -66,7 +66,7 @@ function CartItemsContent({ item }) {
           handleQuantityChange={handleQuantityChange}
         />
         <p className="text-sm lg:text-lg text-gray-500">
-          Subtotal: {item.price * item.quantity}
+          Subtotal: {formattedPrice(item.price * item.quantity)}
         </p>
       </div>
       {showDeleteModal && (

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import SearchInput from "./SearchInput";
 import UserDropdown from "./UserDropDown";
 import AuthButtons from "./AuthButtons";
 import { BiHomeAlt2 } from "react-icons/bi";
@@ -28,7 +27,6 @@ const Navbar = () => {
           Shopify
         </a>
       </div>
-      {/* <SearchInput /> */}
       <div className="flex flex-row gap-2">
         {userToken ? (
           <UserDropdown key={user.id_user} user={user} />
