@@ -228,92 +228,20 @@ module.exports = {
     try {
       const { id_order } = req.query;
 
-      const fetchOrder = await query(`
-    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
-    FROM orders o
-    INNER JOIN order_items oi ON o.id_order = oi.id_order
-    INNER JOIN products p ON oi.product_name = p.name
-    INNER JOIN stocks s ON p.id_product = s.id_product
-    WHERE o.id_order = ${db.escape(
-      id_order
-    )}  AND s.id_warehouse = o.id_warehouse;
-    `);
-
-      if (fetchOrder.length > 0) {
-        const isAllProductsAlreadyAvailableInWarehouse = [];
-
-        for (const item of fetchOrder) {
-          const {
-            id_order,
-            id_product,
-            quantity,
-            id_warehouse,
-            total_stock,
-            id_stock,
-          } = item;
-
-          if (total_stock < quantity) {
-            const stockShortage = quantity - total_stock;
-            isAllProductsAlreadyAvailableInWarehouse.push(
-              `Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(
-                quantity
-              )}, saat ini hanya tersedia ${db.escape(total_stock)}`
-            );
-            // return res.status(400).send({
-            //   message: `Stok masih kurang untuk product_id ${id_product}, diperlukan ${db.escape(quantity)}, saat ini hanya tersedia ${db.escape(total_stock)} `,
-            // });
-          }
-        }
-
-        if (isAllProductsAlreadyAvailableInWarehouse.length > 0) {
-          return res.status(400).send({
-            message: `Stok Masih Kurang`,
-            isAllProductsAlreadyAvailableInWarehouse,
-          });
-        }
-        if (isAllProductsAlreadyAvailableInWarehouse.length == 0) {
-          const updateStatus = await query(`
+      const updateStatus = await query(`
             UPDATE orders
-            SET status = "Dikirim"
+            SET status = "Dikirim",
+            shipping_time = NOW() + INTERVAL 7 DAY -- Set shipping_time to NOW() + INTERVAL 7 DAY
             WHERE id_order = ${db.escape(id_order)}
           `);
-          const getorderstatus = await query(
-            `select * from orders WHERE id_order = ${db.escape(id_order)}`
-          );
+      const getorderstatus = await query(
+        `select * from orders WHERE id_order = ${db.escape(id_order)}`
+      );
 
-          // const kumpulanStockHistory = [];
-
-          // for (const item of fetchOrder) {
-          //   const {
-          //     id_order,
-          //     id_product,
-          //     quantity,
-          //     id_warehouse,
-          //     total_stock,
-          //     id_stock,
-          //   } = item;
-
-          //   // Ketika send order, stock perlu dikurangi!!
-          //   const updateStock = await query(
-          //     `UPDATE stocks SET total_stock = total_stock - ${quantity} WHERE id_product = ${id_product} AND id_warehouse = ${id_warehouse};`
-          //   );
-
-          //   const createHistory = await query(`
-          //   INSERT INTO stock_history (id_stock, stock_change, status, created_at)
-          //   VALUES (${id_stock}, ${quantity}, "outgoing - order fulfillment", CURRENT_TIMESTAMP);
-          //   `);
-
-          //   const getStockHistory = await query(
-          //     `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
-          //   )
-          // }
-
-          return res.status(200).send({
-            message: `Stok untuk semua produk tersedia. Siap dikirim.`,
-            result: getorderstatus,
-          });
-        }
-      }
+      return res.status(200).send({
+        message: `Stok untuk semua produk tersedia. Siap dikirim.`,
+        result: getorderstatus,
+      });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
     }

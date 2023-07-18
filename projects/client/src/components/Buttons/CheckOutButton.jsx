@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+
 const CheckoutButton = ({ disabled }) => {
   const navigate = useNavigate();
   return (

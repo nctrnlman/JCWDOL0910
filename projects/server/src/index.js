@@ -15,6 +15,7 @@ const {
   orderRoutes,
   adminOrderRoutes,
   stockMutationRoutes,
+  statusOrderRoutes,
 } = require("../routers/");
 const { db, query } = require("../database");
 const { categoryRoutes } = require("../routers");
@@ -43,6 +44,7 @@ app.use("/api/user-profile", userProfileRoutes);
 app.use("/api/admins/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
+app.use("/api/status-orders", statusOrderRoutes);
 app.use("/api/admins", adminRoutes);
 app.use("/api/warehouses", warehouseRoutes);
 app.use("/api/rajaongkir", rajaOngkirRoutes);

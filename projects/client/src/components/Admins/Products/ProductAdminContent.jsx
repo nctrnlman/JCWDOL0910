@@ -29,7 +29,8 @@ function ProductAdminContent() {
   const [selectedSort, setSelectedSort] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const adminDetails = JSON.parse(localStorage.getItem("admin_details"));
-  const userRole = adminDetails.role;
+  const userRole = adminDetails?.role;
+  console.log(userRole);
   const handleSort = (option) => {
     setSelectedSort(option);
     dispatch(
@@ -124,6 +125,7 @@ function ProductAdminContent() {
                 key={product.id_product}
                 openDeleteModal={openDeleteModal}
                 openEditModal={openEditModal}
+                userRole={userRole}
               />
             );
           })}

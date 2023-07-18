@@ -9,13 +9,14 @@ function Payment() {
   const { id } = useParams();
   const orders = useSelector((state) => state.orders.orderList);
   const user = useSelector((state) => state.users.user);
+  const currentPage = useSelector((state) => state.orders.currentPage);
   const [status, setStatus] = useState("Menunggu Pembayaran");
   const [isChecked, setIsChecked] = useState(false);
   const [isUploadModalOpen, setUploadModalOpen] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchOrder(user.id, status));
+    dispatch(fetchOrder(user.id, status, currentPage));
   }, [status]);
 
   const order = orders.find((order) => order.id_order === parseInt(id));
