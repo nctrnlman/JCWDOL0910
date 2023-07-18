@@ -12,13 +12,13 @@ module.exports = {
       const { id_order } = req.query;
 
       const fetchOrder = await query(`
-    SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock FROM orders o INNER JOIN order_items oi ON o.id_order = oi.id_order INNER JOIN products p ON oi.product_name = p.name INNER JOIN stocks s ON p.id_product = s.id_product WHERE o.id_order = ${db.escape(
+    SELECT oi.id_user,oi.id_order, p.id_product,p.name,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock FROM orders o INNER JOIN order_items oi ON o.id_order = oi.id_order INNER JOIN products p ON oi.product_name = p.name INNER JOIN stocks s ON p.id_product = s.id_product WHERE o.id_order = ${db.escape(
       id_order
     )}  AND s.id_warehouse = o.id_warehouse;
     `);
 
       for (const item of fetchOrder) {
-        const { id_product, quantity } = item;
+        const { id_product, quantity, name } = item;
 
         const checkStock = await query(`
                 SELECT SUM(total_stock) AS total_stock
@@ -28,7 +28,7 @@ module.exports = {
 
         if (checkStock[0].total_stock < quantity) {
           return res.status(400).send({
-            message: `Insufficient stock available for product with ID ${id_product} across all warehouses`,
+            message: `Insufficient stock available for product ${name} across all warehouses`,
           });
         }
       }
@@ -186,11 +186,11 @@ module.exports = {
       const itemsPerPage = 10;
       const { page, offset } = getPaginationParams(req, itemsPerPage);
       const { sort, search, status } = req.query;
-      const role = getRoleFromToken(req, res); // Get the role from the token
+      const role = getRoleFromToken(req, res);
 
       let warehouseId = null;
       if (role === "warehouse admin") {
-        const adminId = getIdFromToken(req, res); // Get the admin ID from the token
+        const adminId = getIdFromToken(req, res);
         warehouseId = await adminOrderQueries.getWarehouseId(adminId);
       }
 
@@ -259,10 +259,6 @@ module.exports = {
       const getorderstatus = await query(
         `select * from orders WHERE id_order = ${db.escape(id_order)}`
       );
-      // return res.status(400).send({
-      //   message: `Pesanan Dibatalkan`,
-      //   result: getorderstatus
-      // });
 
       const fetchOrder = await query(`
     SELECT oi.id_user,oi.id_order, p.id_product,oi.quantity, s.id_warehouse,s.id_stock,s.total_stock
@@ -271,9 +267,6 @@ module.exports = {
     INNER JOIN products p ON oi.product_name = p.name
     INNER JOIN stocks s ON p.id_product = s.id_product and o.id_warehouse = s.id_warehouse
     WHERE o.id_order = ${db.escape(id_order)} `);
-
-      console.log("fetchOrder", fetchOrder);
-      console.log("fetchOrder length", fetchOrder.length);
 
       let kumpulanPerubahanStockHistory = [];
 
@@ -300,7 +293,6 @@ module.exports = {
           const getStockHistory = await query(
             `select * from stock_history sh left join stocks s on sh.id_stock = s.id_stock where sh.id_stock = ${id_stock}`
           );
-          console.log(getStockHistory);
         }
       }
 

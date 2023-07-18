@@ -11,7 +11,6 @@ module.exports = {
   createAdmin: async (req, res) => {
     const { name, email, password } = req.body;
     try {
-      // Check if an admin with the Super Admin role already exists
       const checkExistingAdminQuery = `
       SELECT * FROM admins AS a
       JOIN roles AS r ON a.id_role = r.id_role
@@ -118,8 +117,8 @@ module.exports = {
         role: admin.role_name.toLowerCase(),
       };
 
-      const expiresIn = 60 * 60; // Set the token expiration time to 1 hour
-      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn; // Calculate the expiration timestamp (in seconds)
+      const expiresIn = 60 * 60;
+      const expirationTimestamp = Math.floor(Date.now() / 1000) + expiresIn;
       const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn });
       res.status(200).send({
         token,

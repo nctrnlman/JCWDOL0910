@@ -1,29 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { format } from "date-fns";
-// import { Select } from "@chakra-ui/react";
-import { parseISO } from "date-fns";
-import { differenceInDays, add } from "date-fns";
 import axios from "axios";
-// import {
-//     Table,
-//     Thead,
-//     Tbody,
-//     Tr,
-//     Th,
-//     Td,
-//     TableContainer,
-//     Button,
-//     Text,
-// } from "@chakra-ui/react";
-import {
-  // fetchAllTransaction,
-  fetchStockMovement,
-} from "../../../features/reportStockSlice";
-import Datepicker from "react-tailwindcss-datepicker";
-// import "react-tailwindcss-datepicker/dist/index.css";
-// import TransactionTable from "../components/TransactionTable";
+
+import { fetchStockMovement } from "../../../features/reportStockSlice";
 
 function StockReport() {
   const dispatch = useDispatch();
@@ -78,14 +57,6 @@ function StockReport() {
           ))}
         </select>
       </div>
-      {/* <div>
-                {stockMovement?.map((w) => {
-                    return (
-                        <p>{w.movement_description}</p>
-                    )
-                })}
-            </div> */}
-
       <h1 className="text-center p-4 font-bold uppercase">
         Stock Movement History Details
       </h1>
@@ -102,7 +73,6 @@ function StockReport() {
                 <th class="px-5 py-3">Warehouse</th>
                 <th class="px-5 py-3">Quantity</th>
                 <th class="px-5 py-3">Created At</th>
-                {/* <th class="px-5 py-3">Status</th> */}
               </tr>
             </thead>
             <tbody class="text-gray-500">
@@ -134,23 +104,12 @@ function StockReport() {
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                       <p class="whitespace-no-wrap">{sm.created_at}</p>
                     </td>
-
-                    {/* <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                                <span class="rounded-full bg-green-200 px-3 py-1 text-xs font-semibold text-green-900">{user.is_verfied}</span>
-                                            </td> */}
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
-        {/* <div class="flex flex-col items-center border-t bg-white px-5 py-5 sm:flex-row sm:justify-between">
-                    <span class="text-xs text-gray-600 sm:text-sm"> Showing 1 to 5 of 12 Entries </span>
-                    <div class="mt-2 inline-flex sm:mt-0">
-                        <button class="mr-2 h-12 w-12 rounded-full border text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100">Prev</button>
-                        <button class="h-12 w-12 rounded-full border text-sm font-semibold text-gray-600 transition duration-150 hover:bg-gray-100">Next</button>
-                    </div>
-                </div> */}
       </div>
     </div>
   );

@@ -32,7 +32,6 @@ const superAdmin = async (req, res, next) => {
 };
 const admins = async (req, res, next) => {
   try {
-    console.log("from check role", req.headers)
     const adminId = getIdFromToken(req, res);
     const getAdminRoleQuery = `
     SELECT roles.name
@@ -45,7 +44,7 @@ const admins = async (req, res, next) => {
     const adminRole = result[0].name.toLowerCase();
 
     if (adminRole === "super admin" || adminRole === "warehouse admin") {
-      req.adminRole = adminRole; // Store the admin role in the request object
+      req.adminRole = adminRole;
       next();
     } else {
       res.status(401).send({

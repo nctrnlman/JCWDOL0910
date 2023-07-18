@@ -35,7 +35,7 @@ function TransactionReport() {
   );
 
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
-  const warehouses = useSelector((state) => state.warehouses.warehouse.data);
+  const warehouses = useSelector((state) => state.warehouses.warehouse);
   const [allMonthlyTransactionfilt, setallMonthlyTransactionfilt] = useState(
     []
   );

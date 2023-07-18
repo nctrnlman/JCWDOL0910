@@ -130,7 +130,6 @@ export function checkUserOrders() {
       const response = await axios.get(
         "http://localhost:8000/api/status-orders/"
       );
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -150,7 +149,6 @@ export function changeStatusToPesananDiterima(id_order) {
           },
         }
       );
-      console.log(response);
       showInfoToast(response.data.message);
     } catch (error) {
       console.log(error);
