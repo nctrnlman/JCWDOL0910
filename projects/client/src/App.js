@@ -36,6 +36,7 @@ import ForgetPassword from "./pages/ForgetPassword";
 import Profiling from "./pages/Profiling";
 import { getAllProductCategories } from "./features/categories/ProductCategoriesSlice";
 import { getProfile } from "./features/ProfileSlice";
+import { checkUserOrders } from "./features/orders/orderSlice";
 
 function App() {
   const location = useLocation();
@@ -46,7 +47,7 @@ function App() {
   const adminRole = useSelector((state) =>
     state.admins.admin?.role?.toLowerCase()
   );
-
+  const [shouldCheckUserOrders, setShouldCheckUserOrders] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
 
@@ -86,7 +87,15 @@ function App() {
       dispatch(fetchItemsCart());
       dispatch(getProfile());
     }
+    setShouldCheckUserOrders(true);
   }, [userToken, dispatch]);
+
+  useEffect(() => {
+    if (shouldCheckUserOrders) {
+      dispatch(checkUserOrders());
+      setShouldCheckUserOrders(false);
+    }
+  }, [dispatch, shouldCheckUserOrders]);
 
   useEffect(() => {
     dispatch(getAllProductCategories());

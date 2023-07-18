@@ -4,6 +4,7 @@ import SeeReceiptButton from "../Buttons/SeeReceiptButton";
 import ReceiptModal from "../modals/ReceiptModal";
 import CancelOrderButton from "../Buttons/CancelOrderButton";
 import CancelOrderModal from "../modals/CancelOrderModal";
+import OrderReceivedButton from "../Buttons/OrderReceivedButton";
 
 const OrderItem = ({
   order,
@@ -11,7 +12,9 @@ const OrderItem = ({
   handleShowReceipt,
   handleShowCancelModal,
   handleCancelOrder,
+  handleShowConfirmOrder,
   isWaitingPayment,
+  isWaitingOrder,
   isWaitingConfirmOrder,
   selectedOrderId,
   selectedOrder,
@@ -68,6 +71,13 @@ const OrderItem = ({
             {isWaitingConfirmOrder && (
               <SeeReceiptButton
                 onClick={() => handleShowReceipt(order.id_order, order)}
+              />
+            )}
+            {isWaitingOrder && (
+              <OrderReceivedButton
+                onClick={() => {
+                  handleShowConfirmOrder(order.id_order, order);
+                }}
               />
             )}
             {selectedOrderId && <ReceiptModal order={selectedOrder} />}

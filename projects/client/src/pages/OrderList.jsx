@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cancelOrder, fetchOrder } from "../features/orders/orderSlice";
 import OrderItem from "../components/Order/OrderItem";
 import Pagination from "../components/utils/Pagination";
+import OrderReceivedModal from "../components/modals/OrderReceivedModal";
 
 function OrderList() {
   const dispatch = useDispatch();
@@ -35,6 +36,11 @@ function OrderList() {
     setSelectedOrder(selectedOrder);
   };
 
+  const handleShowConfirmOrder = (orderId, selectedOrder) => {
+    setSelectedOrderId(orderId);
+    setSelectedOrder(selectedOrder);
+  };
+
   const handleCancelOrder = () => {
     setStatus("Dibatalkan");
     dispatch(cancelOrder(selectedOrderId, id_user, status));
@@ -46,6 +52,10 @@ function OrderList() {
 
   const isWaitingConfirmOrder = (order) => {
     return order.status === "Menunggu Konfirmasi Pembayaran";
+  };
+
+  const isWaitingOrder = (order) => {
+    return order.status === "Dikirim";
   };
 
   const renderOrder = () => {
@@ -67,8 +77,10 @@ function OrderList() {
         handleShowReceipt={handleShowReceipt}
         handleShowCancelModal={handleShowCancelModal}
         handleCancelOrder={handleCancelOrder}
+        handleShowConfirmOrder={handleShowConfirmOrder}
         isWaitingPayment={isWaitingPayment(order)}
         isWaitingConfirmOrder={isWaitingConfirmOrder(order)}
+        isWaitingOrder={isWaitingOrder(order)}
         selectedOrderId={selectedOrderId}
         selectedOrder={selectedOrder}
       />
@@ -105,6 +117,7 @@ function OrderList() {
         </div>
         {renderOrder()}
       </div>
+      {selectedOrderId && <OrderReceivedModal order={selectedOrder} />}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

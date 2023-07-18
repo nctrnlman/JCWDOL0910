@@ -28,7 +28,7 @@ function CartContent({ cartItems, onQuantityChange, totalPrice }) {
       </div>
       <div className="bg-base-100 shadow-md p-4 flex justify-between items-center border border-solid border-base-300">
         <p className="text-lg font-semibold">Total Price: {totalPrice}</p>
-        <CheckoutButton disabled={disabled} />
+        <CheckoutButton />
       </div>
     </>
   );
