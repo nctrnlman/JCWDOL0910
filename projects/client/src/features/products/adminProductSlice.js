@@ -3,6 +3,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import CustomToast from "../../components/CustomToast/CustomToast";
 import CustomToastOptions from "../../components/CustomToast/CustomToastOptions";
+import {
+  showErrorToast,
+  showInfoToast,
+  showSuccessToast,
+} from "../../components/CustomToast/CustomNotification";
 
 export const adminProductSlice = createSlice({
   name: "admin-products",
@@ -96,6 +101,7 @@ export function fetchAllAdminProducts() {
       dispatch(setProducts(products));
     } catch (error) {
       console.log(error);
+      showErrorToast(error.response.data.message);
     }
   };
 }
@@ -116,8 +122,11 @@ export function editProduct(id, productData) {
       );
       dispatch(updateProduct(response.data));
       dispatch(fetchAdminProducts());
+      showInfoToast(response.data.message);
+      console.log(response, "edit");
     } catch (error) {
       console.error("Error editing product:", error);
+      showErrorToast(error.response.data.message);
     }
   };
 }
@@ -126,15 +135,16 @@ export function deleteProducts(id_product) {
   return async (dispatch) => {
     const adminToken = localStorage.getItem("admin_token");
     try {
-      await axios.delete(
+      const response = await axios.delete(
         `http://localhost:8000/api/admins/products/${id_product}`,
         {
           headers: { Authorization: `Bearer ${adminToken}` },
         }
       );
       dispatch(fetchAdminProducts());
+      showInfoToast(response.data.message);
     } catch (error) {
-      console.error("Error deleting warehouse:", error);
+      console.log(error);
     }
   };
 }
@@ -151,6 +161,7 @@ export function addNewProduct(productData) {
       );
       dispatch(addProduct(response.data));
       dispatch(fetchAdminProducts());
+      showSuccessToast(response.data.message);
     } catch (error) {
       console.log(error);
       toast(

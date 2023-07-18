@@ -11,7 +11,6 @@ const { parseTotalStock } = require("../helper/productHelper");
 const adminProductQueries = require("../queries/adminProductQueries");
 
 module.exports = {
-  // renacana bakal dipindah ke productController
   getAllProducts: async (req, res) => {
     try {
       const products = await query(adminProductQueries.getAllProductsQuery);
@@ -21,7 +20,6 @@ module.exports = {
     }
   },
 
-  // renacana bakal dipindah ke productController
   fetchProducts: async (req, res) => {
     try {
       const itemsPerPage = 8;
@@ -108,13 +106,16 @@ module.exports = {
       const insertedProductId = productResult.insertId;
 
       return res.status(200).send({
-        id: insertedProductId,
-        id_category,
-        name,
-        price,
-        weight,
-        description,
-        image_url,
+        message: "Product successfully added",
+        data: {
+          id: insertedProductId,
+          id_category,
+          name,
+          price,
+          weight,
+          description,
+          image_url,
+        },
       });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
@@ -131,7 +132,7 @@ module.exports = {
       );
 
       if (productResult.length === 0) {
-        return res.status(400).send("Invalid product ID");
+        return res.status(400).send({ message: "Invalid product ID" });
       }
 
       const existingProduct = productResult[0];
@@ -140,10 +141,12 @@ module.exports = {
       let image_url = existingProduct.image_url;
       if (file) {
         if (!validateImageSize(file)) {
-          return res.status(400).send("File size exceeds the limit");
+          return res
+            .status(400)
+            .send({ message: "File size exceeds the limit" });
         }
         if (!validateImageExtension(file)) {
-          return res.status(400).send("Invalid file extension");
+          return res.status(400).send({ message: "Invalid file extension" });
         }
 
         image_url = "/" + file.filename;
@@ -156,7 +159,7 @@ module.exports = {
       if (productNameResult.length > 0) {
         return res
           .status(400)
-          .send("Product name already exists in the category");
+          .send({ message: "Product name already exists in the category" });
       }
 
       await query(
@@ -172,13 +175,16 @@ module.exports = {
       );
 
       return res.status(200).send({
-        id: productId,
-        id_category,
-        name,
-        price,
-        weight,
-        description,
-        image_url,
+        message: "Product successfully updated",
+        data: {
+          id: productId,
+          id_category,
+          name,
+          price,
+          weight,
+          description,
+          image_url,
+        },
       });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);
@@ -191,11 +197,18 @@ module.exports = {
 
       await query(adminProductQueries.deleteProductQuery(productId));
 
-      await query(adminProductQueries.deleteOrderItemsQuery(productId));
+      const productInStock = await query(
+        adminProductQueries.checkProductInStockQuery(productId)
+      );
+      console.log(productInStock, "in stock");
+      if (productInStock.length > 0) {
+        await query(adminProductQueries.deleteStockProductQuery(productId));
+      }
 
       return res.status(200).send({
         id: productId,
-        message: "Product, stock, and order items deleted successfully",
+        message:
+          "Product data in products list, stock, and cart deleted successfully",
       });
     } catch (error) {
       return res.status(error.statusCode || 500).send(error);

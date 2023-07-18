@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { editProduct } from "../../features/products/adminProductSlice";
+import {
+  editProduct,
+  fetchAdminProducts,
+} from "../../features/products/adminProductSlice";
 
 const EditModalProduct = ({
   closeEditModal,

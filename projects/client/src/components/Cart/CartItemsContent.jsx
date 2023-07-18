@@ -4,6 +4,7 @@ import {
   increaseCartItemQuantity,
   decreaseCartItemQuantity,
   deleteProductFromCart,
+  fetchItemsCart,
 } from "../../features/carts/cartActions";
 import { updateCartItemQuantity } from "../../features/carts/helpers/cartHelpers";
 import DeleteModal from "../modals/DeleteModal";
@@ -39,6 +40,7 @@ function CartItemsContent({ item, formattedPrice }) {
   const handleDelete = () => {
     setShowDeleteModal(false);
     dispatch(deleteProductFromCart(deleteItemId));
+    dispatch(fetchItemsCart());
   };
 
   const handleCancelDelete = () => {

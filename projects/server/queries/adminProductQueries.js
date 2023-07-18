@@ -121,9 +121,9 @@ module.exports = {
     DELETE FROM products
     WHERE id_product = ${db.escape(productId)};
   `,
-
-  deleteOrderItemsQuery: (productId) => `
-    DELETE FROM order_items
-    WHERE id_product = ${db.escape(productId)};
+  deleteStockProductQuery: (productId) => `
+  DELETE FROM stocks WHERE id_product = ${db.escape(productId)}
   `,
+  checkProductInStockQuery: (productId) =>
+    `SELECT * FROM stocks WHERE id_product=${db.escape(productId)}`,
 };
