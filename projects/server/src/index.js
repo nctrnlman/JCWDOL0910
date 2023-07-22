@@ -16,11 +16,11 @@ const {
   adminOrderRoutes,
   stockMutationRoutes,
   statusOrderRoutes,
-} = require("../routers/");
-const { db, query } = require("../database");
-const { categoryRoutes } = require("../routers");
-const { productRoutes } = require("../routers");
-const { userProfileRoutes } = require("../routers");
+} = require("./routers/");
+const { db, query } = require("./database");
+const { categoryRoutes } = require("./routers");
+const { productRoutes } = require("./routers");
+const { userProfileRoutes } = require("./routers");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -30,10 +30,9 @@ app.use(
     credentials: true,
   })
 );
-
+const pathToFile = join(__dirname, "./public");
 app.use(express.json());
-app.use(express.static("public"));
-
+app.use(express.static(pathToFile));
 //#region API ROUTES
 
 // ===========================
@@ -88,7 +87,7 @@ app.use((err, req, res, next) => {
 //#endregion
 
 //#region CLIENT
-const clientPath = "../../client/build";
+const clientPath = "../../client/public";
 app.use(express.static(join(__dirname, clientPath)));
 
 // Serve the HTML page
