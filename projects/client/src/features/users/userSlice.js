@@ -130,7 +130,6 @@ export function logoutUser() {
       localStorage.removeItem("user_token");
       localStorage.removeItem("exp_token");
       localStorage.removeItem("user_details");
-      localStorage.removeItem("cartCheckboxState");
       toast(
         <CustomToast type="warning" message="Logged out successfully" />,
         CustomToastOptions
