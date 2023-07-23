@@ -7,13 +7,16 @@ import {
 } from "../../features/warehouses/warehouseSlice";
 import { fetchAllAdminProducts } from "../../features/products/adminProductSlice";
 
-const CreateModalStock = ({ closeCreateModal }) => {
+const CreateModalStock = ({ closeCreateModal, stockProducts }) => {
   const dispatch = useDispatch();
   const [warehouseId, setWarehouseId] = useState("");
   const [productId, setProductId] = useState("");
   const [quantity, setQuantity] = useState("");
   const products = useSelector((state) => state.adminProducts.products);
   const warehouses = useSelector((state) => state.warehouses.warehouse);
+  const adminDetailsJSON = localStorage.getItem("admin_details");
+  const adminDetails = JSON.parse(adminDetailsJSON);
+  const adminRole = adminDetails?.role?.toLowerCase();
 
   const handleWarehouseChange = (e) => {
     const selectedWarehouseId = e.target.value;
@@ -57,10 +60,13 @@ const CreateModalStock = ({ closeCreateModal }) => {
               required
               disabled={warehouses.length === 1}
             >
-              {warehouses.length === 1 ? (
-                <option value={warehouses[0].id_warehouse} disabled>
-                  {warehouses[0].name}
-                </option>
+              {adminRole === "warehouse admin" ? (
+                <>
+                  <option value="">Select warehouse</option>
+                  <option value={stockProducts[0].id_warehouse}>
+                    {stockProducts[0].warehouse_name}
+                  </option>
+                </>
               ) : (
                 <>
                   <option value="">Select warehouse</option>
