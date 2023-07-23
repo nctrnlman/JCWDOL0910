@@ -106,6 +106,7 @@ function StocksContent() {
         <CreateModalStock
           stockProducts={stockProducts}
           closeCreateModal={() => setCreateModalOpen(false)}
+          stockProduct={stockProducts}
         />
       )}
       {editModalOpen && editItemId && (
