@@ -111,6 +111,7 @@ const CreateOrder = () => {
   };
 
   useEffect(() => {
+    dispatch(fetchItemsCart());
     if (shippingMethod !== "") {
       fetchShipping(shippingMethod);
     }

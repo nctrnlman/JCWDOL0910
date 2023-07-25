@@ -58,10 +58,9 @@ module.exports = {
       const isEmailExist = await query(
         `SELECT * FROM users WHERE email=${db.escape(email)}`
       );
-
       if (isEmailExist.length === 0) {
         return res
-          .status(200)
+          .status(400)
           .send({ message: "Email or Password is Invalid" });
       }
 
