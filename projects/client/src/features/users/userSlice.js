@@ -92,6 +92,7 @@ export function loginUser(data, callback) {
       );
     } catch (error) {
       dispatch(setIsLoading(false));
+      console.log(error);
       toast(
         <CustomToast type="error" message={error.response.data.message} />,
         CustomToastOptions
